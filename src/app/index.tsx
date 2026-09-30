@@ -12,8 +12,8 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      void sessions.resumeMostRecent().then((state) => {
-        if (active) setRecent(state);
+      void sessions.resumeMostRecent().then((snapshot) => {
+        if (active) setRecent(snapshot?.state ?? null);
       }).catch(() => {
         if (active) setRecent(null);
       });
