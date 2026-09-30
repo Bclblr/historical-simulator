@@ -29,3 +29,4 @@ export * from './institution-character';
 export * from './institution-conflict';
 export * from './institution-action';
 export * from './institutional-outcome';
+export * from './perspective-transition';
