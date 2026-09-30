@@ -38,7 +38,7 @@
 - [x] 31. Flag sistemi
 - [x] 32. Önceki kararları hatırlama
 - [x] 33. Koşullu olaylar
-- [ ] 34. Gecikmeli sonuçlar
+- [x] 34. Gecikmeli sonuçlar
 - [ ] 35. Save/Load
 
 ## 36–45 — Özgün oyun sistemleri
