@@ -1,6 +1,76 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
-import { useAppTheme } from '@/theme';
-export default function GameScreen(){const p=useLocalSearchParams<{era?:string;country?:string;institution?:string;role?:string}>();const t=useAppTheme();return <View style={[s.c,{backgroundColor:t.colors.background}]}><Stack.Screen options={{title:'Simülasyon',headerShown:true}}/><Text style={[s.eye,{color:t.colors.textSubtle}]}>OTURUM HAZIR</Text><Text style={[s.title,{color:t.colors.text}]}>{p.era??'1933'} · {p.country??'germany'}</Text><Text style={[s.desc,{color:t.colors.textMuted}]}>Kurum: {p.institution??'—'}{'
-'}Rol: {p.role??'—'}</Text><Text style={[s.note,{color:t.colors.textMuted,borderColor:t.colors.border}]}>Event Engine ve GameState sonraki motor aşamalarında bu rotaya bağlanacak.</Text></View>}
-const s=StyleSheet.create({c:{flex:1,justifyContent:'center',padding:28},eye:{fontSize:12,fontWeight:'800',letterSpacing:2},title:{marginTop:10,fontSize:32,fontWeight:'800'},desc:{marginTop:16,fontSize:16,lineHeight:25},note:{marginTop:30,padding:18,borderWidth:1,fontSize:14,lineHeight:21}});
+import { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
+
+import { AppCard, AppText, Screen } from '@/components';
+import type { GameState } from '@/domain/game';
+import { useGameSessionService } from '@/services';
+
+export default function GameScreen() {
+  const params = useLocalSearchParams<{ sessionId?: string; era?: string; country?: string; institution?: string; role?: string }>();
+  const sessions = useGameSessionService();
+  const [state, setState] = useState<GameState | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        const existing = params.sessionId ? await sessions.resume(params.sessionId) : null;
+        if (existing) {
+          if (active) setState(existing);
+          return;
+        }
+
+        if (!params.era || !params.country || !params.institution || !params.role) {
+          throw new Error('Oyun oturumu başlatmak için seçim bilgileri eksik.');
+        }
+
+        const created = await sessions.start({
+          sessionId: `session-${Date.now()}`,
+          startDate: `${params.era}-01-01`,
+          selection: {
+            eraId: params.era,
+            countryId: params.country,
+            institutionId: params.institution,
+            roleId: params.role,
+          },
+        });
+
+        if (active) setState(created);
+      } catch (cause) {
+        if (active) setError(cause instanceof Error ? cause.message : 'Oyun kaydı yüklenemedi.');
+      }
+    }
+
+    void load();
+    return () => { active = false; };
+  }, [params.country, params.era, params.institution, params.role, params.sessionId, sessions]);
+
+  return (
+    <Screen centered>
+      <Stack.Screen options={{ title: 'Simülasyon', headerShown: true }} />
+      <AppText variant="label" muted>{error ? 'KAYIT HATASI' : state ? 'OTURUM KAYDEDİLDİ' : 'OTURUM HAZIRLANIYOR'}</AppText>
+      {error ? (
+        <AppCard style={styles.card}><AppText>{error}</AppText></AppCard>
+      ) : state ? (
+        <>
+          <AppText variant="title" style={styles.title}>{state.currentDate}</AppText>
+          <AppText muted style={styles.description}>
+            {state.selection.countryId} · {state.selection.institutionId}{'\n'}Rol: {state.selection.roleId}
+          </AppText>
+          <AppCard style={styles.card}>
+            <AppText muted>Bu oturum SQLite'a kaydedildi. Event Engine ilerleyen aşamalarda aynı GameState üzerinde çalışacak.</AppText>
+          </AppCard>
+        </>
+      ) : null}
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  title: { marginTop: 10 },
+  description: { marginTop: 16 },
+  card: { marginTop: 28 },
+});
