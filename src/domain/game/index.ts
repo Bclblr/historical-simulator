@@ -19,3 +19,4 @@ export * from './map';
 export * from './institution-message';
 export * from './information-reliability';
 export * from './information-visibility';
+export * from './perspective';
