@@ -1,7 +1,7 @@
-import type { GameSessionId, GameState } from '@/domain/game';
+import type { GameSessionId, GameSessionSnapshot } from '@/domain/game';
 
 export interface GameSessionRepository {
-  findById(sessionId: GameSessionId): Promise<GameState | null>;
-  findMostRecent(): Promise<GameState | null>;
-  save(state: GameState): Promise<void>;
+  findById(sessionId: GameSessionId): Promise<GameSessionSnapshot | null>;
+  findMostRecent(): Promise<GameSessionSnapshot | null>;
+  save(snapshot: GameSessionSnapshot): Promise<void>;
 }
