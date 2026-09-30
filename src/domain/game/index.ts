@@ -15,3 +15,4 @@ export * from './desk-file';
 export * from './telegram';
 export * from './newspaper';
 export * from './document-inspection';
+export * from './map';
