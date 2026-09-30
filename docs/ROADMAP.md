@@ -9,7 +9,7 @@
 - [x] 6. Tema sisteminin kurulması
 - [x] 7. Tipografi ve UI bileşen sistemi
 - [x] 8. SQLite altyapısı
-- [ ] 9. Yerel kayıt/depolama sistemi
+- [x] 9. Yerel kayıt/depolama sistemi
 - [ ] 10. İlk uygulama iskeletinin çalıştırılması
 
 ## 11–20 — Tarihsel veri modeli
