@@ -8,7 +8,7 @@
 - [x] 5. Klasör/mimari standardının oluşturulması
 - [x] 6. Tema sisteminin kurulması
 - [x] 7. Tipografi ve UI bileşen sistemi
-- [ ] 8. SQLite altyapısı
+- [x] 8. SQLite altyapısı
 - [ ] 9. Yerel kayıt/depolama sistemi
 - [ ] 10. İlk uygulama iskeletinin çalıştırılması
 
