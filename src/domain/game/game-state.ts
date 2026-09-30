@@ -1,3 +1,4 @@
+import { parseHistoricalDate } from './historical-date';
 import type {
   GameFlagKey,
   GameSelection,
@@ -13,8 +14,6 @@ export interface CreateGameStateInput {
   variables?: Record<GameVariableKey, number>;
 }
 
-const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
 function assertNonEmpty(value: string, field: string): string {
   const normalized = value.trim();
   if (!normalized) throw new Error(`${field} is required.`);
@@ -22,9 +21,7 @@ function assertNonEmpty(value: string, field: string): string {
 }
 
 function assertGameDate(value: string): void {
-  if (!ISO_DATE_PATTERN.test(value) || Number.isNaN(Date.parse(`${value}T00:00:00Z`))) {
-    throw new Error('GameState currentDate must be a valid date (YYYY-MM-DD).');
-  }
+  parseHistoricalDate(value);
 }
 
 function normalizeFlags(
