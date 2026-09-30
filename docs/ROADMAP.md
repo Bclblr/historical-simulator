@@ -25,7 +25,7 @@
 - [x] 20. Historical Fact / Simulation ayrımı
 
 ## 21–35 — Çekirdek oyun motoru
-- [ ] 21. GameState
+- [x] 21. GameState
 - [ ] 22. Oyun tarihi/zaman motoru
 - [ ] 23. Event Engine
 - [ ] 24. Card Generation Engine
