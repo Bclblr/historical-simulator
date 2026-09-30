@@ -29,7 +29,7 @@
 - [x] 22. Oyun tarihi/zaman motoru
 - [x] 23. Event Engine
 - [x] 24. Card Generation Engine
-- [ ] 25. Swipe sistemi
+- [x] 25. Swipe sistemi
 - [ ] 26. Sol seçim
 - [ ] 27. Sağ seçim
 - [ ] 28. İkiden fazla seçenek
