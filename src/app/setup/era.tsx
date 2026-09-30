@@ -1,5 +1,5 @@
 import { Link, Stack } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAppTheme } from '@/theme';
-export default function EraScreen(){const t=useAppTheme();return <View style={[s.c,{backgroundColor:t.colors.background}]}><Stack.Screen options={{title:'Dönem Seçimi'}}/><Text style={[s.step,{color:t.colors.textSubtle}]}>1 / 4</Text><Text style={[s.title,{color:t.colors.text}]}>Bir dönem seç</Text><Text style={[s.desc,{color:t.colors.textMuted}]}>İlk prototip 1933 ile başlıyor. Yeni dönemler aynı oyun motoruna eklenecek.</Text><Link href="/setup/country?era=1933" asChild><Pressable style={[s.card,{backgroundColor:t.colors.surface,borderColor:t.colors.border}]}><Text style={[s.cardTitle,{color:t.colors.text}]}>1933</Text><Text style={[s.cardText,{color:t.colors.textMuted}]}>Avrupa'da siyasal dönüşüm ve uluslararası belirsizlik dönemi.</Text></Pressable></Link></View>}
-const s=StyleSheet.create({c:{flex:1,padding:24,paddingTop:32},step:{fontSize:12,fontWeight:'700',letterSpacing:1.5},title:{marginTop:10,fontSize:30,fontWeight:'800'},desc:{marginTop:10,maxWidth:560,fontSize:16,lineHeight:24},card:{marginTop:28,padding:22,borderWidth:1},cardTitle:{fontSize:24,fontWeight:'800'},cardText:{marginTop:8,fontSize:14,lineHeight:21}});
+import { StyleSheet } from 'react-native';
+import { AppCard, AppText, Screen, SectionHeader } from '@/components';
+export default function EraScreen(){return <Screen><Stack.Screen options={{title:'Dönem Seçimi'}}/><SectionHeader eyebrow="1 / 4" title="Bir dönem seç" description="İlk prototip 1933 ile başlıyor. Yeni dönemler aynı oyun motoruna eklenecek."/><Link href="/setup/country?era=1933" asChild><AppCard interactive style={s.card}><AppText variant="heading">1933</AppText><AppText muted style={s.text}>Avrupa'da siyasal dönüşüm ve uluslararası belirsizlik dönemi.</AppText></AppCard></Link></Screen>}
+const s=StyleSheet.create({card:{marginTop:28},text:{marginTop:8}});
