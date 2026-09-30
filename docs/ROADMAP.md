@@ -61,7 +61,7 @@
 - [x] 50. Pozisyon/görev sistemi
 - [x] 51. Kurumsal karakterler
 - [x] 52. Kurumsal çatışmalar
-- [ ] 53. Emir/talep sistemi
+- [x] 53. Emir/talep sistemi
 - [ ] 54. Kurumsal sonuçlar
 - [ ] 55. Perspektif değiştirme temeli
 
