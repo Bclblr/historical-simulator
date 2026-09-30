@@ -1,6 +1,12 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-import type { GameSessionId, GameState } from '@/domain/game';
+import type {
+  DecisionRecord,
+  GameSessionId,
+  GameSessionSnapshot,
+  GameState,
+  ScheduledDecisionEffect,
+} from '@/domain/game';
 import type { GameSessionRepository } from './game-session-repository';
 
 interface GameSessionRow {
@@ -12,38 +18,57 @@ interface GameSessionRow {
   role_id: string;
   flags_json: string;
   variables_json: string;
+  decision_history_json: string;
+  scheduled_effects_json: string;
 }
 
-function parseBooleanRecord(value: string): Record<string, boolean> {
+function parseRecord(value: string, kind: 'flags' | 'variables'): Record<string, boolean | number> {
   const parsed: unknown = JSON.parse(value);
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error('Invalid flags payload in saved game.');
+    throw new Error(`Invalid ${kind} payload in saved game.`);
   }
-
   const entries = Object.entries(parsed);
-  if (entries.some(([, item]) => typeof item !== 'boolean')) {
-    throw new Error('Invalid flag value in saved game.');
-  }
-
-  return Object.fromEntries(entries) as Record<string, boolean>;
+  const valid = kind === 'flags'
+    ? entries.every(([, item]) => typeof item === 'boolean')
+    : entries.every(([, item]) => typeof item === 'number' && Number.isFinite(item));
+  if (!valid) throw new Error(`Invalid ${kind} value in saved game.`);
+  return Object.fromEntries(entries);
 }
 
-function parseNumberRecord(value: string): Record<string, number> {
+function parseDecisionHistory(value: string): DecisionRecord[] {
   const parsed: unknown = JSON.parse(value);
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error('Invalid variables payload in saved game.');
+  if (!Array.isArray(parsed)) throw new Error('Invalid decision history payload in saved game.');
+  for (const item of parsed) {
+    if (!item || typeof item !== 'object') throw new Error('Invalid decision history item.');
+    const record = item as Partial<DecisionRecord>;
+    if (
+      typeof record.eventId !== 'string' ||
+      typeof record.optionId !== 'string' ||
+      typeof record.decidedAt !== 'string' ||
+      !Number.isInteger(record.sequence)
+    ) throw new Error('Invalid decision history item.');
   }
-
-  const entries = Object.entries(parsed);
-  if (entries.some(([, item]) => typeof item !== 'number' || !Number.isFinite(item))) {
-    throw new Error('Invalid variable value in saved game.');
-  }
-
-  return Object.fromEntries(entries) as Record<string, number>;
+  return parsed as DecisionRecord[];
 }
 
-function rowToState(row: GameSessionRow): GameState {
-  return {
+function parseScheduledEffects(value: string): ScheduledDecisionEffect[] {
+  const parsed: unknown = JSON.parse(value);
+  if (!Array.isArray(parsed)) throw new Error('Invalid scheduled effects payload in saved game.');
+  for (const item of parsed) {
+    if (!item || typeof item !== 'object') throw new Error('Invalid scheduled effect item.');
+    const effect = item as Partial<ScheduledDecisionEffect>;
+    if (
+      typeof effect.id !== 'string' ||
+      typeof effect.dueDate !== 'string' ||
+      !Array.isArray(effect.effects) ||
+      !Number.isInteger(effect.sequence)
+    ) throw new Error('Invalid scheduled effect item.');
+  }
+  return parsed as ScheduledDecisionEffect[];
+}
+
+function rowToSnapshot(row: GameSessionRow): GameSessionSnapshot {
+  const state: GameState = {
     sessionId: row.id,
     currentDate: row.current_date,
     selection: {
@@ -52,44 +77,48 @@ function rowToState(row: GameSessionRow): GameState {
       institutionId: row.institution_id,
       roleId: row.role_id,
     },
-    flags: parseBooleanRecord(row.flags_json),
-    variables: parseNumberRecord(row.variables_json),
+    flags: parseRecord(row.flags_json, 'flags') as Record<string, boolean>,
+    variables: parseRecord(row.variables_json, 'variables') as Record<string, number>,
+  };
+  return {
+    state,
+    decisionHistory: parseDecisionHistory(row.decision_history_json),
+    scheduledEffects: parseScheduledEffects(row.scheduled_effects_json),
   };
 }
+
+const SELECT_COLUMNS = `
+  id, current_date, era_id, country_id, institution_id, role_id,
+  flags_json, variables_json, decision_history_json, scheduled_effects_json
+`;
 
 export class SQLiteGameSessionRepository implements GameSessionRepository {
   constructor(private readonly db: SQLiteDatabase) {}
 
-  async findById(sessionId: GameSessionId): Promise<GameState | null> {
+  async findById(sessionId: GameSessionId): Promise<GameSessionSnapshot | null> {
     const row = await this.db.getFirstAsync<GameSessionRow>(
-      `SELECT id, current_date, era_id, country_id, institution_id, role_id, flags_json, variables_json
-       FROM game_sessions
-       WHERE id = ?`,
+      `SELECT ${SELECT_COLUMNS} FROM game_sessions WHERE id = ?`,
       sessionId,
     );
-
-    return row ? rowToState(row) : null;
+    return row ? rowToSnapshot(row) : null;
   }
 
-  async findMostRecent(): Promise<GameState | null> {
+  async findMostRecent(): Promise<GameSessionSnapshot | null> {
     const row = await this.db.getFirstAsync<GameSessionRow>(
-      `SELECT id, current_date, era_id, country_id, institution_id, role_id, flags_json, variables_json
-       FROM game_sessions
-       ORDER BY updated_at DESC
-       LIMIT 1`,
+      `SELECT ${SELECT_COLUMNS} FROM game_sessions ORDER BY updated_at DESC LIMIT 1`,
     );
-
-    return row ? rowToState(row) : null;
+    return row ? rowToSnapshot(row) : null;
   }
 
-  async save(state: GameState): Promise<void> {
+  async save(snapshot: GameSessionSnapshot): Promise<void> {
+    const { state } = snapshot;
     const now = new Date().toISOString();
-
     await this.db.runAsync(
       `INSERT INTO game_sessions (
         id, current_date, era_id, country_id, institution_id, role_id,
-        flags_json, variables_json, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        flags_json, variables_json, decision_history_json, scheduled_effects_json,
+        created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         current_date = excluded.current_date,
         era_id = excluded.era_id,
@@ -98,6 +127,8 @@ export class SQLiteGameSessionRepository implements GameSessionRepository {
         role_id = excluded.role_id,
         flags_json = excluded.flags_json,
         variables_json = excluded.variables_json,
+        decision_history_json = excluded.decision_history_json,
+        scheduled_effects_json = excluded.scheduled_effects_json,
         updated_at = excluded.updated_at`,
       state.sessionId,
       state.currentDate,
@@ -107,6 +138,8 @@ export class SQLiteGameSessionRepository implements GameSessionRepository {
       state.selection.roleId,
       JSON.stringify(state.flags),
       JSON.stringify(state.variables),
+      JSON.stringify(snapshot.decisionHistory),
+      JSON.stringify(snapshot.scheduledEffects),
       now,
       now,
     );
