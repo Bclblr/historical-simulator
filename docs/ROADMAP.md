@@ -5,7 +5,7 @@
 - [x] 2. Teknoloji mimarisinin kesinleştirilmesi
 - [x] 3. React Native + Expo + TypeScript projesinin oluşturulması
 - [x] 4. Expo Router kurulumu
-- [ ] 5. Klasör/mimari standardının oluşturulması
+- [x] 5. Klasör/mimari standardının oluşturulması
 - [ ] 6. Tema sisteminin kurulması
 - [ ] 7. Tipografi ve UI bileşen sistemi
 - [ ] 8. SQLite altyapısı
