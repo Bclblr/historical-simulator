@@ -33,7 +33,7 @@
 - [x] 26. Sol seçim
 - [x] 27. Sağ seçim
 - [x] 28. İkiden fazla seçenek
-- [ ] 29. Karar etkileri
+- [x] 29. Karar etkileri
 - [ ] 30. Gizli değişkenler
 - [ ] 31. Flag sistemi
 - [ ] 32. Önceki kararları hatırlama
