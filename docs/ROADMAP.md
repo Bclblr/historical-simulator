@@ -35,7 +35,7 @@
 - [x] 28. İkiden fazla seçenek
 - [x] 29. Karar etkileri
 - [x] 30. Gizli değişkenler
-- [ ] 31. Flag sistemi
+- [x] 31. Flag sistemi
 - [ ] 32. Önceki kararları hatırlama
 - [ ] 33. Koşullu olaylar
 - [ ] 34. Gecikmeli sonuçlar
