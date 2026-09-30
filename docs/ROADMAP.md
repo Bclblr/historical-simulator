@@ -10,7 +10,7 @@
 - [x] 7. Tipografi ve UI bileşen sistemi
 - [x] 8. SQLite altyapısı
 - [x] 9. Yerel kayıt/depolama sistemi
-- [ ] 10. İlk uygulama iskeletinin çalıştırılması
+- [x] 10. İlk uygulama iskeletinin çalıştırılması
 
 ## 11–20 — Tarihsel veri modeli
 - [ ] 11. Era
