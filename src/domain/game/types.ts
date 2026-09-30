@@ -1,4 +1,6 @@
 import type { HistoricalEntityId } from '@/domain/history/types';
+import type { DecisionRecord } from './decision-history';
+import type { ScheduledDecisionEffect } from './delayed-effect';
 
 export type GameSessionId = string;
 export type GameFlagKey = string;
@@ -17,4 +19,10 @@ export interface GameState {
   selection: GameSelection;
   flags: Record<GameFlagKey, boolean>;
   variables: Record<GameVariableKey, number>;
+}
+
+export interface GameSessionSnapshot {
+  state: GameState;
+  decisionHistory: DecisionRecord[];
+  scheduledEffects: ScheduledDecisionEffect[];
 }
