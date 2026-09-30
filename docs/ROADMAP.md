@@ -13,7 +13,7 @@
 - [x] 10. İlk uygulama iskeletinin çalıştırılması
 
 ## 11–20 — Tarihsel veri modeli
-- [ ] 11. Era
+- [x] 11. Era
 - [ ] 12. Country
 - [ ] 13. Institution
 - [ ] 14. Role
