@@ -5,3 +5,5 @@ export * from './country';
 export * from './country-repository';
 export * from './institution';
 export * from './institution-repository';
+export * from './role';
+export * from './role-repository';
