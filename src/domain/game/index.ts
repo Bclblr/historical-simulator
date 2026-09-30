@@ -22,3 +22,4 @@ export * from './information-visibility';
 export * from './perspective';
 export * from './institution-authority';
 export * from './institution-relationship';
+export * from './bureaucratic-influence';
