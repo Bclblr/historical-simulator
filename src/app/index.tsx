@@ -1,8 +1,6 @@
-import { Link, router } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-
 import { AppButton, AppText, Screen } from '@/components';
 import type { GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
