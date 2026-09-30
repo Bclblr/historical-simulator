@@ -19,7 +19,7 @@ export default function GameScreen() {
       try {
         const existing = params.sessionId ? await sessions.resume(params.sessionId) : null;
         if (existing) {
-          if (active) setState(existing);
+          if (active) setState(existing.state);
           return;
         }
 
@@ -38,7 +38,7 @@ export default function GameScreen() {
           },
         });
 
-        if (active) setState(created);
+        if (active) setState(created.state);
       } catch (cause) {
         if (active) setError(cause instanceof Error ? cause.message : 'Oyun kaydı yüklenemedi.');
       }
