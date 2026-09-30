@@ -37,7 +37,7 @@
 - [x] 30. Gizli değişkenler
 - [x] 31. Flag sistemi
 - [x] 32. Önceki kararları hatırlama
-- [ ] 33. Koşullu olaylar
+- [x] 33. Koşullu olaylar
 - [ ] 34. Gecikmeli sonuçlar
 - [ ] 35. Save/Load
 
