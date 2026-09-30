@@ -1,4 +1,4 @@
-import type { GameState } from '@/domain/game';
+import type { DeskFile, GameState } from '@/domain/game';
 import { StyleSheet, View } from 'react-native';
 import { useAppTheme } from '@/theme';
 import { AppCard } from './app-card';
@@ -6,9 +6,10 @@ import { AppText } from './app-text';
 
 interface DeskScreenProps {
   state: GameState;
+  activeFile?: DeskFile | null;
 }
 
-export function DeskScreen({ state }: DeskScreenProps) {
+export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
   const theme = useAppTheme();
 
   return (
@@ -25,9 +26,13 @@ export function DeskScreen({ state }: DeskScreenProps) {
 
       <AppCard style={styles.activeFile}>
         <AppText variant="label" muted>AKTİF DOSYA</AppText>
-        <AppText variant="title" style={styles.fileTitle}>Yeni dosya bekleniyor</AppText>
+        <AppText variant="title" style={styles.fileTitle}>
+          {activeFile?.title ?? 'Yeni dosya bekleniyor'}
+        </AppText>
         <AppText muted style={styles.fileBody}>
-          Event Engine tarafından uygun bulunan olaylar bu çalışma alanına gelecek.
+          {activeFile
+            ? `${activeFile.documentIds.length} belge · Durum: ${activeFile.status}`
+            : 'Event Engine tarafından uygun bulunan olaylar bu çalışma alanına gelecek.'}
         </AppText>
       </AppCard>
 
