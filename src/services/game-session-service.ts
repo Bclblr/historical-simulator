@@ -19,4 +19,12 @@ export class GameSessionService {
   async resume(sessionId: string): Promise<GameState | null> {
     return this.sessions.findById(sessionId);
   }
+
+  async resumeMostRecent(): Promise<GameState | null> {
+    return this.sessions.findMostRecent();
+  }
+
+  async save(state: GameState): Promise<void> {
+    await this.sessions.save(state);
+  }
 }
