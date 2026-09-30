@@ -14,7 +14,7 @@
 
 ## 11–20 — Tarihsel veri modeli
 - [x] 11. Era
-- [ ] 12. Country
+- [x] 12. Country
 - [ ] 13. Institution
 - [ ] 14. Role
 - [ ] 15. Historical Person
