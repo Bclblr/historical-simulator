@@ -26,3 +26,4 @@ export * from './bureaucratic-influence';
 export * from './institution-hierarchy';
 export * from './position-assignment';
 export * from './institution-character';
+export * from './institution-conflict';
