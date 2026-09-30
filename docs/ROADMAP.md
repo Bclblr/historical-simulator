@@ -62,7 +62,7 @@
 - [x] 51. Kurumsal karakterler
 - [x] 52. Kurumsal çatışmalar
 - [x] 53. Emir/talep sistemi
-- [ ] 54. Kurumsal sonuçlar
+- [x] 54. Kurumsal sonuçlar
 - [ ] 55. Perspektif değiştirme temeli
 
 ## 56–65 — Akademik tarih sistemi
