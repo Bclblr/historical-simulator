@@ -51,3 +51,7 @@ export function getSwipeDecision(
 export function getLeftDecision(options: DecisionOption[]): DecisionOption | null {
   return getSwipeDecision(options, 'LEFT');
 }
+
+export function getRightDecision(options: DecisionOption[]): DecisionOption | null {
+  return getSwipeDecision(options, 'RIGHT');
+}
