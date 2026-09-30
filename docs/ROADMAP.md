@@ -57,7 +57,7 @@
 - [x] 46. Kurumsal yetki
 - [x] 47. Kurumlar arası ilişkiler
 - [x] 48. Bürokratik etki
-- [ ] 49. Üst/ast hiyerarşisi
+- [x] 49. Üst/ast hiyerarşisi
 - [ ] 50. Pozisyon/görev sistemi
 - [ ] 51. Kurumsal karakterler
 - [ ] 52. Kurumsal çatışmalar
