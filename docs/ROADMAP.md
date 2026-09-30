@@ -31,7 +31,7 @@
 - [x] 24. Card Generation Engine
 - [x] 25. Swipe sistemi
 - [x] 26. Sol seçim
-- [ ] 27. Sağ seçim
+- [x] 27. Sağ seçim
 - [ ] 28. İkiden fazla seçenek
 - [ ] 29. Karar etkileri
 - [ ] 30. Gizli değişkenler
