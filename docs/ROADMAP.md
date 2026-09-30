@@ -1,0 +1,123 @@
+# Historical Simulator — 0–100 Yol Haritası
+
+## 0–10 — Proje temeli
+- [x] 1. Ürün vizyonu ve kapsam belgesi
+- [ ] 2. Teknoloji mimarisinin kesinleştirilmesi
+- [ ] 3. React Native + Expo + TypeScript projesinin oluşturulması
+- [ ] 4. Expo Router kurulumu
+- [ ] 5. Klasör/mimari standardının oluşturulması
+- [ ] 6. Tema sisteminin kurulması
+- [ ] 7. Tipografi ve UI bileşen sistemi
+- [ ] 8. SQLite altyapısı
+- [ ] 9. Yerel kayıt/depolama sistemi
+- [ ] 10. İlk uygulama iskeletinin çalıştırılması
+
+## 11–20 — Tarihsel veri modeli
+- [ ] 11. Era
+- [ ] 12. Country
+- [ ] 13. Institution
+- [ ] 14. Role
+- [ ] 15. Historical Person
+- [ ] 16. Historical Event
+- [ ] 17. Document
+- [ ] 18. Akademik Source/Citation
+- [ ] 19. Event Connection
+- [ ] 20. Historical Fact / Simulation ayrımı
+
+## 21–35 — Çekirdek oyun motoru
+- [ ] 21. GameState
+- [ ] 22. Oyun tarihi/zaman motoru
+- [ ] 23. Event Engine
+- [ ] 24. Card Generation Engine
+- [ ] 25. Swipe sistemi
+- [ ] 26. Sol seçim
+- [ ] 27. Sağ seçim
+- [ ] 28. İkiden fazla seçenek
+- [ ] 29. Karar etkileri
+- [ ] 30. Gizli değişkenler
+- [ ] 31. Flag sistemi
+- [ ] 32. Önceki kararları hatırlama
+- [ ] 33. Koşullu olaylar
+- [ ] 34. Gecikmeli sonuçlar
+- [ ] 35. Save/Load
+
+## 36–45 — Özgün oyun sistemleri
+- [ ] 36. Desk ekranı
+- [ ] 37. Dosya sistemi
+- [ ] 38. Telgraf sistemi
+- [ ] 39. Gazete sistemi
+- [ ] 40. Belge inceleme
+- [ ] 41. Harita temeli
+- [ ] 42. Kurumlar arası mesajlar
+- [ ] 43. Bilgi güvenilirliği
+- [ ] 44. Gizli/açık bilgi
+- [ ] 45. Perspektif sistemi
+
+## 46–55 — Kurum simülasyonu
+- [ ] 46. Kurumsal yetki
+- [ ] 47. Kurumlar arası ilişkiler
+- [ ] 48. Bürokratik etki
+- [ ] 49. Üst/ast hiyerarşisi
+- [ ] 50. Pozisyon/görev sistemi
+- [ ] 51. Kurumsal karakterler
+- [ ] 52. Kurumsal çatışmalar
+- [ ] 53. Emir/talep sistemi
+- [ ] 54. Kurumsal sonuçlar
+- [ ] 55. Perspektif değiştirme temeli
+
+## 56–65 — Akademik tarih sistemi
+- [ ] 56. Kaynak gösterimi
+- [ ] 57. Birincil/ikincil kaynak ayrımı
+- [ ] 58. Bibliyografya
+- [ ] 59. Sayfa numarası desteği
+- [ ] 60. Arşiv referansı
+- [ ] 61. Tarihte ne oldu? ekranı
+- [ ] 62. Tarihçi yorumları
+- [ ] 63. Farklı akademik yorumlar
+- [ ] 64. Tarihsel gerçek / alternatif tarih etiketi
+- [ ] 65. Kaynak doğrulama standardı
+
+## 66–75 — İlk içerik: Almanya 1933
+- [ ] 66. 1933 kronolojisi
+- [ ] 67. İlk kurum seçimi
+- [ ] 68. İlk 10 olay
+- [ ] 69. 20 olay
+- [ ] 70. 30 olay
+- [ ] 71. 40 olay
+- [ ] 72. 50 olay
+- [ ] 73. Olay bağlantıları
+- [ ] 74. Akademik kaynak kontrolü
+- [ ] 75. Tam oynanabilir 1933 senaryosu
+
+## 76–85 — UX ve atmosfer
+- [ ] 76. Ana menü
+- [ ] 77. Dönem seçimi
+- [ ] 78. Devlet seçimi
+- [ ] 79. Kurum seçimi
+- [ ] 80. Rol seçimi
+- [ ] 81. Game HUD
+- [ ] 82. Animasyonlar
+- [ ] 83. Ses
+- [ ] 84. Döneme uygun görsel tasarım
+- [ ] 85. Haptic + final UI polish
+
+## 86–92 — Arşiv/meta oyun
+- [ ] 86. Oyuncu arşivi
+- [ ] 87. Keşfedilen olaylar
+- [ ] 88. Keşfedilen belgeler
+- [ ] 89. Timeline
+- [ ] 90. Karar geçmişi
+- [ ] 91. Gerçek tarih / oyuncu zaman çizgisi karşılaştırması
+- [ ] 92. İstatistik/tamamlama
+
+## 93–100 — Test ve yayın
+- [ ] 93. TypeScript/typecheck temizliği
+- [ ] 94. Game engine unit testleri
+- [ ] 95. Event/flag tutarlılık testleri
+- [ ] 96. Save corruption/migration testleri
+- [ ] 97. Performans optimizasyonu
+- [ ] 98. Android/iOS gerçek cihaz testleri
+- [ ] 99. Test buildleri
+- [ ] 100. v1.0 Release Candidate
+
+> 100/100 bütün dünya tarihinin tamamlanması değil, genişletilebilir v1.0 platformunun Release Candidate seviyesine ulaşmasıdır.
