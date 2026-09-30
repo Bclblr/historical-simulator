@@ -1,11 +1,30 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-export default function RootLayout() {
+import { AppThemeProvider, useAppTheme } from '@/theme';
+
+function RootNavigator() {
+  const theme = useAppTheme();
+
   return (
     <>
-      <StatusBar style="auto" />
-      <Stack screenOptions={{ headerShown: false }} />
+      <StatusBar style={theme.dark ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          headerStyle: { backgroundColor: theme.colors.background },
+          headerTintColor: theme.colors.text,
+          contentStyle: { backgroundColor: theme.colors.background },
+        }}
+      />
     </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AppThemeProvider>
+      <RootNavigator />
+    </AppThemeProvider>
   );
 }
