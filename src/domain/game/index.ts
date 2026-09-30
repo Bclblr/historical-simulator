@@ -17,3 +17,4 @@ export * from './newspaper';
 export * from './document-inspection';
 export * from './map';
 export * from './institution-message';
+export * from './information-reliability';
