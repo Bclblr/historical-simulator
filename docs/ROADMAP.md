@@ -59,7 +59,7 @@
 - [x] 48. Bürokratik etki
 - [x] 49. Üst/ast hiyerarşisi
 - [x] 50. Pozisyon/görev sistemi
-- [ ] 51. Kurumsal karakterler
+- [x] 51. Kurumsal karakterler
 - [ ] 52. Kurumsal çatışmalar
 - [ ] 53. Emir/talep sistemi
 - [ ] 54. Kurumsal sonuçlar
