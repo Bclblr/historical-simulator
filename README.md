@@ -1,1 +1,24 @@
-# historical-simulator
+# Historical Simulator
+
+Akademik kaynaklara dayalı, çok devletli ve çok kurumlu interaktif tarih simülasyonu.
+
+## İlerleme
+
+**1/100 tamamlandı.**
+
+İlk oynanabilir dikey dilim 1933 Almanya üzerine kurulacaktır; çekirdek motor herhangi bir devlet, kurum veya döneme özel tasarlanmayacaktır.
+
+## Proje belgeleri
+
+- [Ürün Vizyonu ve Kapsam](docs/PRODUCT_VISION.md)
+- [0–100 Geliştirme Yol Haritası](docs/ROADMAP.md)
+
+## Planlanan teknoloji
+
+React Native · Expo · TypeScript · Expo Router · SQLite · Reanimated · Gesture Handler
+
+İlk prototip offline-first geliştirilecek; zorunlu hesap veya backend gerektirmeyecektir.
+
+## Sıradaki
+
+**2/100 — Teknoloji mimarisinin kesinleştirilmesi**
