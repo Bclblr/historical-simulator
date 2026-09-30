@@ -7,8 +7,3 @@ export type HistoricalContentClassification =
   | 'DRAMATIZED_ADAPTATION'
   | 'COUNTERFACTUAL_SIMULATION';
 
-export interface HistoricalRole {
-  id: HistoricalEntityId;
-  institutionId: HistoricalEntityId;
-  name: string;
-}
