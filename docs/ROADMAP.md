@@ -18,7 +18,7 @@
 - [x] 13. Institution
 - [x] 14. Role
 - [x] 15. Historical Person
-- [ ] 16. Historical Event
+- [x] 16. Historical Event
 - [ ] 17. Document
 - [ ] 18. Akademik Source/Citation
 - [ ] 19. Event Connection
