@@ -6,12 +6,8 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "scheme": "historical-simulator",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
-    },
-    "android": {
-      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro"
