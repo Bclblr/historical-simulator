@@ -21,7 +21,7 @@
 - [x] 16. Historical Event
 - [x] 17. Document
 - [x] 18. Akademik Source/Citation
-- [ ] 19. Event Connection
+- [x] 19. Event Connection
 - [ ] 20. Historical Fact / Simulation ayrımı
 
 ## 21–35 — Çekirdek oyun motoru
