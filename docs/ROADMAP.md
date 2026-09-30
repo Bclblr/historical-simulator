@@ -54,7 +54,7 @@
 - [x] 45. Perspektif sistemi
 
 ## 46–55 — Kurum simülasyonu
-- [ ] 46. Kurumsal yetki
+- [x] 46. Kurumsal yetki
 - [ ] 47. Kurumlar arası ilişkiler
 - [ ] 48. Bürokratik etki
 - [ ] 49. Üst/ast hiyerarşisi
