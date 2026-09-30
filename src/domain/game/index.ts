@@ -25,3 +25,4 @@ export * from './institution-relationship';
 export * from './bureaucratic-influence';
 export * from './institution-hierarchy';
 export * from './position-assignment';
+export * from './institution-character';
