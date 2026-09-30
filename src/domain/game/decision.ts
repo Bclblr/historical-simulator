@@ -55,3 +55,37 @@ export function getLeftDecision(options: DecisionOption[]): DecisionOption | nul
 export function getRightDecision(options: DecisionOption[]): DecisionOption | null {
   return getSwipeDecision(options, 'RIGHT');
 }
+
+export function validateDecisionOptions(
+  eventId: HistoricalEntityId,
+  options: DecisionOption[],
+): DecisionOption[] {
+  const normalizedEventId = required(eventId, 'Decision option set eventId');
+  const ids = new Set<string>();
+
+  for (const option of options) {
+    if (option.eventId !== normalizedEventId) {
+      throw new Error('All DecisionOptions must belong to the same event.');
+    }
+    if (ids.has(option.id)) {
+      throw new Error(`Duplicate DecisionOption id: ${option.id}.`);
+    }
+    ids.add(option.id);
+  }
+
+  getLeftDecision(options);
+  getRightDecision(options);
+  return [...options];
+}
+
+export function getDecisionById(
+  options: DecisionOption[],
+  optionId: DecisionOptionId,
+): DecisionOption | null {
+  const normalizedId = required(optionId, 'DecisionOption id');
+  return options.find((option) => option.id === normalizedId) ?? null;
+}
+
+export function getDirectDecisions(options: DecisionOption[]): DecisionOption[] {
+  return options.filter((option) => option.swipeDirection === null);
+}
