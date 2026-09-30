@@ -28,7 +28,7 @@
 - [x] 21. GameState
 - [x] 22. Oyun tarihi/zaman motoru
 - [x] 23. Event Engine
-- [ ] 24. Card Generation Engine
+- [x] 24. Card Generation Engine
 - [ ] 25. Swipe sistemi
 - [ ] 26. Sol seçim
 - [ ] 27. Sağ seçim
