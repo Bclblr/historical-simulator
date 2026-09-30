@@ -1,14 +1,7 @@
 import { Stack } from 'expo-router';
+import { useAppTheme } from '@/theme';
 
 export default function SetupLayout() {
-  return (
-    <Stack
-      screenOptions={{
-        headerBackTitle: 'Geri',
-        headerShadowVisible: false,
-        headerStyle: { backgroundColor: '#F1EBDD' },
-        contentStyle: { backgroundColor: '#F1EBDD' },
-      }}
-    />
-  );
+  const theme = useAppTheme();
+  return <Stack screenOptions={{ headerBackTitle: 'Geri', headerShadowVisible: false, headerStyle: { backgroundColor: theme.colors.background }, headerTintColor: theme.colors.text, contentStyle: { backgroundColor: theme.colors.background } }} />;
 }
