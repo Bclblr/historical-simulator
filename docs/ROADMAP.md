@@ -26,7 +26,7 @@
 
 ## 21–35 — Çekirdek oyun motoru
 - [x] 21. GameState
-- [ ] 22. Oyun tarihi/zaman motoru
+- [x] 22. Oyun tarihi/zaman motoru
 - [ ] 23. Event Engine
 - [ ] 24. Card Generation Engine
 - [ ] 25. Swipe sistemi
