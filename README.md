@@ -4,7 +4,7 @@ Akademik kaynaklara dayalı, çok devletli ve çok kurumlu interaktif tarih sim�
 
 ## İlerleme
 
-**7/100 tamamlandı.**
+**8/100 tamamlandı.**
 
 İlk oynanabilir dikey dilim 1933 Almanya üzerine kurulacaktır; çekirdek motor herhangi bir devlet, kurum veya döneme özel tasarlanmayacaktır.
 
@@ -14,6 +14,7 @@ Akademik kaynaklara dayalı, çok devletli ve çok kurumlu interaktif tarih sim�
 - [0–100 Geliştirme Yol Haritası](docs/ROADMAP.md)
 - [Teknik Mimari](docs/TECHNICAL_ARCHITECTURE.md)
 - [Kod Organizasyon Standardı](docs/CODE_ORGANIZATION.md)
+- [Veritabanı Mimarisi](docs/DATABASE.md)
 - [ADR-0001: Offline-first Modular Architecture](docs/adr/0001-offline-first-modular-architecture.md)
 
 ## Planlanan teknoloji
@@ -24,4 +25,4 @@ React Native · Expo · TypeScript · Expo Router · SQLite · Reanimated · Ges
 
 ## Sıradaki
 
-**8/100 — SQLite altyapısı**
+**9/100 — Yerel kayıt/depolama sistemi**
