@@ -47,7 +47,7 @@
 - [x] 38. Telgraf sistemi
 - [x] 39. Gazete sistemi
 - [x] 40. Belge inceleme
-- [ ] 41. Harita temeli
+- [x] 41. Harita temeli
 - [ ] 42. Kurumlar arası mesajlar
 - [ ] 43. Bilgi güvenilirliği
 - [ ] 44. Gizli/açık bilgi
