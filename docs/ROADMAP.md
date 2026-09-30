@@ -22,7 +22,7 @@
 - [x] 17. Document
 - [x] 18. Akademik Source/Citation
 - [x] 19. Event Connection
-- [ ] 20. Historical Fact / Simulation ayrımı
+- [x] 20. Historical Fact / Simulation ayrımı
 
 ## 21–35 — Çekirdek oyun motoru
 - [ ] 21. GameState
