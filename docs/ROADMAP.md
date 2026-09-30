@@ -50,7 +50,7 @@
 - [x] 41. Harita temeli
 - [x] 42. Kurumlar arası mesajlar
 - [x] 43. Bilgi güvenilirliği
-- [ ] 44. Gizli/açık bilgi
+- [x] 44. Gizli/açık bilgi
 - [ ] 45. Perspektif sistemi
 
 ## 46–55 — Kurum simülasyonu
