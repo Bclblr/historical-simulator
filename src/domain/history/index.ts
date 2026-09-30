@@ -16,3 +16,5 @@ export * from './historical-document-repository';
 export * from './source';
 export * from './citation';
 export * from './source-repository';
+export * from './event-connection';
+export * from './event-connection-repository';
