@@ -42,7 +42,7 @@
 - [x] 35. Save/Load
 
 ## 36–45 — Özgün oyun sistemleri
-- [ ] 36. Desk ekranı
+- [x] 36. Desk ekranı
 - [ ] 37. Dosya sistemi
 - [ ] 38. Telgraf sistemi
 - [ ] 39. Gazete sistemi
