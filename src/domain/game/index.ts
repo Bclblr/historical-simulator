@@ -7,3 +7,4 @@ export * from './swipe';
 export * from './decision';
 export * from './decision-effect';
 export * from './game-variable';
+export * from './game-flag';
