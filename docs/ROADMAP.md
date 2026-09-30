@@ -30,7 +30,7 @@
 - [x] 23. Event Engine
 - [x] 24. Card Generation Engine
 - [x] 25. Swipe sistemi
-- [ ] 26. Sol seçim
+- [x] 26. Sol seçim
 - [ ] 27. Sağ seçim
 - [ ] 28. İkiden fazla seçenek
 - [ ] 29. Karar etkileri
