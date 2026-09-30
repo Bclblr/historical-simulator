@@ -17,7 +17,7 @@
 - [x] 12. Country
 - [x] 13. Institution
 - [x] 14. Role
-- [ ] 15. Historical Person
+- [x] 15. Historical Person
 - [ ] 16. Historical Event
 - [ ] 17. Document
 - [ ] 18. Akademik Source/Citation
