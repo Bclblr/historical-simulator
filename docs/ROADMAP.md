@@ -16,7 +16,7 @@
 - [x] 11. Era
 - [x] 12. Country
 - [x] 13. Institution
-- [ ] 14. Role
+- [x] 14. Role
 - [ ] 15. Historical Person
 - [ ] 16. Historical Event
 - [ ] 17. Document
