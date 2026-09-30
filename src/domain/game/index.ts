@@ -11,3 +11,4 @@ export * from './game-flag';
 export * from './decision-history';
 export * from './event-condition';
 export * from './delayed-effect';
+export * from './desk-file';
