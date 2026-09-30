@@ -19,10 +19,10 @@ export function AppCard(props: PropsWithChildren<AppCardProps | InteractiveAppCa
     return (
       <Pressable
         {...rest}
-        style={({ pressed }) => [
+        style={(state) => [
           sharedStyle,
-          pressed && styles.pressed,
-          typeof style === 'function' ? style({ pressed }) : style,
+          state.pressed && styles.pressed,
+          typeof style === 'function' ? style(state) : style,
         ]}
       >
         {children}
