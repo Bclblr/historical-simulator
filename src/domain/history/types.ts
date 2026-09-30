@@ -7,13 +7,6 @@ export type HistoricalContentClassification =
   | 'DRAMATIZED_ADAPTATION'
   | 'COUNTERFACTUAL_SIMULATION';
 
-export interface Era {
-  id: HistoricalEntityId;
-  name: string;
-  startYear: number;
-  endYear: number;
-}
-
 export interface Country {
   id: HistoricalEntityId;
   eraId: HistoricalEntityId;
