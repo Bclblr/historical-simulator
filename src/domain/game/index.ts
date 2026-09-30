@@ -9,3 +9,4 @@ export * from './decision-effect';
 export * from './game-variable';
 export * from './game-flag';
 export * from './decision-history';
+export * from './event-condition';
