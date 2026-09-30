@@ -1,4 +1,6 @@
 import type { GameState } from './types';
+import type { EventCondition, EventConditionContext } from './event-condition';
+import { matchesAllEventConditions } from './event-condition';
 import {
   compareHistoricalDates,
   parseHistoricalDate,
@@ -16,7 +18,8 @@ export type EventIneligibilityReason =
   | 'COUNTRY_MISMATCH'
   | 'INSTITUTION_MISMATCH'
   | 'NOT_STARTED'
-  | 'ENDED';
+  | 'ENDED'
+  | 'CONDITION_NOT_MET';
 
 function includesOrGlobal(ids: string[], selectedId: string): boolean {
   return ids.length === 0 || ids.includes(selectedId);
@@ -25,6 +28,8 @@ function includesOrGlobal(ids: string[], selectedId: string): boolean {
 export function evaluateEventEligibility(
   event: HistoricalEvent,
   state: GameState,
+  conditions: EventCondition[] = [],
+  context: EventConditionContext = { decisionHistory: [] },
 ): EventEligibilityResult {
   const reasons: EventIneligibilityReason[] = [];
 
@@ -43,6 +48,9 @@ export function evaluateEventEligibility(
 
   if (compareHistoricalDates(currentDate, startDate) < 0) reasons.push('NOT_STARTED');
   if (endDate && compareHistoricalDates(currentDate, endDate) > 0) reasons.push('ENDED');
+  if (!matchesAllEventConditions(state, conditions, context)) {
+    reasons.push('CONDITION_NOT_MET');
+  }
 
   return { eligible: reasons.length === 0, reasons };
 }
@@ -50,9 +58,18 @@ export function evaluateEventEligibility(
 export function getEligibleEvents(
   events: HistoricalEvent[],
   state: GameState,
+  conditionsByEventId: Record<string, EventCondition[]> = {},
+  context: EventConditionContext = { decisionHistory: [] },
 ): HistoricalEvent[] {
   return events
-    .filter((event) => evaluateEventEligibility(event, state).eligible)
+    .filter((event) =>
+      evaluateEventEligibility(
+        event,
+        state,
+        conditionsByEventId[event.id] ?? [],
+        context,
+      ).eligible,
+    )
     .sort((a, b) => {
       const byDate = compareHistoricalDates(
         parseHistoricalDate(a.startDate),
@@ -65,6 +82,8 @@ export function getEligibleEvents(
 export function getNextEligibleEvent(
   events: HistoricalEvent[],
   state: GameState,
+  conditionsByEventId: Record<string, EventCondition[]> = {},
+  context: EventConditionContext = { decisionHistory: [] },
 ): HistoricalEvent | null {
-  return getEligibleEvents(events, state)[0] ?? null;
+  return getEligibleEvents(events, state, conditionsByEventId, context)[0] ?? null;
 }
