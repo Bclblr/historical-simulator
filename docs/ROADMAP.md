@@ -44,7 +44,7 @@
 ## 36–45 — Özgün oyun sistemleri
 - [x] 36. Desk ekranı
 - [x] 37. Dosya sistemi
-- [ ] 38. Telgraf sistemi
+- [x] 38. Telgraf sistemi
 - [ ] 39. Gazete sistemi
 - [ ] 40. Belge inceleme
 - [ ] 41. Harita temeli
