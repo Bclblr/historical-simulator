@@ -51,7 +51,7 @@
 - [x] 42. Kurumlar arası mesajlar
 - [x] 43. Bilgi güvenilirliği
 - [x] 44. Gizli/açık bilgi
-- [ ] 45. Perspektif sistemi
+- [x] 45. Perspektif sistemi
 
 ## 46–55 — Kurum simülasyonu
 - [ ] 46. Kurumsal yetki
