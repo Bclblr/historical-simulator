@@ -39,7 +39,7 @@
 - [x] 32. Önceki kararları hatırlama
 - [x] 33. Koşullu olaylar
 - [x] 34. Gecikmeli sonuçlar
-- [ ] 35. Save/Load
+- [x] 35. Save/Load
 
 ## 36–45 — Özgün oyun sistemleri
 - [ ] 36. Desk ekranı
