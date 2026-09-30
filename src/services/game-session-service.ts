@@ -1,4 +1,8 @@
-import { createInitialGameState, type GameSelection, type GameState } from '@/domain/game';
+import {
+  createInitialGameState,
+  type GameSelection,
+  type GameSessionSnapshot,
+} from '@/domain/game';
 import type { GameSessionRepository } from '@/data/repositories';
 
 export interface StartGameInput {
@@ -10,21 +14,25 @@ export interface StartGameInput {
 export class GameSessionService {
   constructor(private readonly sessions: GameSessionRepository) {}
 
-  async start(input: StartGameInput): Promise<GameState> {
-    const state = createInitialGameState(input);
-    await this.sessions.save(state);
-    return state;
+  async start(input: StartGameInput): Promise<GameSessionSnapshot> {
+    const snapshot: GameSessionSnapshot = {
+      state: createInitialGameState(input),
+      decisionHistory: [],
+      scheduledEffects: [],
+    };
+    await this.sessions.save(snapshot);
+    return snapshot;
   }
 
-  async resume(sessionId: string): Promise<GameState | null> {
+  async resume(sessionId: string): Promise<GameSessionSnapshot | null> {
     return this.sessions.findById(sessionId);
   }
 
-  async resumeMostRecent(): Promise<GameState | null> {
+  async resumeMostRecent(): Promise<GameSessionSnapshot | null> {
     return this.sessions.findMostRecent();
   }
 
-  async save(state: GameState): Promise<void> {
-    await this.sessions.save(state);
+  async save(snapshot: GameSessionSnapshot): Promise<void> {
+    await this.sessions.save(snapshot);
   }
 }
