@@ -2,7 +2,7 @@
 
 ## 0–10 — Proje temeli
 - [x] 1. Ürün vizyonu ve kapsam belgesi
-- [ ] 2. Teknoloji mimarisinin kesinleştirilmesi
+- [x] 2. Teknoloji mimarisinin kesinleştirilmesi
 - [ ] 3. React Native + Expo + TypeScript projesinin oluşturulması
 - [ ] 4. Expo Router kurulumu
 - [ ] 5. Klasör/mimari standardının oluşturulması
