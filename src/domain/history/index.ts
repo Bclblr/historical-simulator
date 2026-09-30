@@ -13,3 +13,6 @@ export * from './historical-event';
 export * from './historical-event-repository';
 export * from './historical-document';
 export * from './historical-document-repository';
+export * from './source';
+export * from './citation';
+export * from './source-repository';
