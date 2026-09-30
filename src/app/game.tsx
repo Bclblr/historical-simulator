@@ -2,7 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { AppCard, AppText, Screen } from '@/components';
+import { AppCard, AppText, DeskScreen, Screen } from '@/components';
 import type { GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
 
@@ -55,15 +55,7 @@ export default function GameScreen() {
       {error ? (
         <AppCard style={styles.card}><AppText>{error}</AppText></AppCard>
       ) : state ? (
-        <>
-          <AppText variant="title" style={styles.title}>{state.currentDate}</AppText>
-          <AppText muted style={styles.description}>
-            {state.selection.countryId} · {state.selection.institutionId}{'\n'}Rol: {state.selection.roleId}
-          </AppText>
-          <AppCard style={styles.card}>
-            <AppText muted>Bu oturum SQLite'a kaydedildi. Event Engine ilerleyen aşamalarda aynı GameState üzerinde çalışacak.</AppText>
-          </AppCard>
-        </>
+        <DeskScreen state={state} />
       ) : null}
     </Screen>
   );
