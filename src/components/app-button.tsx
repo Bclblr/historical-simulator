@@ -24,12 +24,12 @@ export function AppButton({ variant = 'primary', style, children, disabled, ...p
       {...props}
       disabled={disabled}
       accessibilityRole="button"
-      style={({ pressed }) => [
+      style={(state) => [
         styles.base,
         variantStyle,
         disabled && styles.disabled,
-        pressed && !disabled && styles.pressed,
-        typeof style === 'function' ? style({ pressed }) : style,
+        state.pressed && !disabled && styles.pressed,
+        typeof style === 'function' ? style(state) : style,
       ]}
     >
       <AppText
