@@ -46,7 +46,7 @@
 - [x] 37. Dosya sistemi
 - [x] 38. Telgraf sistemi
 - [x] 39. Gazete sistemi
-- [ ] 40. Belge inceleme
+- [x] 40. Belge inceleme
 - [ ] 41. Harita temeli
 - [ ] 42. Kurumlar arası mesajlar
 - [ ] 43. Bilgi güvenilirliği
