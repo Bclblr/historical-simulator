@@ -7,3 +7,5 @@ export * from './institution';
 export * from './institution-repository';
 export * from './role';
 export * from './role-repository';
+export * from './historical-person';
+export * from './historical-person-repository';
