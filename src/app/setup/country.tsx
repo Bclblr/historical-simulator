@@ -1,5 +1,5 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAppTheme } from '@/theme';
-export default function CountryScreen(){const {era}=useLocalSearchParams<{era?:string}>();const t=useAppTheme();return <View style={[s.c,{backgroundColor:t.colors.background}]}><Stack.Screen options={{title:'Devlet Seçimi'}}/><Text style={[s.step,{color:t.colors.textSubtle}]}>2 / 4 · {era??'Dönem'}</Text><Text style={[s.title,{color:t.colors.text}]}>Bir devlet seç</Text><Link href={{pathname:'/setup/institution',params:{era:era??'1933',country:'germany'}}} asChild><Pressable style={[s.card,{backgroundColor:t.colors.surface,borderColor:t.colors.border}]}><Text style={[s.cardTitle,{color:t.colors.text}]}>Almanya</Text><Text style={[s.cardText,{color:t.colors.textMuted}]}>İlk içerik paketi. Motor Almanya'ya özel değildir.</Text></Pressable></Link></View>}
-const s=StyleSheet.create({c:{flex:1,padding:24,paddingTop:32},step:{fontSize:12,fontWeight:'700',letterSpacing:1.2},title:{marginTop:10,fontSize:30,fontWeight:'800'},card:{marginTop:28,padding:22,borderWidth:1},cardTitle:{fontSize:22,fontWeight:'800'},cardText:{marginTop:8,fontSize:14,lineHeight:21}});
+import { StyleSheet } from 'react-native';
+import { AppCard, AppText, Screen, SectionHeader } from '@/components';
+export default function CountryScreen(){const {era}=useLocalSearchParams<{era?:string}>();return <Screen><Stack.Screen options={{title:'Devlet Seçimi'}}/><SectionHeader eyebrow={`2 / 4 · ${era??'Dönem'}`} title="Bir devlet seç"/><Link href={{pathname:'/setup/institution',params:{era:era??'1933',country:'germany'}}} asChild><AppCard interactive style={s.card}><AppText variant="heading">Almanya</AppText><AppText muted style={s.text}>İlk içerik paketi. Motor Almanya'ya özel değildir.</AppText></AppCard></Link></Screen>}
+const s=StyleSheet.create({card:{marginTop:28},text:{marginTop:8}});
