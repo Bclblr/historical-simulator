@@ -20,7 +20,7 @@
 - [x] 15. Historical Person
 - [x] 16. Historical Event
 - [x] 17. Document
-- [ ] 18. Akademik Source/Citation
+- [x] 18. Akademik Source/Citation
 - [ ] 19. Event Connection
 - [ ] 20. Historical Fact / Simulation ayrımı
 
