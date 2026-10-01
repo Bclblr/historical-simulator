@@ -45,11 +45,11 @@ export function SwipeDecisionCard({
 }: SwipeDecisionCardProps) {
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
-  const cardWidth = Math.min(Math.max(width - 44, 286), 440);
+  const cardWidth = Math.min(Math.max(width - 58, 276), 390);
   const compactHeight = height < 760;
   const cardHeight = Math.min(
-    Math.max(height * (compactHeight ? 0.42 : 0.46), compactHeight ? 300 : 340),
-    470,
+    Math.max(cardWidth * (compactHeight ? 0.9 : 0.96), 280),
+    380,
   );
   const commitDistance = Math.min(
     MAX_COMMIT_DISTANCE,
@@ -272,12 +272,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    gap: 10,
+    gap: 6,
   },
   card: {
     overflow: 'hidden',
     borderWidth: 1,
-    borderRadius: 22,
+    borderRadius: 20,
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.16,
@@ -307,7 +307,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 58,
+    minHeight: 0,
+    paddingVertical: 2,
   },
   scene: {
     flex: 1,
@@ -322,20 +323,20 @@ const styles = StyleSheet.create({
     gap: 0,
     paddingHorizontal: 18,
     paddingBottom: 0,
-    marginTop: -8,
+    marginTop: -4,
   },
   speakerName: {
     textAlign: 'center',
     alignSelf: 'center',
     maxWidth: 420,
-    fontSize: 19,
-    lineHeight: 23,
+    fontSize: 18,
+    lineHeight: 21,
   },
-  speakerRole: { textAlign: 'center', maxWidth: 390 },
+  speakerRole: { textAlign: 'center', maxWidth: 390, fontSize: 13, lineHeight: 17 },
   question: {
     textAlign: 'center',
     maxWidth: 430,
-    fontSize: 19,
-    lineHeight: 26,
+    fontSize: compactHeight ? 16 : 17,
+    lineHeight: compactHeight ? 21 : 23,
   },
 });
