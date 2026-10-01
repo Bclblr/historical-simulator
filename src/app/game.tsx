@@ -14,7 +14,8 @@ import {
   type GameSessionSnapshot,
 } from '@/domain/game';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
-import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
+import { getGermany1933DecisionContent, getGermany1933FollowUpDecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
+import { createGermany1933FollowUp } from '@/content/germany-1933/follow-ups';
 import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
 import { useGameSessionService } from '@/services';
 
@@ -109,6 +110,24 @@ export default function GameScreen() {
     if (!scenario) return null;
 
     const decidedIds = new Set(snapshot.decisionHistory.map((item) => item.eventId));
+    const lastDecision = [...snapshot.decisionHistory]
+      .sort((a, b) => b.sequence - a.sequence)[0];
+    const lastHistoricalEvent = lastDecision
+      ? scenario.events.find((item) => item.id === lastDecision.eventId)
+      : null;
+    const followUp = lastHistoricalEvent
+      ? createGermany1933FollowUp(lastHistoricalEvent, snapshot.decisionHistory)
+      : null;
+
+    if (followUp) {
+      const decision = getGermany1933FollowUpDecisionContent(followUp.event.id);
+      return {
+        event: followUp.event,
+        decision: { ...decision, prompt: followUp.prompt, speaker: followUp.speaker },
+        options: createSimulationOptions(followUp.event.id, decision.left, decision.right),
+      };
+    }
+
     const event = getEligibleEvents(scenario.events, snapshot.state)
       .find((item) => !decidedIds.has(item.id));
 
@@ -144,19 +163,24 @@ export default function GameScreen() {
         decidedAt: snapshot.state.currentDate,
       });
       const decidedIds = new Set(history.map((item) => item.eventId));
-      const nextEvent = [...currentScenario.events]
-        .filter((event) => !decidedIds.has(event.id) && event.startDate >= snapshot.state.currentDate)
-        .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
+      const isFollowUp = activeContent.event.classification === 'COUNTERFACTUAL_SIMULATION';
+      const nextEvent = isFollowUp
+        ? [...currentScenario.events]
+            .filter((event) => !decidedIds.has(event.id) && event.startDate >= snapshot.state.currentDate)
+            .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0]
+        : undefined;
 
       const selectedChoice =
         option.swipeDirection === 'LEFT'
           ? activeContent.decision.left
           : activeContent.decision.right;
       const affectedState = applyDecisionEffects(snapshot.state, selectedChoice.effects);
-      const delayed = getGermany1933DelayedConsequence(
-        activeContent.event.id,
-        selectedChoice.idSuffix,
-      );
+      const delayed = activeContent.event.classification === 'COUNTERFACTUAL_SIMULATION'
+        ? null
+        : getGermany1933DelayedConsequence(
+            activeContent.event.id,
+            selectedChoice.idSuffix,
+          );
       const scheduledEffects = delayed
         ? scheduleDecisionEffect(snapshot.scheduledEffects, affectedState, {
             id: delayed.idSuffix,
