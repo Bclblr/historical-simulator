@@ -73,9 +73,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     gap: 10,
-    paddingVertical: 8,
+    paddingTop: 2,
+    paddingBottom: 2,
   },
-  item: { flex: 1, gap: 6 },
+  item: { flex: 1, gap: 4 },
   track: {
     width: '100%',
     height: 8,
