@@ -71,9 +71,9 @@
 - [x] 58. Bibliyografya
 - [x] 59. Sayfa numarası desteği
 - [x] 60. Arşiv referansı
-- [ ] 61. Tarihte ne oldu? ekranı
-- [ ] 62. Tarihçi yorumları
-- [ ] 63. Farklı akademik yorumlar
+- [x] 61. Tarihte ne oldu? ekranı
+- [x] 62. Tarihçi yorumları
+- [x] 63. Farklı akademik yorumlar
 - [ ] 64. Tarihsel gerçek / alternatif tarih etiketi
 - [ ] 65. Kaynak doğrulama standardı
 
