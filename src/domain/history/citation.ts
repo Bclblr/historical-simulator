@@ -1,4 +1,5 @@
 import type { HistoricalEntityId } from './types';
+import type { CitationPages } from './citation-pages';
 
 export type CitationTargetType =
   | 'ERA'
@@ -15,6 +16,7 @@ export interface HistoricalCitation {
   targetType: CitationTargetType;
   targetId: HistoricalEntityId;
   locator: string | null;
+  pages: CitationPages | null;
   note: string | null;
 }
 
@@ -24,6 +26,7 @@ export interface CreateHistoricalCitationInput {
   targetType: CitationTargetType;
   targetId: HistoricalEntityId;
   locator?: string | null;
+  pages?: CitationPages | null;
   note?: string | null;
 }
 
@@ -40,5 +43,13 @@ export function createHistoricalCitation(
   if (!sourceId) throw new Error('HistoricalCitation sourceId is required.');
   if (!targetId) throw new Error('HistoricalCitation targetId is required.');
 
-  return { id, sourceId, targetType: input.targetType, targetId, locator, note };
+  return {
+    id,
+    sourceId,
+    targetType: input.targetType,
+    targetId,
+    locator,
+    pages: input.pages ?? null,
+    note,
+  };
 }
