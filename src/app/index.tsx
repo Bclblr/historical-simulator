@@ -30,7 +30,7 @@ export default function HomeScreen() {
     <Screen centered style={styles.screen}>
       <View style={styles.hero}>
         <AppText variant="label" muted>
-          HISTORICAL SIMULATOR
+          TARİH SİMÜLATÖRÜ
         </AppText>
         <AppText variant="display" style={styles.title}>
           Tarihi yalnızca okuma. Kararların sonuçlarını incele.
@@ -47,7 +47,7 @@ export default function HomeScreen() {
             SON OTURUM
           </AppText>
           <AppText variant="heading" style={styles.resumeTitle}>
-            {recent.selection.eraId} · {recent.selection.countryId}
+            {recent.selection.eraId} · {recent.selection.countryId === 'germany' ? 'Almanya' : recent.selection.countryId}
           </AppText>
           <AppText muted>{recent.currentDate}</AppText>
           <AppButton
