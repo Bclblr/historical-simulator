@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { Animated, Image, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
