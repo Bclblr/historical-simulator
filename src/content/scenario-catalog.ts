@@ -20,9 +20,9 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
       name: 'Almanya · 1921–1945',
       shortName: '1921–1945',
       description:
-        'Almanya\'da demokratik kurumların çözüldüğü ve diktatörlüğün pekiştirildiği, Avrupa çapındaki daha geniş siyasi krizin parçası olan bir dönem.',
-      startDate: '1933-01-01',
-      endDate: '1933-12-31',
+        '1921’den başlayan kesintisiz Almanya kampanyası. Tarihsel kayıt ile oyuncunun karşı-olgusal zaman çizgisi ayrı tutulur.',
+      startDate: '1921-07-29',
+      endDate: '1945-05-08',
       sortOrder: 10,
       status: 'PUBLISHED',
     }),
@@ -33,7 +33,7 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
         name: 'Almanya',
         shortName: 'Almanya',
         description:
-          'İlk oynanabilir tarihsel içerik paketi. Simülasyon motoru Almanya\'ya özgü değildir.',
+          '1921’den 1945 tarihsel sınırına uzanan tek ve kesintisiz kampanya. Mevcut doğrulanmış 1933 olayları kampanyanın ilk içerik paketidir.',
         sortOrder: 10,
         status: 'PUBLISHED',
       }),
