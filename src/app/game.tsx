@@ -80,7 +80,7 @@ export default function GameScreen() {
 
         const created = await sessions.start({
           sessionId: `session-${Date.now()}`,
-          startDate: params.era === 'germany-1921' ? '1921-07-29' : scenario.startDate,
+          startDate: params.era === 'germany-1921' ? '1919-01-05' : scenario.startDate,
           selection: {
             eraId: params.era,
             countryId: params.country,
@@ -91,7 +91,7 @@ export default function GameScreen() {
             ? {
                 playerName: params.playerName?.trim() || 'Oyuncu',
                 campaignId: 'germany-1921',
-                startedAt: '1921-07-29',
+                startedAt: '1919-01-05',
                 leadershipActive: true,
               }
             : undefined,
