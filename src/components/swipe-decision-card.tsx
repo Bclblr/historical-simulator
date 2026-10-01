@@ -242,7 +242,7 @@ export function SwipeDecisionCard({
               leftChoiceStyle,
             ]}
           >
-            <AppText variant="label" style={styles.choiceText}>← {leftOption.label}</AppText>
+            <AppText variant="label" style={styles.choiceText}>{leftOption.label}</AppText>
           </Animated.View>
 
           <Animated.View
@@ -254,7 +254,7 @@ export function SwipeDecisionCard({
               rightChoiceStyle,
             ]}
           >
-            <AppText variant="label" style={styles.choiceText}>{rightOption.label} →</AppText>
+            <AppText variant="label" style={styles.choiceText}>{rightOption.label}</AppText>
           </Animated.View>
 
           <View style={styles.scene}>
