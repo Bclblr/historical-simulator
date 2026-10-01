@@ -69,7 +69,7 @@
 - [x] 56. Kaynak gösterimi
 - [x] 57. Birincil/ikincil kaynak ayrımı
 - [x] 58. Bibliyografya
-- [ ] 59. Sayfa numarası desteği
+- [x] 59. Sayfa numarası desteği
 - [ ] 60. Arşiv referansı
 - [ ] 61. Tarihte ne oldu? ekranı
 - [ ] 62. Tarihçi yorumları
