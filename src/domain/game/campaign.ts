@@ -40,6 +40,22 @@ export function evaluateGermanyCampaignEnding(
   const decisions = snapshot.decisionHistory.length;
   const date = snapshot.state.currentDate;
 
+  const meters = [publicSupport, institutionalInfluence, stability, foreignRelations];
+  const criticalLow = meters.filter((meter) => meter <= 3).length;
+  const criticalHigh = meters.filter((meter) => meter >= 97).length;
+
+  if (decisions >= 4 && (criticalLow >= 1 || criticalHigh >= 1)) {
+    const high = criticalHigh > 0;
+    return {
+      id: high ? 'STATE_COLLAPSE' : 'POLITICAL_MARGINALIZATION',
+      title: high ? 'Denge kontrolden çıktı' : 'Siyasi dayanak çöktü',
+      description: high
+        ? 'Güç alanlarından biri aşırı yoğunlaştı ve kurduğun denge sürdürülemez hâle geldi.'
+        : 'Güç alanlarından biri kritik seviyeye düştü ve kariyer çizgin sürdürülemez hâle geldi.',
+      classification: 'COUNTERFACTUAL_SIMULATION',
+    };
+  }
+
   if (publicSupport <= 5 && institutionalInfluence <= 10) {
     return {
       id: 'MOVEMENT_COLLAPSED',
