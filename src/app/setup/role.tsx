@@ -22,12 +22,12 @@ export default function RoleScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: 'Rol Seçimi' }} />
+      <Stack.Screen options={{ title: isGermanyCampaign ? 'Karakter' : 'Rol Seçimi' }} />
       <SectionHeader
         eyebrow="4 / 4"
         title={isGermanyCampaign ? 'Karakterini oluştur' : 'Görevini seç'}
         description={isGermanyCampaign
-          ? '1921’de parti liderliğini devralan karşı-olgusal karakterinin adını belirle. Tarihsel kişiler ve gerçek olaylar arşivde ayrı tutulur.'
+          ? '1933 Almanyası’nda yaşayan kurgusal karakterinin adını belirle. Mesleğin, çevren ve yaşam çizgin seçim yaptıkça şekillenecek.'
           : 'Rol, kurum içindeki bakış açını belirler. Kurgusal roller tarihsel kişilerden açıkça ayrılır.'}
       />
       {isGermanyCampaign && roles[0] ? (
@@ -55,7 +55,7 @@ export default function RoleScreen() {
                 },
               })}
             >
-              Kampanyayı Başlat
+              Hayatını Başlat
             </AppButton>
           </AppCard>
         </View>
