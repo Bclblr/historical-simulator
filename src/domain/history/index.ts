@@ -23,3 +23,4 @@ export * from './source-display';
 export * from './source-category';
 export * from './bibliography';
 export * from './citation-pages';
+export * from './archive-reference';
