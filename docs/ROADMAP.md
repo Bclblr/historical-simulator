@@ -82,9 +82,9 @@
 - [x] 67. İlk kurum seçimi
 - [x] 68. İlk 10 olay
 - [x] 69. 20 olay
-- [ ] 70. 30 olay
-- [ ] 71. 40 olay
-- [ ] 72. 50 olay
+- [x] 70. 30 olay
+- [x] 71. 40 olay
+- [x] 72. 50 olay
 - [ ] 73. Olay bağlantıları
 - [ ] 74. Akademik kaynak kontrolü
 - [ ] 75. Tam oynanabilir 1933 senaryosu
