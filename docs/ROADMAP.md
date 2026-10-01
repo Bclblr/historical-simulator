@@ -68,7 +68,7 @@
 ## 56–65 — Akademik tarih sistemi
 - [x] 56. Kaynak gösterimi
 - [x] 57. Birincil/ikincil kaynak ayrımı
-- [ ] 58. Bibliyografya
+- [x] 58. Bibliyografya
 - [ ] 59. Sayfa numarası desteği
 - [ ] 60. Arşiv referansı
 - [ ] 61. Tarihte ne oldu? ekranı
