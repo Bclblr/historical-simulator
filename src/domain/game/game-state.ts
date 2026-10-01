@@ -95,7 +95,16 @@ export function withGameVariable(
     throw new Error('GameVariable value must be finite.');
   }
 
-  const boundedValue = ['publicSupport', 'institutionalInfluence', 'stability', 'foreignRelations'].includes(normalizedKey)
+  const boundedValue = [
+    'publicSupport',
+    'institutionalInfluence',
+    'stability',
+    'foreignRelations',
+    'money',
+    'safety',
+    'social',
+    'reputation',
+  ].includes(normalizedKey)
     ? Math.max(0, Math.min(100, value))
     : value;
 
