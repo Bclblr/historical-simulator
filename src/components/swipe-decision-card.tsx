@@ -46,11 +46,11 @@ export function SwipeDecisionCard({
 }: SwipeDecisionCardProps) {
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
-  const cardWidth = Math.min(Math.max(width - 28, 292), 520);
+  const cardWidth = Math.min(Math.max(width - 44, 286), 440);
   const compactHeight = height < 760;
   const cardHeight = Math.min(
-    Math.max(height * (compactHeight ? 0.5 : 0.56), compactHeight ? 360 : 400),
-    560,
+    Math.max(height * (compactHeight ? 0.42 : 0.46), compactHeight ? 300 : 340),
+    470,
   );
   const commitDistance = Math.min(
     MAX_COMMIT_DISTANCE,
@@ -234,7 +234,7 @@ export function SwipeDecisionCard({
             style={[
               styles.choicePreview,
               styles.choicePreviewRight,
-              { borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceElevated },
+              { borderColor: theme.colors.border },
               leftChoiceStyle,
             ]}
           >
@@ -246,7 +246,7 @@ export function SwipeDecisionCard({
             style={[
               styles.choicePreview,
               styles.choicePreviewLeft,
-              { borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceElevated },
+              { borderColor: theme.colors.border },
               rightChoiceStyle,
             ]}
           >
@@ -254,8 +254,8 @@ export function SwipeDecisionCard({
           </Animated.View>
 
           <View style={styles.scene}>
-            <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
-              <CharacterPortrait name={conversation.speaker} />
+            <CharacterPortrait name={conversation.speaker} />
+            <View style={[styles.visualCaption, { borderTopColor: theme.colors.border }]}>
               <AppText variant="caption" muted style={styles.historicalLabel}>
                 {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
               </AppText>
@@ -288,65 +288,66 @@ const styles = StyleSheet.create({
   card: {
     overflow: 'hidden',
     borderWidth: 1,
-    borderRadius: 26,
-    justifyContent: 'space-between',
+    borderRadius: 22,
+    justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 7,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 3,
+    shadowOpacity: 0.16,
+    shadowRadius: 9,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   choicePreview: {
     position: 'absolute',
-    top: 72,
+    top: 18,
     zIndex: 20,
-    maxWidth: '78%',
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 5,
+    maxWidth: '72%',
+    borderWidth: 0,
+    borderRadius: 0,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  choicePreviewLeft: { left: 16, alignItems: 'flex-start' },
-  choicePreviewRight: { right: 16, alignItems: 'flex-end' },
-  choiceText: { textAlign: 'center', fontSize: 16, lineHeight: 21 },
+  choicePreviewLeft: { left: 10, alignItems: 'flex-start' },
+  choicePreviewRight: { right: 10, alignItems: 'flex-end' },
+  choiceText: {
+    textAlign: 'center',
+    fontSize: 18,
+    lineHeight: 23,
+  },
   questionBlock: {
     width: '100%',
     paddingHorizontal: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 54,
+    minHeight: 58,
   },
   scene: {
     flex: 1,
-    padding: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  visualFrame: {
     width: '100%',
-    maxWidth: 390,
-    minHeight: 0,
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    padding: 14,
+    paddingHorizontal: 10,
+    paddingTop: 42,
+    paddingBottom: 0,
+  },
+  visualCaption: {
+    width: '100%',
+    minHeight: 36,
+    borderTopWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    marginTop: 8,
   },
   historicalLabel: { textAlign: 'center', maxWidth: 390 },
   identityBlock: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 2,
+    gap: 1,
     paddingHorizontal: 18,
     paddingBottom: 2,
+    marginTop: -2,
   },
   speakerName: {
     textAlign: 'center',
@@ -359,7 +360,7 @@ const styles = StyleSheet.create({
   question: {
     textAlign: 'center',
     maxWidth: 430,
-    fontSize: 18,
-    lineHeight: 25,
+    fontSize: 19,
+    lineHeight: 26,
   },
 });
