@@ -216,7 +216,8 @@ function evaluateGermanyLifeEnding(
     }
   }
 
-  if (date < '1945-05-08') return null;
+  const madeFinalChoice = Boolean(flags.rebuild_here || flags.start_elsewhere);
+  if (!madeFinalChoice && date < '1945-09-01') return null;
 
   if (flags.start_elsewhere) {
     return ending(
