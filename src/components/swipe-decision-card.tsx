@@ -47,7 +47,11 @@ export function SwipeDecisionCard({
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
   const cardWidth = Math.min(Math.max(width - 28, 292), 520);
-  const cardHeight = Math.min(Math.max(height * 0.67, 500), 680);
+  const compactHeight = height < 760;
+  const cardHeight = Math.min(
+    Math.max(height * (compactHeight ? 0.5 : 0.56), compactHeight ? 360 : 400),
+    560,
+  );
   const commitDistance = Math.min(
     MAX_COMMIT_DISTANCE,
     Math.max(MIN_COMMIT_DISTANCE, cardWidth * COMMIT_DISTANCE_RATIO),
@@ -246,24 +250,27 @@ export function SwipeDecisionCard({
           </Animated.View>
 
           <View style={styles.header}>
-            <View style={styles.speakerBlock}>
-              <AppText variant="heading" style={styles.speakerName}>{conversation.speaker}</AppText>
-              {conversation.role ? <AppText variant="caption" muted>{conversation.role}</AppText> : null}
-            </View>
+            <AppText style={styles.question}>“{conversation.line}”</AppText>
           </View>
 
           <View style={styles.scene}>
             <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
               <CharacterPortrait name={conversation.speaker} />
-              <AppText variant="caption" muted>
-                {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
-              </AppText>
-            </View>
-            <AppText style={styles.dialogue}>“{conversation.line}”</AppText>
-          </View>
 
-          <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
-            <AppText variant="caption" muted>SOLA / SAĞA KAYDIR</AppText>
+              <View style={styles.historicalDevelopment}>
+                <AppText variant="label" muted style={styles.historicalLabel}>
+                  {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
+                </AppText>
+                <AppText variant="heading" style={styles.speakerName}>
+                  {conversation.speaker}
+                </AppText>
+                {conversation.role ? (
+                  <AppText variant="caption" muted style={styles.speakerRole}>
+                    {conversation.role}
+                  </AppText>
+                ) : null}
+              </View>
+            </View>
           </View>
         </Animated.View>
       </GestureDetector>
@@ -302,21 +309,45 @@ const styles = StyleSheet.create({
   choicePreviewLeft: { left: 16, alignItems: 'flex-start' },
   choicePreviewRight: { right: 16, alignItems: 'flex-end' },
   choiceText: { textAlign: 'center', fontSize: 16, lineHeight: 21 },
-  header: { paddingHorizontal: 22, paddingTop: 20, gap: 14 },
-  scene: { flex: 1, paddingHorizontal: 22, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', gap: 18 },
+  header: {
+    paddingHorizontal: 18,
+    paddingTop: 16,
+    paddingBottom: 8,
+    alignItems: 'center',
+  },
+  scene: {
+    flex: 1,
+    paddingHorizontal: 18,
+    paddingTop: 8,
+    paddingBottom: 14,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
   visualFrame: {
     width: '100%',
     maxWidth: 390,
-    minHeight: 156,
+    minHeight: 0,
+    flex: 1,
     borderWidth: 1,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
-    padding: 18,
+    gap: 10,
+    padding: 14,
   },
-  speakerBlock: { alignItems: 'center', gap: 2 },
-  speakerName: { textAlign: 'center', alignSelf: 'center', maxWidth: 420 },
-  dialogue: { textAlign: 'center', maxWidth: 390, fontSize: 18, lineHeight: 27 },
-  footer: { minHeight: 44, borderTopWidth: 1, paddingHorizontal: 18, paddingVertical: 10, alignItems: 'center', justifyContent: 'center' },
+  historicalDevelopment: {
+    width: '100%',
+    alignItems: 'center',
+    gap: 3,
+    paddingTop: 2,
+  },
+  historicalLabel: { textAlign: 'center', maxWidth: 390 },
+  speakerName: { textAlign: 'center', alignSelf: 'center', maxWidth: 420, fontSize: 18, lineHeight: 22 },
+  speakerRole: { textAlign: 'center', maxWidth: 390 },
+  question: {
+    textAlign: 'center',
+    maxWidth: 430,
+    fontSize: 18,
+    lineHeight: 25,
+  },
 });
