@@ -4,10 +4,10 @@ export const GERMANY_1933_ROLES: HistoricalRole[] = [
   createHistoricalRole({
     id: 'reich-government-cabinet-official',
     institutionId: 'reich-government',
-    name: 'Cabinet Secretariat Official',
-    shortName: 'Cabinet Official',
+    name: 'Kabine Sekreterliği Görevlisi',
+    shortName: 'Kabine Görevlisi',
     description:
-      'A fictionalized administrative player role used to inspect government files, receive institutional information and record decisions without impersonating a historical perpetrator.',
+      'Tarihsel bir kişiyi canlandırmadan devlet dosyalarını incelemek, kurumsal bilgi almak ve simülasyon kararları vermek için kullanılan kurgusal idari oyuncu rolü.',
     type: 'ADMINISTRATIVE',
     sortOrder: 10,
     status: 'PUBLISHED',
