@@ -17,7 +17,7 @@ import {
 import { getScenarioForSelection } from '@/content/scenario-catalog';
 import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
 import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
-import { getGermanyCampaignBranchEvents } from '@/content/germany-campaign';
+import { getGermanyCampaignBranchEvents, getGermanyCampaignExcludedEventIds } from '@/content/germany-campaign';
 import { useGameSessionService } from '@/services';
 
 function createSimulationOptions(
@@ -120,7 +120,9 @@ export default function GameScreen() {
     if (!scenario) return null;
 
     const decidedIds = new Set(snapshot.decisionHistory.map((item) => item.eventId));
-    const campaignEvents = [...scenario.events, ...getGermanyCampaignBranchEvents(snapshot.decisionHistory)];
+    const excludedIds = getGermanyCampaignExcludedEventIds(snapshot.decisionHistory);
+    const campaignEvents = [...scenario.events, ...getGermanyCampaignBranchEvents(snapshot.decisionHistory)]
+      .filter((event) => !excludedIds.has(event.id));
     const eligibleEvent = getEligibleEvents(campaignEvents, snapshot.state)
       .find((item) => !decidedIds.has(item.id));
     const nextFutureEvent = [...campaignEvents]
@@ -166,7 +168,9 @@ export default function GameScreen() {
         decidedAt: snapshot.state.currentDate,
       });
       const decidedIds = new Set(history.map((item) => item.eventId));
-      const campaignEvents = [...currentScenario.events, ...getGermanyCampaignBranchEvents(history)];
+      const excludedIds = getGermanyCampaignExcludedEventIds(history);
+      const campaignEvents = [...currentScenario.events, ...getGermanyCampaignBranchEvents(history)]
+        .filter((event) => !excludedIds.has(event.id));
       const nextEvent = [...campaignEvents]
         .filter((event) => !decidedIds.has(event.id) && event.startDate >= activeContent.event.startDate)
         .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
