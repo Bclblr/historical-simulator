@@ -31,3 +31,4 @@ export * from './institution-action';
 export * from './institutional-outcome';
 export * from './perspective-transition';
 export * from './player-archive';
+export * from './campaign';
