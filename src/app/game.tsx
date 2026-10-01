@@ -145,7 +145,7 @@ export default function GameScreen() {
       });
       const decidedIds = new Set(history.map((item) => item.eventId));
       const nextEvent = [...currentScenario.events]
-        .filter((event) => !decidedIds.has(event.id) && event.startDate > snapshot.state.currentDate)
+        .filter((event) => !decidedIds.has(event.id) && event.startDate >= snapshot.state.currentDate)
         .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
 
       const selectedChoice =
