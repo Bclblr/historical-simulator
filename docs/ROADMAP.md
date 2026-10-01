@@ -99,11 +99,11 @@
 - [x] 82. Animasyonlar
 - [x] 83. Ses
 - [x] 84. Döneme uygun görsel tasarım
-- [ ] 85. Haptic + final UI polish
+- [x] 85. Haptic + final UI polish
 
 ## 86–92 — Arşiv/meta oyun
-- [ ] 86. Oyuncu arşivi
-- [ ] 87. Keşfedilen olaylar
+- [x] 86. Oyuncu arşivi
+- [x] 87. Keşfedilen olaylar
 - [ ] 88. Keşfedilen belgeler
 - [ ] 89. Timeline
 - [ ] 90. Karar geçmişi
