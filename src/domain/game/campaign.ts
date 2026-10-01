@@ -13,7 +13,16 @@ export type CampaignEndingKind =
   | 'ISOLATED_POWER'
   | 'BALANCED_SURVIVAL'
   | 'HISTORICAL_TERMINUS'
-  | 'ALTERNATE_TERMINUS';
+  | 'ALTERNATE_TERMINUS'
+  | 'LIFE_FINANCIAL_CRISIS'
+  | 'LIFE_OVEREXPOSED'
+  | 'LIFE_ISOLATED'
+  | 'LIFE_REPUTATION_CRISIS'
+  | 'LIFE_REBUILD'
+  | 'LIFE_NEW_START'
+  | 'LIFE_COMMUNITY'
+  | 'LIFE_PUBLIC_FIGURE'
+  | 'LIFE_QUIET_END';
 
 export interface CampaignProfile {
   playerName: string;
@@ -134,9 +143,147 @@ const INSTITUTIONAL_RESTRAINT_CHOICES = [
   'seek-limita',
 ] as const;
 
+function evaluateGermanyLifeEnding(
+  snapshot: GameSessionSnapshot,
+): CampaignEnding | null {
+  const money = value(snapshot, 'money');
+  const safety = value(snapshot, 'safety');
+  const social = value(snapshot, 'social');
+  const reputation = value(snapshot, 'reputation');
+  const decisions = snapshot.decisionHistory.length;
+  const date = snapshot.state.currentDate;
+  const flags = snapshot.state.flags;
+
+  if (decisions >= 4) {
+    if (money <= 2) {
+      return ending(
+        'LIFE_FINANCIAL_CRISIS',
+        'Geçim Çıkmazı',
+        'Maddi dengeyi artık sürdüremiyorsun.',
+        'Uzun süre boyunca gelir ve harcamalar arasındaki denge bozuldu. Kurduğun günlük düzen dağıldı ve bu hayat çizgisi burada sona erdi.',
+        'COUNTERFACTUAL_SIMULATION',
+        'Geçim baskısı',
+        ['Para', 'Gündelik hayat', 'Kırılganlık'],
+      );
+    }
+
+    if (safety <= 2) {
+      return ending(
+        'LIFE_OVEREXPOSED',
+        'Fazla Açıkta',
+        'Kendini koruyacak hareket alanın kalmadı.',
+        'Kararların seni giderek daha görünür ve kırılgan bir konuma taşıdı. Çevrendeki koşullar içinde bu hayatı aynı biçimde sürdürmek artık mümkün değildi.',
+        'COUNTERFACTUAL_SIMULATION',
+        'Riskli yaşam yolu',
+        ['Güvenlik', 'Görünürlük', 'Baskı'],
+      );
+    }
+
+    if (social <= 2) {
+      return ending(
+        'LIFE_ISOLATED',
+        'Yalnızlaşan Hayat',
+        'Bağlantıların birer birer koptu.',
+        'İş, taşınma ve kişisel tercihler zamanla çevrendeki insanları uzaklaştırdı. Hayatın devam etti, fakat seni taşıyan sosyal ağ kalmadı.',
+        'COUNTERFACTUAL_SIMULATION',
+        'Yalnızlık yolu',
+        ['Çevre', 'Mesafe', 'Kopuş'],
+      );
+    }
+
+    if (reputation <= 2) {
+      return ending(
+        'LIFE_REPUTATION_CRISIS',
+        'İtibar Kaybı',
+        'Çevrendeki güven büyük ölçüde kayboldu.',
+        'Verdiğin kararlar sonunda insanlar sana daha az güvenmeye başladı. İş ve sosyal hayat aynı anda daralınca mevcut yaşam çizgin sürdürülemez hâle geldi.',
+        'COUNTERFACTUAL_SIMULATION',
+        'İtibar krizi',
+        ['İtibar', 'Güven', 'Çevre'],
+      );
+    }
+
+    if (reputation >= 98 || social >= 98 || money >= 98 || safety >= 98) {
+      return ending(
+        'LIFE_OVEREXPOSED',
+        'Denge Bozuldu',
+        'Bir alan hayatının geri kalanını gölgede bıraktı.',
+        'Tek bir alanda aşırı güçlenmek kısa vadede avantaj sağladı; fakat hayatının geri kalanındaki dengeyi bozdu. Bu koşu, o aşırılığın sonuçlarıyla sona erdi.',
+        'COUNTERFACTUAL_SIMULATION',
+        'Aşırı uç',
+        ['Dengesizlik', 'Baskı', 'Tek yönlü yaşam'],
+      );
+    }
+  }
+
+  if (date < '1945-05-08') return null;
+
+  if (flags.start_elsewhere) {
+    return ending(
+      'LIFE_NEW_START',
+      'Yeni Bir Başlangıç',
+      'Eski hayatını geride bırakmayı seçtin.',
+      'Yıllar boyunca kurduğun bağların bir kısmını geride bırakıp başka bir yerde yeniden başlamaya karar verdin. Yeni hayatın daha belirsizdi, ama geçmiş koşunun yükünü taşımak zorunda değildin.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Yeni başlangıç yolu',
+      ['Değişim', 'Belirsizlik', 'Yeni çevre'],
+    );
+  }
+
+  if (flags.rebuild_here) {
+    return ending(
+      'LIFE_REBUILD',
+      'Aynı Yerde Yeniden',
+      'Kalmak ve yeniden kurmak senin seçimin oldu.',
+      'Eski düzen sona ererken bulunduğun yerde kalmayı seçtin. Kaybettiklerini tamamen geri getiremedin; ama çevrendeki insanlarla yeni bir gündelik hayat kurmaya başladın.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Yeniden kurma yolu',
+      ['Süreklilik', 'Çevre', 'Yeni düzen'],
+    );
+  }
+
+  if (flags.family_together || social >= 70) {
+    return ending(
+      'LIFE_COMMUNITY',
+      'Birlikte Kalanlar',
+      'Hayatta en çok insan ilişkilerine yatırım yaptın.',
+      'İş ve para zaman zaman değişti; buna rağmen çevrendeki insanlarla kurduğun bağlar koşunun sonunda en güçlü dayanağın oldu. Hikâyen büyük bir makamla değil, birlikte kalmayı başardığın insanlarla tamamlandı.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Bağlar yolu',
+      ['Aile', 'Dostluk', 'Çevre'],
+    );
+  }
+
+  if (flags.public_profile || flags.known_locally || reputation >= 70) {
+    return ending(
+      'LIFE_PUBLIC_FIGURE',
+      'Herkes Seni Tanıyor',
+      'Görünürlük hayatının ana ekseni hâline geldi.',
+      'Basın, iş ve sosyal çevre kararların seni giderek daha tanınır biri yaptı. Bu görünürlük sana kapılar açtı; aynı zamanda özel hayatını daralttı.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Görünürlük yolu',
+      ['İtibar', 'Tanınırlık', 'Kamusal hayat'],
+    );
+  }
+
+  return ending(
+    'LIFE_QUIET_END',
+    'Sessiz Bir Hayat',
+    'Büyük sıçramalar yerine dengede kalmayı başardın.',
+    'Yıllar boyunca iş, para, çevre ve güvenlik arasında sürekli küçük seçimler yaptın. Koşunun sonunda büyük bir servet ya da ün değil, sürdürülebilir bir hayat bıraktın.',
+    'COUNTERFACTUAL_SIMULATION',
+    'Dengeli yaşam yolu',
+    ['Denge', 'Gündelik hayat', 'Süreklilik'],
+  );
+}
+
 export function evaluateGermanyCampaignEnding(
   snapshot: GameSessionSnapshot,
 ): CampaignEnding | null {
+  if (snapshot.campaign?.campaignId === 'germany-life') {
+    return evaluateGermanyLifeEnding(snapshot);
+  }
+
   const publicSupport = value(snapshot, 'publicSupport');
   const institutionalInfluence = value(snapshot, 'institutionalInfluence');
   const stability = value(snapshot, 'stability');
