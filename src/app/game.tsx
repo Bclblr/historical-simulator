@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AppCard, AppText, DeskScreen, Screen } from '@/components';
-import type { GameState } from '@/domain/game';
+import { createDeskFile, generateNextCard, type GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
 
@@ -52,6 +52,32 @@ export default function GameScreen() {
     return () => { active = false; };
   }, [params.country, params.era, params.institution, params.role, params.sessionId, sessions]);
 
+  const activeContent = useMemo(() => {
+    if (!state) return null;
+    const scenario = getScenarioForSelection(
+      state.selection.eraId,
+      state.selection.countryId,
+    );
+    if (!scenario) return null;
+
+    const card = generateNextCard(scenario.events, state);
+    if (!card) return null;
+
+    return {
+      card,
+      file: createDeskFile({
+        id: `desk-file:${card.eventId}`,
+        eventId: card.eventId,
+        title: card.title,
+        documentIds: scenario.documents
+          .filter((document) => document.eventIds.includes(card.eventId))
+          .map((document) => document.id),
+        status: 'OPEN',
+        priority: 100,
+      }),
+    };
+  }, [state]);
+
   return (
     <Screen centered>
       <Stack.Screen options={{ title: 'Simülasyon', headerShown: true }} />
@@ -59,7 +85,23 @@ export default function GameScreen() {
       {error ? (
         <AppCard><AppText>{error}</AppText></AppCard>
       ) : state ? (
-        <DeskScreen state={state} />
+        <>
+          <DeskScreen state={state} activeFile={activeContent?.file ?? null} />
+          {activeContent ? (
+            <AppCard>
+              <AppText variant="label" muted>{activeContent.card.date} · TARİHSEL KAYIT</AppText>
+              <AppText variant="title">{activeContent.card.title}</AppText>
+              <AppText>{activeContent.card.body}</AppText>
+            </AppCard>
+          ) : (
+            <AppCard>
+              <AppText variant="heading">Bu tarihte uygun dosya bulunamadı</AppText>
+              <AppText muted>
+                Seçilen kurum ve rol için yayımlanmış olayların tarih ve koşulları kontrol edilmelidir.
+              </AppText>
+            </AppCard>
+          )}
+        </>
       ) : null}
     </Screen>
   );
