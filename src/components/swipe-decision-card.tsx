@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
@@ -78,7 +78,7 @@ export function SwipeDecisionCard({
                 : 0;
           if (nextPreview !== previewState.value) {
             previewState.value = nextPreview;
-            runOnJS(notifyPreview)(nextPreview);
+            scheduleOnRN(notifyPreview, nextPreview);
           }
         })
         .onEnd((event) => {
@@ -90,7 +90,7 @@ export function SwipeDecisionCard({
             translateX.value = withSpring(0, { damping: 20, stiffness: 240 });
             if (previewState.value !== 0) {
               previewState.value = 0;
-              runOnJS(notifyPreview)(0);
+              scheduleOnRN(notifyPreview, 0);
             }
             return;
           }
@@ -100,12 +100,8 @@ export function SwipeDecisionCard({
               ? event.translationX < 0 ? -1 : 1
               : event.velocityX < 0 ? -1 : 1;
           previewState.value = 0;
-          translateX.value = withTiming(direction * cardWidth * 1.55, { duration: 145 }, (finished) => {
-            if (finished) {
-              translateX.value = 0;
-              runOnJS(commitChoice)(direction);
-            }
-          });
+          translateX.value = withTiming(direction * cardWidth * 1.55, { duration: 145 });
+          scheduleOnRN(commitChoice, direction);
         }),
     [cardWidth, disabled, leftOption, onChoose, onPreviewDirection, rightOption],
   );
