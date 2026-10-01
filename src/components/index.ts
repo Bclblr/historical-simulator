@@ -6,3 +6,4 @@ export * from './section-header';
 export * from './desk-screen';
 export * from './document-entrance';
 export * from './swipe-decision-card';
+export * from './game-status-bar';
