@@ -122,3 +122,40 @@ export function getGermanyCampaignBranchEvents(history: DecisionRecord[]): Histo
     )
     .map((definition) => definition.event);
 }
+
+
+const EXCLUSIONS: Array<{ sourceEventId: string; optionSuffix: string; excludedEventIds: string[] }> = [
+  {
+    sourceEventId: 'de-1921-hitler-returns-with-conditions',
+    optionSuffix: 'shared-authority',
+    excludedEventIds: ['de-1921-hitler-party-leadership'],
+  },
+  {
+    sourceEventId: 'de-1939-poland-invasion',
+    optionSuffix: 'limit-escalation',
+    excludedEventIds: ['de-1939-britain-france-war', 'de-1939-poland-divided'],
+  },
+  {
+    sourceEventId: 'de-1941-barbarossa',
+    optionSuffix: 'limit-escalation',
+    excludedEventIds: ['de-1941-mass-murder-escalation'],
+  },
+  {
+    sourceEventId: 'de-1941-germany-declares-war-us',
+    optionSuffix: 'limit-escalation',
+    excludedEventIds: [],
+  },
+];
+
+export function getGermanyCampaignExcludedEventIds(history: DecisionRecord[]): Set<string> {
+  const excluded = new Set<string>();
+  for (const rule of EXCLUSIONS) {
+    const matched = history.some(
+      (record) =>
+        record.eventId === rule.sourceEventId &&
+        record.optionId.endsWith(`:${rule.optionSuffix}`),
+    );
+    if (matched) rule.excludedEventIds.forEach((id) => excluded.add(id));
+  }
+  return excluded;
+}
