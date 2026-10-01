@@ -18,12 +18,13 @@ import { getScenarioForSelection } from '@/content/scenario-catalog';
 import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
 import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
 import { getGermanyCampaignBranchEvents, getGermanyCampaignExcludedEventIds, getGermanyCareerEvents } from '@/content/germany-campaign';
+import { getActiveGermanyLifeCard, type LifeChoice } from '@/content/germany-life/deck';
 import { useGameSessionService } from '@/services';
 
 function createSimulationOptions(
   eventId: string,
-  left: ScenarioDecisionChoice,
-  right: ScenarioDecisionChoice,
+  left: Pick<ScenarioDecisionChoice, 'idSuffix' | 'label' | 'description' | 'effects'> | LifeChoice,
+  right: Pick<ScenarioDecisionChoice, 'idSuffix' | 'label' | 'description' | 'effects'> | LifeChoice,
 ): [DecisionOption, DecisionOption] {
   return [
     createDecisionOption({
@@ -91,7 +92,7 @@ export default function GameScreen() {
 
         const created = await sessions.start({
           sessionId: `session-${Date.now()}`,
-          startDate: params.era === 'germany-1921' ? '1919-01-05' : scenario.startDate,
+          startDate: params.era === 'germany-1921' ? '1933-01-30' : scenario.startDate,
           selection: {
             eraId: params.era,
             countryId: params.country,
@@ -101,8 +102,8 @@ export default function GameScreen() {
           campaign: params.era === 'germany-1921'
             ? {
                 playerName: params.playerName?.trim() || 'Oyuncu',
-                campaignId: 'germany-1921',
-                startedAt: '1919-01-05',
+                campaignId: 'germany-life',
+                startedAt: '1933-01-30',
                 leadershipActive: true,
               }
             : undefined,
@@ -124,6 +125,22 @@ export default function GameScreen() {
 
   const activeContent = useMemo(() => {
     if (!snapshot) return null;
+
+    if (snapshot.campaign?.campaignId === 'germany-life') {
+      const life = getActiveGermanyLifeCard(snapshot);
+      return {
+        event: life.event,
+        decision: {
+          prompt: life.card.line,
+          speaker: life.card.speaker,
+          role: life.card.role,
+          left: life.card.left,
+          right: life.card.right,
+        },
+        options: createSimulationOptions(life.event.id, life.card.left, life.card.right),
+        lifeCard: life.card,
+      };
+    }
     const scenario = getScenarioForSelection(
       snapshot.state.selection.eraId,
       snapshot.state.selection.countryId,
@@ -178,6 +195,39 @@ export default function GameScreen() {
     setError(null);
 
     try {
+      if (snapshot.campaign?.campaignId === 'germany-life') {
+        const selectedChoice =
+          option.swipeDirection === 'LEFT'
+            ? activeContent.decision.left
+            : activeContent.decision.right;
+
+        const history = recordDecision(snapshot.decisionHistory, {
+          option,
+          decidedAt: snapshot.state.currentDate,
+        });
+
+        const affectedState = applyDecisionEffects(
+          snapshot.state,
+          selectedChoice.effects,
+        );
+
+        const processed = processDueDecisionEffects(
+          affectedState,
+          snapshot.scheduledEffects,
+        );
+
+        const next: GameSessionSnapshot = {
+          ...snapshot,
+          state: processed.state,
+          decisionHistory: history,
+          scheduledEffects: processed.pending,
+        };
+
+        setSnapshot(next);
+        optimisticSnapshotApplied = true;
+        await sessions.save(next);
+        return;
+      }
       const currentScenario = getScenarioForSelection(
         snapshot.state.selection.eraId,
         snapshot.state.selection.countryId,
@@ -265,15 +315,15 @@ export default function GameScreen() {
         sessionId: `session-${Date.now()}`,
         startDate:
           snapshot.state.selection.eraId === 'germany-1921'
-            ? '1919-01-05'
+            ? '1933-01-30'
             : restartScenario.startDate,
         selection: snapshot.state.selection,
         campaign:
           snapshot.state.selection.eraId === 'germany-1921'
             ? {
                 playerName: snapshot.campaign?.playerName ?? 'Oyuncu',
-                campaignId: 'germany-1921',
-                startedAt: '1919-01-05',
+                campaignId: 'germany-life',
+                startedAt: '1933-01-30',
                 leadershipActive: true,
               }
             : undefined,
@@ -289,7 +339,7 @@ export default function GameScreen() {
 
   return (
     <Screen style={styles.screen}>
-      <Stack.Screen options={{ title: snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
+      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'germany-life' ? 'Almanya · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
@@ -320,6 +370,15 @@ export default function GameScreen() {
               leftOption={activeContent.options[0]}
               rightOption={activeContent.options[1]}
               actorLabel={activeContent.decision.speaker || actorLabel}
+              conversationOverride={
+                snapshot.campaign?.campaignId === 'germany-life'
+                  ? {
+                      speaker: activeContent.decision.speaker,
+                      role: activeContent.decision.role,
+                      line: activeContent.decision.prompt,
+                    }
+                  : undefined
+              }
               disabled={saving}
               onPreviewDirection={setPreviewDirection}
               onChoose={(option) => void choose(option)}
