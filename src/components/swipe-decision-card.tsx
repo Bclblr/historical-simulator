@@ -11,7 +11,6 @@ interface SwipeDecisionCardProps {
   leftOption: DecisionOption;
   rightOption: DecisionOption;
   actorLabel: string;
-  prompt: string;
   disabled?: boolean;
   onChoose: (option: DecisionOption) => void;
 }
@@ -23,7 +22,6 @@ export function SwipeDecisionCard({
   leftOption,
   rightOption,
   actorLabel,
-  prompt,
   disabled = false,
   onChoose,
 }: SwipeDecisionCardProps) {
@@ -92,14 +90,17 @@ export function SwipeDecisionCard({
           },
         ]}
       >
-        <View style={[styles.topBand, { backgroundColor: theme.colors.primary }]}>
+        <View style={styles.header}>
           <View style={styles.dateRow}>
-            <AppText variant="label" style={{ color: theme.colors.onPrimary }}>{event.startDate}</AppText>
-            <AppText variant="label" style={{ color: theme.colors.onPrimary }}>{classificationLabel}</AppText>
+            <AppText variant="caption" muted>{event.startDate}</AppText>
+            <AppText variant="caption" muted>{classificationLabel}</AppText>
           </View>
-          <AppText variant="heading" style={[styles.prompt, { color: theme.colors.onPrimary }]}>
-            {choice?.label ?? prompt}
-          </AppText>
+          <AppText variant="heading" style={styles.eventTitle}>{event.title}</AppText>
+          {choice ? (
+            <View style={[styles.choicePreview, { borderColor: theme.colors.accent }]}>
+              <AppText variant="label">{direction === 'LEFT' ? '← ' : ''}{choice.label}{direction === 'RIGHT' ? ' →' : ''}</AppText>
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.scene}>
@@ -109,7 +110,6 @@ export function SwipeDecisionCard({
             </View>
             <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
           </View>
-          <AppText variant="label" muted style={styles.eventTitle}>{event.title}</AppText>
           <AppText style={styles.summary}>{event.summary}</AppText>
         </View>
 
@@ -137,10 +137,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     elevation: 10,
   },
-  topBand: { minHeight: 150, padding: 20, justifyContent: 'space-between' },
+  header: { paddingHorizontal: 22, paddingTop: 20, gap: 14 },
   dateRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
-  prompt: { textAlign: 'center', marginTop: 20 },
-  scene: { flex: 1, padding: 24, alignItems: 'center', justifyContent: 'center', gap: 26 },
+  scene: { flex: 1, paddingHorizontal: 22, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', gap: 18 },
   emblem: {
     width: 116,
     height: 116,
@@ -168,7 +167,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  eventTitle: { textAlign: 'center', maxWidth: 390 },
+  eventTitle: { textAlign: 'center', alignSelf: 'center', maxWidth: 420 },
+  choicePreview: { alignSelf: 'center', borderWidth: 1, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 },
   summary: { textAlign: 'center', maxWidth: 390 },
-  footer: { minHeight: 92, borderTopWidth: 1, padding: 18, justifyContent: 'space-between', gap: 10 },
+  footer: { minHeight: 64, borderTopWidth: 1, paddingHorizontal: 18, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
 });
