@@ -81,8 +81,16 @@ export function getCampaignConversation(
   const exact = conversations[eventId];
   if (exact) return exact;
 
+  const speakerByContext =
+    /dış|diplom|pakt|uluslararası/i.test(fallbackSpeaker) ? 'Dışişleri danışmanı' :
+    /hukuk|kurum|içişleri/i.test(fallbackSpeaker) ? 'Hükûmet hukuk danışmanı' :
+    /kriz|asker/i.test(fallbackSpeaker) ? 'Kabine danışmanı' :
+    /parti|siyasi/i.test(fallbackSpeaker) ? 'Parti yöneticisi' :
+    fallbackSpeaker || 'Danışman';
+
   return {
-    speaker: fallbackSpeaker,
+    speaker: speakerByContext,
+    role: 'Görüşme',
     line: fallbackLine,
   };
 }
