@@ -95,5 +95,9 @@ export function withGameVariable(
     throw new Error('GameVariable value must be finite.');
   }
 
-  return { ...state, variables: { ...state.variables, [normalizedKey]: value } };
+  const boundedValue = ['publicSupport', 'institutionalInfluence', 'stability', 'foreignRelations'].includes(normalizedKey)
+    ? Math.max(0, Math.min(100, value))
+    : value;
+
+  return { ...state, variables: { ...state.variables, [normalizedKey]: boundedValue } };
 }
