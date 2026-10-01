@@ -174,6 +174,38 @@ export function SwipeDecisionCard({
     };
   });
 
+  const leftChoiceStyle = useAnimatedStyle(() => {
+    const drag = Math.max(0, -translateX.value);
+    const progress = Math.max(
+      0,
+      Math.min(1, (drag - PREVIEW_DISTANCE) / Math.max(1, commitDistance - PREVIEW_DISTANCE)),
+    );
+
+    return {
+      opacity: progress,
+      transform: [
+        { translateY: 8 * (1 - progress) },
+        { scale: 0.96 + progress * 0.04 },
+      ],
+    };
+  });
+
+  const rightChoiceStyle = useAnimatedStyle(() => {
+    const drag = Math.max(0, translateX.value);
+    const progress = Math.max(
+      0,
+      Math.min(1, (drag - PREVIEW_DISTANCE) / Math.max(1, commitDistance - PREVIEW_DISTANCE)),
+    );
+
+    return {
+      opacity: progress,
+      transform: [
+        { translateY: 8 * (1 - progress) },
+        { scale: 0.96 + progress * 0.04 },
+      ],
+    };
+  });
+
   return (
     <View style={styles.stage}>
       <GestureDetector gesture={pan}>
@@ -189,6 +221,30 @@ export function SwipeDecisionCard({
             animatedCardStyle,
           ]}
         >
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.choicePreview,
+              styles.choicePreviewLeft,
+              { borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceElevated },
+              leftChoiceStyle,
+            ]}
+          >
+            <AppText variant="label" style={styles.choiceText}>← {leftOption.label}</AppText>
+          </Animated.View>
+
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.choicePreview,
+              styles.choicePreviewRight,
+              { borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceElevated },
+              rightChoiceStyle,
+            ]}
+          >
+            <AppText variant="label" style={styles.choiceText}>{rightOption.label} →</AppText>
+          </Animated.View>
+
           <View style={styles.header}>
             <View style={styles.speakerBlock}>
               <AppText variant="heading" style={styles.speakerName}>{conversation.speaker}</AppText>
@@ -228,6 +284,24 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     elevation: 3,
   },
+  choicePreview: {
+    position: 'absolute',
+    top: 72,
+    zIndex: 20,
+    maxWidth: '78%',
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 5,
+  },
+  choicePreviewLeft: { left: 16, alignItems: 'flex-start' },
+  choicePreviewRight: { right: 16, alignItems: 'flex-end' },
+  choiceText: { textAlign: 'center', fontSize: 16, lineHeight: 21 },
   header: { paddingHorizontal: 22, paddingTop: 20, gap: 14 },
   scene: { flex: 1, paddingHorizontal: 22, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', gap: 18 },
   visualFrame: {
