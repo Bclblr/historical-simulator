@@ -1,9 +1,10 @@
 import { useMemo, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Animated, Image, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
 import { getGermany1933CardVisual } from '@/content/germany-1933/card-visuals';
+import { getCampaignEventImage } from '@/content/germany-campaign';
 import { AppText } from './app-text';
 
 interface SwipeDecisionCardProps {
@@ -43,6 +44,7 @@ export function SwipeDecisionCard({
     ? event.id.slice(0, -':follow-up'.length)
     : event.id;
   const visual = getGermany1933CardVisual(visualEventId);
+  const eventImage = getCampaignEventImage(visualEventId);
   const classificationLabel =
     event.classification === 'COUNTERFACTUAL_SIMULATION'
       ? 'SİMÜLASYON SONUCU'
@@ -112,10 +114,19 @@ export function SwipeDecisionCard({
 
         <View style={styles.scene}>
           <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
-            <View style={[styles.visualBadge, { borderColor: theme.colors.accent }]}>
-              <AppText variant="display">{visual.glyph}</AppText>
-            </View>
-            <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
+            {eventImage ? (
+              <>
+                <Image source={{ uri: eventImage.uri }} style={styles.eventImage} resizeMode="cover" />
+                <AppText variant="caption" muted>{eventImage.credit}</AppText>
+              </>
+            ) : (
+              <>
+                <View style={[styles.visualBadge, { borderColor: theme.colors.accent }]}>
+                  <AppText variant="display">{visual.glyph}</AppText>
+                </View>
+                <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
+              </>
+            )}
           </View>
           <AppText style={styles.summary}>{event.summary}</AppText>
         </View>
@@ -165,6 +176,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
     padding: 18,
+  },
+  eventImage: {
+    width: '100%',
+    height: 190,
+    borderRadius: 14,
   },
   visualBadge: {
     width: 96,
