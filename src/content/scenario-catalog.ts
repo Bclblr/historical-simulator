@@ -1,3 +1,4 @@
+import { GERMANY_1933_SCENARIO } from '@/content/germany-1933';
 import {
   createCountry,
   createEra,
@@ -51,4 +52,41 @@ export function getPublishedCountriesForEra(eraId: string): Country[] {
     .flatMap((entry) => entry.countries)
     .filter((country) => country.status === 'PUBLISHED')
     .sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+export function getScenarioForSelection(
+  eraId: string,
+  countryId: string,
+) {
+  if (
+    GERMANY_1933_SCENARIO.eraId === eraId &&
+    GERMANY_1933_SCENARIO.countryId === countryId
+  ) {
+    return GERMANY_1933_SCENARIO;
+  }
+  return null;
+}
+
+export function getPublishedInstitutionsForSelection(
+  eraId: string,
+  countryId: string,
+) {
+  return (
+    getScenarioForSelection(eraId, countryId)?.institutions.filter(
+      (institution) => institution.status === 'PUBLISHED',
+    ) ?? []
+  ).sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+export function getPublishedRolesForInstitution(
+  eraId: string,
+  countryId: string,
+  institutionId: string,
+) {
+  return (
+    getScenarioForSelection(eraId, countryId)?.roles.filter(
+      (role) =>
+        role.institutionId === institutionId && role.status === 'PUBLISHED',
+    ) ?? []
+  ).sort((a, b) => a.sortOrder - b.sortOrder);
 }
