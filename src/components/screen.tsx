@@ -21,7 +21,12 @@ export function Screen({ children, scroll = false, centered = false, style }: Pr
 
   if (scroll) {
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }} contentContainerStyle={contentStyle}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: theme.colors.background }}
+        contentContainerStyle={contentStyle}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {children}
       </ScrollView>
     );
@@ -31,6 +36,6 @@ export function Screen({ children, scroll = false, centered = false, style }: Pr
 }
 
 const styles = StyleSheet.create({
-  content: { flexGrow: 1, paddingHorizontal: 24 },
+  content: { flexGrow: 1, width: '100%', maxWidth: 1100, alignSelf: 'center', paddingHorizontal: 16 },
   centered: { justifyContent: 'center' },
 });
