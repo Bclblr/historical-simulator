@@ -85,9 +85,9 @@
 - [x] 70. 30 olay
 - [x] 71. 40 olay
 - [x] 72. 50 olay
-- [ ] 73. Olay bağlantıları
-- [ ] 74. Akademik kaynak kontrolü
-- [ ] 75. Tam oynanabilir 1933 senaryosu
+- [x] 73. Olay bağlantıları
+- [x] 74. Akademik kaynak kontrolü
+- [x] 75. Tam oynanabilir 1933 senaryosu
 
 ## 76–85 — UX ve atmosfer
 - [ ] 76. Ana menü
