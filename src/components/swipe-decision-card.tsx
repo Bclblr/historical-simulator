@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    gap: 8,
+    gap: 0,
   },
   card: {
     overflow: 'hidden',
@@ -311,10 +311,10 @@ const styles = StyleSheet.create({
   },
   questionBlock: {
     width: '100%',
+    height: 92,
     paddingHorizontal: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 66,
     paddingVertical: 4,
   },
   scene: {
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     gap: 1,
     paddingHorizontal: 18,
     paddingBottom: 0,
-    marginTop: 6,
+    marginTop: 16,
   },
   speakerName: {
     textAlign: 'center',
