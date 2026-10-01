@@ -112,9 +112,9 @@
 
 ## 93–100 — Test ve yayın
 - [x] 93. TypeScript/typecheck temizliği
-- [ ] 94. Game engine unit testleri
-- [ ] 95. Event/flag tutarlılık testleri
-- [ ] 96. Save corruption/migration testleri
+- [x] 94. Game engine unit testleri
+- [x] 95. Event/flag tutarlılık testleri
+- [x] 96. Save corruption/migration testleri
 - [ ] 97. Performans optimizasyonu
 - [ ] 98. Android/iOS gerçek cihaz testleri
 - [ ] 99. Test buildleri
