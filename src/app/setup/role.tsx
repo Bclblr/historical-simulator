@@ -1,5 +1,7 @@
 import { Link, Stack, router, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
+import { useState } from 'react';
+import { useAppTheme } from '@/theme';
 import { AppButton, AppCard, AppText, Screen, SectionHeader } from '@/components';
 import { getPublishedRolesForInstitution } from '@/content/scenario-catalog';
 
@@ -14,16 +16,50 @@ export default function RoleScreen() {
   const institution =
     typeof params.institution === 'string' ? params.institution : '';
   const roles = getPublishedRolesForInstitution(era, country, institution);
+  const theme = useAppTheme();
+  const [playerName, setPlayerName] = useState('');
+  const isGermanyCampaign = era === 'germany-1921';
 
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Rol Seçimi' }} />
       <SectionHeader
         eyebrow="4 / 4"
-        title="Görevini seç"
-        description="Rol, kurum içindeki bakış açını belirler. Kurgusal roller tarihsel kişilerden açıkça ayrılır."
+        title={isGermanyCampaign ? 'Karakterini oluştur' : 'Görevini seç'}
+        description={isGermanyCampaign
+          ? '1921’de parti liderliğini devralan karşı-olgusal karakterinin adını belirle. Tarihsel kişiler ve gerçek olaylar arşivde ayrı tutulur.'
+          : 'Rol, kurum içindeki bakış açını belirler. Kurgusal roller tarihsel kişilerden açıkça ayrılır.'}
       />
-      {roles.length ? (
+      {isGermanyCampaign && roles[0] ? (
+        <View style={styles.list}>
+          <AppCard>
+            <AppText variant="label" muted>KARAKTER ADI</AppText>
+            <TextInput
+              value={playerName}
+              onChangeText={setPlayerName}
+              placeholder="Adını yaz"
+              placeholderTextColor={theme.colors.textMuted}
+              maxLength={40}
+              style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
+            />
+            <AppButton
+              disabled={!playerName.trim()}
+              onPress={() => router.push({
+                pathname: '/game',
+                params: {
+                  era,
+                  country,
+                  institution,
+                  role: roles[0].id,
+                  playerName: playerName.trim(),
+                },
+              })}
+            >
+              Kampanyayı Başlat
+            </AppButton>
+          </AppCard>
+        </View>
+      ) : roles.length ? (
         <View style={styles.list}>
           {roles.map((role) => (
             <Link
@@ -61,4 +97,5 @@ const styles = StyleSheet.create({
   empty: { marginTop: 28, gap: 14 },
   meta: { marginTop: 8 },
   text: { marginTop: 8 },
+  input: { marginTop: 14, marginBottom: 18, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12, fontSize: 18 },
 });
