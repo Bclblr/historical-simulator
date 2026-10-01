@@ -13,6 +13,7 @@ interface SwipeDecisionCardProps {
   actorLabel: string;
   disabled?: boolean;
   onChoose: (option: DecisionOption) => void;
+  onPreviewDirection?: (direction: 'LEFT' | 'RIGHT' | null) => void;
 }
 
 const SWIPE_THRESHOLD = 105;
@@ -24,6 +25,7 @@ export function SwipeDecisionCard({
   actorLabel,
   disabled = false,
   onChoose,
+  onPreviewDirection,
 }: SwipeDecisionCardProps) {
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
@@ -50,11 +52,14 @@ export function SwipeDecisionCard({
     onMoveShouldSetPanResponder: (_, gesture) => !disabled && Math.abs(gesture.dx) > 5,
     onPanResponderMove: (_, gesture) => {
       position.setValue({ x: gesture.dx, y: gesture.dy * 0.06 });
-      setDirection(gesture.dx < -18 ? 'LEFT' : gesture.dx > 18 ? 'RIGHT' : null);
+      const nextDirection = gesture.dx < -18 ? 'LEFT' : gesture.dx > 18 ? 'RIGHT' : null;
+      setDirection(nextDirection);
+      onPreviewDirection?.(nextDirection);
     },
     onPanResponderRelease: (_, gesture) => {
       if (Math.abs(gesture.dx) < SWIPE_THRESHOLD) {
         setDirection(null);
+        onPreviewDirection?.(null);
         Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
         return;
       }
@@ -66,14 +71,16 @@ export function SwipeDecisionCard({
       }).start(() => {
         position.setValue({ x: 0, y: 0 });
         setDirection(null);
+        onPreviewDirection?.(null);
         onChoose(option);
       });
     },
     onPanResponderTerminate: () => {
       setDirection(null);
+      onPreviewDirection?.(null);
       Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
     },
-  }), [cardWidth, disabled, leftOption, onChoose, position, rightOption]);
+  }), [cardWidth, disabled, leftOption, onChoose, onPreviewDirection, position, rightOption]);
 
   return (
     <View style={styles.stage}>
