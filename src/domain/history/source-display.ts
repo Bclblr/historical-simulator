@@ -1,5 +1,6 @@
 import type { HistoricalEntityId } from './types';
 import type { HistoricalCitation } from './citation';
+import type { CitationPages } from './citation-pages';
 import type { HistoricalSource } from './source';
 import { getSourceCategory, type SourceCategory } from './source-category';
 
@@ -13,6 +14,7 @@ export interface SourceDisplay {
   sourceCategory: SourceCategory;
   confidence: HistoricalSource['confidence'];
   locator: string | null;
+  pages: CitationPages | null;
   note: string | null;
   url: string | null;
   doi: string | null;
@@ -39,6 +41,7 @@ export function createSourceDisplay(
     sourceCategory: getSourceCategory(source.type),
     confidence: source.confidence,
     locator: citation.locator,
+    pages: citation.pages,
     note: citation.note,
     url: source.url,
     doi: source.doi,
