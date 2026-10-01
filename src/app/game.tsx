@@ -185,7 +185,11 @@ export default function GameScreen() {
         option.swipeDirection === 'LEFT'
           ? activeContent.decision.left
           : activeContent.decision.right;
-      const affectedState = applyDecisionEffects(snapshot.state, selectedChoice.effects);
+      const stateAtEventDate =
+        activeContent.event.startDate > snapshot.state.currentDate
+          ? withGameDate(snapshot.state, activeContent.event.startDate)
+          : snapshot.state;
+      const affectedState = applyDecisionEffects(stateAtEventDate, selectedChoice.effects);
       const delayed = activeContent.event.classification === 'COUNTERFACTUAL_SIMULATION'
         ? null
         : getGermany1933DelayedConsequence(
