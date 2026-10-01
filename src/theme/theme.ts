@@ -13,6 +13,8 @@ export interface ThemeColors {
   onPrimary: string;
   accent: string;
   danger: string;
+  archive: string;
+  stamp: string;
 }
 
 export interface AppTheme {
@@ -37,6 +39,8 @@ export const lightTheme: AppTheme = {
     onPrimary: palette.paper50,
     accent: palette.accent700,
     danger: palette.danger700,
+    archive: palette.archiveGreen700,
+    stamp: palette.stampBlue700,
   },
   spacing,
   radius,
@@ -57,6 +61,8 @@ export const darkTheme: AppTheme = {
     onPrimary: palette.night950,
     accent: palette.accent300,
     danger: palette.danger300,
+    archive: palette.archiveGreen300,
+    stamp: palette.stampBlue300,
   },
   spacing,
   radius,
