@@ -1,5 +1,5 @@
 import type { DeskFile, GameState } from '@/domain/game';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
 import { useAppTheme } from '@/theme';
 import { AppCard } from './app-card';
@@ -9,10 +9,13 @@ import { DocumentEntrance } from './document-entrance';
 interface DeskScreenProps {
   state: GameState;
   activeFile?: DeskFile | null;
+  onOpenFile?: () => void;
 }
 
-export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
+export function DeskScreen({ state, activeFile = null, onOpenFile }: DeskScreenProps) {
   const theme = useAppTheme();
+  const { width } = useWindowDimensions();
+  const compact = width < 600;
   const scenario = getScenarioForSelection(
     state.selection.eraId,
     state.selection.countryId,
@@ -26,7 +29,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.hud}>
+      <View style={[styles.hud, compact && styles.stack]}>
         <View style={styles.hudBlock}>
           <AppText variant="label" muted>TARİH</AppText>
           <AppText variant="title" style={styles.date}>{state.currentDate}</AppText>
@@ -41,10 +44,10 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
         </View>
       </View>
 
-      <View style={styles.contextRow}>
+      <View style={[styles.contextRow, compact && styles.stack]}>
         <AppCard style={styles.contextCard}>
           <AppText variant="label" muted>DEVLET</AppText>
-          <AppText>{scenario?.countryId === 'germany' ? 'Germany' : state.selection.countryId}</AppText>
+          <AppText>{scenario?.countryId === 'germany' ? 'Almanya' : state.selection.countryId}</AppText>
         </AppCard>
         <AppCard style={styles.contextCard}>
           <AppText variant="label" muted>KURUM</AppText>
@@ -57,7 +60,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
       </View>
 
       <DocumentEntrance delay={80}>
-        <AppCard style={styles.activeFile}>
+        <AppCard interactive={Boolean(activeFile)} onPress={activeFile ? onOpenFile : undefined} style={styles.activeFile}>
         <View style={styles.fileHeader}>
           <AppText variant="label" muted>AKTİF DOSYA</AppText>
           <AppText variant="label" muted>
@@ -69,9 +72,12 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
         </AppText>
         <AppText muted style={styles.fileBody}>
           {activeFile
-            ? `${activeFile.documentIds.length} belge · Durum: ${activeFile.status}`
+            ? activeFile.documentIds.length > 0
+              ? `${activeFile.documentIds.length} kaynak belge · Dosyayı incelemek için dokun`
+              : 'Kaynak belge henüz eklenmedi · Olay dosyasını incelemek için dokun'
             : 'Event Engine tarafından uygun bulunan olaylar bu çalışma alanına gelecek.'}
         </AppText>
+        {activeFile ? <AppText variant="label" style={styles.openHint}>DOSYAYI İNCELE →</AppText> : null}
         </AppCard>
       </DocumentEntrance>
 
@@ -106,4 +112,6 @@ const styles = StyleSheet.create({
   fileTitle: { marginTop: 12 },
   fileBody: { marginTop: 14, maxWidth: 520 },
   deskEdge: { borderTopWidth: 1, paddingTop: 16, alignItems: 'center' },
+  stack: { flexDirection: 'column', alignItems: 'stretch' },
+  openHint: { marginTop: 18 },
 });
