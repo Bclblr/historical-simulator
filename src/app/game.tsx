@@ -3,30 +3,33 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
 import {
-  createDecisionOption,
-  getEligibleEvents,
+  applyDecisionEffects,\n  createDecisionOption,\n  getEligibleEvents,
   recordDecision,
   withGameDate,
   type DecisionOption,
   type GameSessionSnapshot,
 } from '@/domain/game';
-import { getScenarioForSelection } from '@/content/scenario-catalog';
+import { getScenarioForSelection } from '@/content/scenario-catalog';\nimport { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
 import { useGameSessionService } from '@/services';
 
-function createSimulationOptions(eventId: string): [DecisionOption, DecisionOption] {
+function createSimulationOptions(
+  eventId: string,
+  left: ScenarioDecisionChoice,
+  right: ScenarioDecisionChoice,
+): [DecisionOption, DecisionOption] {
   return [
     createDecisionOption({
-      id: `${eventId}:request-review`,
+      id: `${eventId}:${left.idSuffix}`,
       eventId,
-      label: 'Ek inceleme iste',
-      description: 'Dosya hakkında ek kurumsal değerlendirme talep et.',
+      label: left.label,
+      description: left.description,
       swipeDirection: 'LEFT',
     }),
     createDecisionOption({
-      id: `${eventId}:forward-file`,
+      id: `${eventId}:${right.idSuffix}`,
       eventId,
-      label: 'Dosyayı ilerlet',
-      description: 'Dosyayı görev zincirinde bir sonraki aşamaya ilet.',
+      label: right.label,
+      description: right.description,
       swipeDirection: 'RIGHT',
     }),
   ];
@@ -43,7 +46,7 @@ export default function GameScreen() {
   const sessions = useGameSessionService();
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState(false);\n  const [decisionResult, setDecisionResult] = useState<{ text: string; next: GameSessionSnapshot } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -102,9 +105,13 @@ export default function GameScreen() {
     const event = getEligibleEvents(scenario.events, snapshot.state)
       .find((item) => !decidedIds.has(item.id));
 
-    return event
-      ? { event, options: createSimulationOptions(event.id) }
-      : null;
+    if (!event) return null;
+    const decision = getGermany1933DecisionContent(event.id);
+    return {
+      event,
+      decision,
+      options: createSimulationOptions(event.id, decision.left, decision.right),
+    };
   }, [snapshot]);
 
   const scenario = snapshot
@@ -134,14 +141,18 @@ export default function GameScreen() {
         .filter((event) => !decidedIds.has(event.id) && event.startDate > snapshot.state.currentDate)
         .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
 
+      const selectedChoice =
+        option.swipeDirection === 'LEFT'
+          ? activeContent.decision.left
+          : activeContent.decision.right;
+      const affectedState = applyDecisionEffects(snapshot.state, selectedChoice.effects);
       const next: GameSessionSnapshot = {
         ...snapshot,
-        state: nextEvent ? withGameDate(snapshot.state, nextEvent.startDate) : snapshot.state,
+        state: nextEvent ? withGameDate(affectedState, nextEvent.startDate) : affectedState,
         decisionHistory: history,
       };
 
-      await sessions.save(next);
-      setSnapshot(next);
+      await sessions.save(next);\n      setDecisionResult({ text: selectedChoice.result, next });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Karar kaydedilemedi.');
     } finally {
@@ -156,12 +167,28 @@ export default function GameScreen() {
       {snapshot ? (
         <View style={styles.game}>
           <GameStatusBar snapshot={snapshot} />
-          {activeContent ? (
+          {decisionResult ? (
+            <AppCard>
+              <AppText variant="label" muted>KARAR SONUCU</AppText>
+              <AppText variant="heading">{decisionResult.text}</AppText>
+              <AppText muted>Kararın etkileri göstergelere işlendi.</AppText>
+              <AppText
+                variant="label"
+                onPress={() => {
+                  setSnapshot(decisionResult.next);
+                  setDecisionResult(null);
+                }}
+              >
+                SONRAKİ DOSYA →
+              </AppText>
+            </AppCard>
+          ) : activeContent ? (
             <SwipeDecisionCard
               event={activeContent.event}
               leftOption={activeContent.options[0]}
               rightOption={activeContent.options[1]}
-              actorLabel={actorLabel}
+              actorLabel={activeContent.decision.speaker || actorLabel}
+              prompt={activeContent.decision.prompt}
               disabled={saving}
               onChoose={(option) => void choose(option)}
             />
