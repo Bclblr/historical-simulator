@@ -17,11 +17,11 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
     scenarioId: 'germany-1921',
     era: createEra({
       id: 'germany-1921',
-      name: 'Almanya · 1919–1945',
-      shortName: '1919–1945',
+      name: 'Almanya · 1933–1945',
+      shortName: '1933–1945',
       description:
-        '1919’dan başlayan kesintisiz Almanya kampanyası. Tarihsel kayıt ile oyuncunun karşı-olgusal zaman çizgisi ayrı tutulur.',
-      startDate: '1919-01-05',
+        '1933–1945 Almanya’sında yaşayan kurgusal bir kişinin gündelik hayatına odaklanan, kararlarla dallanan yaşam simülasyonu.',
+      startDate: '1933-01-30',
       endDate: '1945-05-08',
       sortOrder: 10,
       status: 'PUBLISHED',
@@ -33,7 +33,7 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
         name: 'Almanya',
         shortName: 'Almanya',
         description:
-          '1919’dan 1945 tarihsel sınırına uzanan tek ve kesintisiz kampanya. Mevcut doğrulanmış 1933 olayları kampanyanın ilk içerik paketidir.',
+          'Tarihsel gelişmelerin arka planda ilerlediği; iş, para, güvenlik, çevre ve itibar kararlarının oyuncunun kişisel hikâyesini değiştirdiği yaşam simülasyonu.',
         sortOrder: 10,
         status: 'PUBLISHED',
       }),
@@ -69,7 +69,7 @@ export function getScenarioForSelection(
       ...GERMANY_1933_SCENARIO,
       id: 'germany-1921',
       eraId: 'germany-1921',
-      startDate: '1919-01-05',
+      startDate: '1933-01-30',
       endDate: '1945-05-08',
       events: GERMANY_1933_SCENARIO.events.map((event) => ({
         ...event,
