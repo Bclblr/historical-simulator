@@ -12,8 +12,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
-import { getGermany1933CardVisual } from '@/content/germany-1933/card-visuals';
-import { getCampaignEventImage, getCampaignConversation } from '@/content/germany-campaign';
+import { getCampaignConversation } from '@/content/germany-campaign';
 import { AppText } from './app-text';
 import { CharacterPortrait } from './character-portrait';
 
@@ -62,11 +61,6 @@ export function SwipeDecisionCard({
   const previewState = useSharedValue(0);
   const isCommitting = useSharedValue(false);
 
-  const visualEventId = event.id.endsWith(':follow-up')
-    ? event.id.slice(0, -':follow-up'.length)
-    : event.id;
-  const visual = getGermany1933CardVisual(visualEventId);
-  const eventImage = getCampaignEventImage(visualEventId);
   const conversation = getCampaignConversation(event.id, actorLabel, event.summary);
 
   const notifyPreview = useCallback(
@@ -254,12 +248,7 @@ export function SwipeDecisionCard({
           </Animated.View>
 
           <View style={styles.scene}>
-            <CharacterPortrait name={conversation.speaker} />
-            <View style={[styles.visualCaption, { borderTopColor: theme.colors.border }]}>
-              <AppText variant="caption" muted style={styles.historicalLabel}>
-                {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
-              </AppText>
-            </View>
+            <CharacterPortrait name={conversation.speaker} fill />
           </View>
         </Animated.View>
       </GestureDetector>
@@ -323,31 +312,17 @@ const styles = StyleSheet.create({
   scene: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-    paddingTop: 42,
-    paddingBottom: 0,
+    alignItems: 'stretch',
+    justifyContent: 'stretch',
   },
-  visualCaption: {
-    width: '100%',
-    minHeight: 36,
-    borderTopWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    marginTop: 8,
-  },
-  historicalLabel: { textAlign: 'center', maxWidth: 390 },
   identityBlock: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 1,
+    gap: 0,
     paddingHorizontal: 18,
-    paddingBottom: 2,
-    marginTop: -2,
+    paddingBottom: 0,
+    marginTop: -8,
   },
   speakerName: {
     textAlign: 'center',
