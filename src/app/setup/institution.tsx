@@ -31,7 +31,7 @@ export default function InstitutionScreen() {
               <AppCard interactive>
                 <AppText variant="heading">{institution.name}</AppText>
                 <AppText variant="label" muted style={styles.meta}>
-                  {institution.type}
+                  {institution.type === 'EXECUTIVE' ? 'YÜRÜTME' : institution.type}
                 </AppText>
                 <AppText muted style={styles.text}>{institution.description}</AppText>
               </AppCard>
