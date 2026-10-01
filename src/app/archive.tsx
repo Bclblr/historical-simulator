@@ -131,7 +131,7 @@ export default function ArchiveScreen() {
 
           <ArchiveSection title="Karar Geçmişi">
             {decisions.length ? decisions.map((decision) => {
-              const event = scenario.events.find((item) => item.id === decision.eventId);
+              const event = events.find((item) => item.id === decision.eventId);
               return (
                 <AppCard key={decision.sequence}>
                   <View style={styles.header}>
