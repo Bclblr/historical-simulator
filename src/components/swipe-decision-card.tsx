@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -26,9 +27,13 @@ interface SwipeDecisionCardProps {
   onPreviewDirection?: (direction: 'LEFT' | 'RIGHT' | null) => void;
 }
 
-const COMMIT_DISTANCE = 78;
-const PREVIEW_DISTANCE = 18;
-const COMMIT_VELOCITY = 650;
+const PREVIEW_DISTANCE = 16;
+const MIN_COMMIT_DISTANCE = 58;
+const MAX_COMMIT_DISTANCE = 92;
+const COMMIT_DISTANCE_RATIO = 0.2;
+const COMMIT_VELOCITY = 560;
+const VELOCITY_PROJECTION_SECONDS = 0.12;
+const EXIT_DURATION_MS = 175;
 
 export function SwipeDecisionCard({
   event,
@@ -43,8 +48,15 @@ export function SwipeDecisionCard({
   const { width, height } = useWindowDimensions();
   const cardWidth = Math.min(Math.max(width - 28, 292), 520);
   const cardHeight = Math.min(Math.max(height * 0.67, 500), 680);
+  const commitDistance = Math.min(
+    MAX_COMMIT_DISTANCE,
+    Math.max(MIN_COMMIT_DISTANCE, cardWidth * COMMIT_DISTANCE_RATIO),
+  );
+  const exitDistance = Math.max(width, cardWidth) + cardWidth * 0.45;
+
   const translateX = useSharedValue(0);
   const previewState = useSharedValue(0);
+  const isCommitting = useSharedValue(false);
 
   const visualEventId = event.id.endsWith(':follow-up')
     ? event.id.slice(0, -':follow-up'.length)
@@ -53,41 +65,61 @@ export function SwipeDecisionCard({
   const eventImage = getCampaignEventImage(visualEventId);
   const conversation = getCampaignConversation(event.id, actorLabel, event.summary);
 
-  const notifyPreview = (value: number) => {
-    onPreviewDirection?.(value < 0 ? 'LEFT' : value > 0 ? 'RIGHT' : null);
-  };
+  const notifyPreview = useCallback(
+    (value: number) => {
+      onPreviewDirection?.(value < 0 ? 'LEFT' : value > 0 ? 'RIGHT' : null);
+    },
+    [onPreviewDirection],
+  );
 
-  const commitChoice = (direction: number) => {
-    onPreviewDirection?.(null);
-    onChoose(direction < 0 ? leftOption : rightOption);
-  };
+  const commitChoice = useCallback(
+    (direction: number) => {
+      onPreviewDirection?.(null);
+      onChoose(direction < 0 ? leftOption : rightOption);
+    },
+    [leftOption, onChoose, onPreviewDirection, rightOption],
+  );
 
   const pan = useMemo(
     () =>
       Gesture.Pan()
         .enabled(!disabled)
-        .activeOffsetX([-5, 5])
-        .failOffsetY([-24, 24])
-        .onUpdate((event) => {
-          translateX.value = event.translationX;
+        .activeOffsetX([-4, 4])
+        .failOffsetY([-34, 34])
+        .onUpdate((gestureEvent) => {
+          if (isCommitting.value) return;
+
+          translateX.value = gestureEvent.translationX;
+
           const nextPreview =
-            event.translationX < -PREVIEW_DISTANCE
+            gestureEvent.translationX < -PREVIEW_DISTANCE
               ? -1
-              : event.translationX > PREVIEW_DISTANCE
+              : gestureEvent.translationX > PREVIEW_DISTANCE
                 ? 1
                 : 0;
+
           if (nextPreview !== previewState.value) {
             previewState.value = nextPreview;
             scheduleOnRN(notifyPreview, nextPreview);
           }
         })
-        .onEnd((event) => {
-          const shouldCommit =
-            Math.abs(event.translationX) >= COMMIT_DISTANCE ||
-            Math.abs(event.velocityX) >= COMMIT_VELOCITY;
+        .onEnd((gestureEvent) => {
+          if (isCommitting.value) return;
 
-          if (!shouldCommit) {
-            translateX.value = withSpring(0, { damping: 20, stiffness: 240 });
+          const projectedX =
+            gestureEvent.translationX +
+            gestureEvent.velocityX * VELOCITY_PROJECTION_SECONDS;
+
+          const distanceCommitted = Math.abs(projectedX) >= commitDistance;
+          const velocityCommitted = Math.abs(gestureEvent.velocityX) >= COMMIT_VELOCITY;
+
+          if (!distanceCommitted && !velocityCommitted) {
+            translateX.value = withSpring(0, {
+              damping: 19,
+              stiffness: 245,
+              mass: 0.72,
+            });
+
             if (previewState.value !== 0) {
               previewState.value = 0;
               scheduleOnRN(notifyPreview, 0);
@@ -95,23 +127,52 @@ export function SwipeDecisionCard({
             return;
           }
 
-          const direction =
-            event.translationX !== 0
-              ? event.translationX < 0 ? -1 : 1
-              : event.velocityX < 0 ? -1 : 1;
+          const directionSource =
+            Math.abs(projectedX) >= commitDistance
+              ? projectedX
+              : gestureEvent.velocityX;
+          const direction = directionSource < 0 ? -1 : 1;
+
+          isCommitting.value = true;
           previewState.value = 0;
-          translateX.value = withTiming(direction * cardWidth * 1.55, { duration: 145 });
-          scheduleOnRN(commitChoice, direction);
+
+          translateX.value = withTiming(
+            direction * exitDistance,
+            {
+              duration: EXIT_DURATION_MS,
+              easing: Easing.out(Easing.cubic),
+            },
+            (finished) => {
+              if (finished) {
+                scheduleOnRN(commitChoice, direction);
+              } else {
+                isCommitting.value = false;
+              }
+            },
+          );
         }),
-    [cardWidth, disabled, leftOption, onChoose, onPreviewDirection, rightOption],
+    [
+      commitChoice,
+      commitDistance,
+      disabled,
+      exitDistance,
+      isCommitting,
+      notifyPreview,
+      previewState,
+      translateX,
+    ],
   );
 
-  const animatedCardStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { rotate: `${(translateX.value / cardWidth) * 7}deg` },
-    ],
-  }));
+  const animatedCardStyle = useAnimatedStyle(() => {
+    const normalized = Math.max(-1, Math.min(1, translateX.value / cardWidth));
+
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { rotate: `${normalized * 8}deg` },
+      ],
+    };
+  });
 
   return (
     <View style={styles.stage}>
