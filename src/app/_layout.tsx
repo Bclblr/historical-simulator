@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AppDatabaseProvider } from '@/data/db';
 import { AppThemeProvider, useAppTheme } from '@/theme';
@@ -24,10 +25,12 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <AppDatabaseProvider>
-      <AppThemeProvider>
-        <RootNavigator />
-      </AppThemeProvider>
-    </AppDatabaseProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppDatabaseProvider>
+        <AppThemeProvider>
+          <RootNavigator />
+        </AppThemeProvider>
+      </AppDatabaseProvider>
+    </GestureHandlerRootView>
   );
 }
