@@ -14,7 +14,10 @@ function clamp(value: number): number {
 
 function previewDelta(effects: DecisionEffect[], key: string): number {
   return effects.reduce((total, effect) => {
-    if (effect.type === 'CHANGE_VARIABLE' && effect.key === key) return total + effect.delta;
+    if (effect.type === 'CHANGE_VARIABLE' && effect.key === key) {
+      const scaled = Math.sign(effect.delta) * Math.max(3, Math.round(Math.abs(effect.delta) * 2.5));
+      return total + scaled;
+    }
     return total;
   }, 0);
 }
