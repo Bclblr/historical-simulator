@@ -40,7 +40,7 @@ const decisions: Record<string, ScenarioDecisionContent> = {
       ],
     },
   },
-  'de-1933-hitler-chancellor': {
+  'de-1933-hitler-appointed-chancellor': {
     prompt: 'Yeni şansölye göreve başladı. Kabine sekreterliği ilk dosyalarda nasıl hareket etsin?',
     speaker: 'Kabine Sekreterliği',
     left: {
