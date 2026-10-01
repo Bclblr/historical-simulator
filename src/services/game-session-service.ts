@@ -21,12 +21,19 @@ export class GameSessionService {
       state: createInitialGameState({
         ...input,
         variables: input.campaign
-          ? {
-              publicSupport: 55,
-              institutionalInfluence: 55,
-              stability: 50,
-              foreignRelations: 50,
-            }
+          ? input.campaign.campaignId === 'germany-life'
+            ? {
+                money: 50,
+                safety: 55,
+                social: 50,
+                reputation: 50,
+              }
+            : {
+                publicSupport: 55,
+                institutionalInfluence: 55,
+                stability: 50,
+                foreignRelations: 50,
+              }
           : undefined,
       }),
       campaign: input.campaign,
