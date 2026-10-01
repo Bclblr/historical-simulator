@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppCard, AppText, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
+import { AppCard, AppText, CampaignEndingCard, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
 import {
   applyDecisionEffects,
   evaluateGermanyCampaignEnding,
@@ -244,6 +244,49 @@ export default function GameScreen() {
     }
   }
 
+  async function restartCampaign() {
+    if (!snapshot || saving) return;
+
+    setSaving(true);
+    setError(null);
+    setPreviewDirection(null);
+
+    try {
+      const restartScenario = getScenarioForSelection(
+        snapshot.state.selection.eraId,
+        snapshot.state.selection.countryId,
+      );
+
+      if (!restartScenario) {
+        throw new Error('Senaryo bulunamadı.');
+      }
+
+      const restarted = await sessions.start({
+        sessionId: `session-${Date.now()}`,
+        startDate:
+          snapshot.state.selection.eraId === 'germany-1921'
+            ? '1919-01-05'
+            : restartScenario.startDate,
+        selection: snapshot.state.selection,
+        campaign:
+          snapshot.state.selection.eraId === 'germany-1921'
+            ? {
+                playerName: snapshot.campaign?.playerName ?? 'Oyuncu',
+                campaignId: 'germany-1921',
+                startedAt: '1919-01-05',
+                leadershipActive: true,
+              }
+            : undefined,
+      });
+
+      setSnapshot(restarted);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Oyun yeniden başlatılamadı.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <Screen style={styles.screen}>
       <Stack.Screen options={{ title: snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
@@ -262,17 +305,14 @@ export default function GameScreen() {
           />
           <View style={styles.decisionArea}>
           {ending ? (
-            <AppCard>
-              <AppText variant="label" muted>ZAMAN ÇİZGİSİ SONA ERDİ</AppText>
-              <AppText variant="heading">{ending.title}</AppText>
-              <AppText>{ending.description}</AppText>
-              <AppText muted>
-                {ending.classification === 'HISTORICAL_FACT' ? 'Tarihsel sınır' : 'Alternatif Simülasyon'}
-              </AppText>
-              <AppText variant="caption" muted>
-                {snapshot.campaign?.playerName ?? 'Oyuncu'} · {snapshot.state.currentDate} · {snapshot.decisionHistory.length} karar
-              </AppText>
-            </AppCard>
+            <CampaignEndingCard
+              ending={ending}
+              playerName={snapshot.campaign?.playerName ?? 'Oyuncu'}
+              date={snapshot.state.currentDate}
+              decisionCount={snapshot.decisionHistory.length}
+              restarting={saving}
+              onRestart={() => void restartCampaign()}
+            />
           ) : activeContent ? (
             <SwipeDecisionCard
               key={`${activeContent.event.id}:${snapshot.decisionHistory.length}`}
