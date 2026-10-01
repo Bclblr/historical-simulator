@@ -58,18 +58,26 @@ export function getScenarioForSelection(
   eraId: string,
   countryId: string,
 ) {
-  if (
-    (eraId === 'germany-1921' || GERMANY_1933_SCENARIO.eraId === eraId) &&
-    GERMANY_1933_SCENARIO.countryId === countryId
-  ) {
+  if (GERMANY_1933_SCENARIO.countryId !== countryId) return null;
+
+  if (eraId === GERMANY_1933_SCENARIO.eraId) {
+    return GERMANY_1933_SCENARIO;
+  }
+
+  if (eraId === 'germany-1921') {
     return {
       ...GERMANY_1933_SCENARIO,
       id: 'germany-1921',
       eraId: 'germany-1921',
       startDate: '1921-07-29',
       endDate: '1945-05-08',
+      events: GERMANY_1933_SCENARIO.events.map((event) => ({
+        ...event,
+        eraId: 'germany-1921',
+      })),
     };
   }
+
   return null;
 }
 
