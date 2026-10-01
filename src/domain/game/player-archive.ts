@@ -9,6 +9,19 @@ export interface PlayerArchive {
   decisionsRecorded: number;
 }
 
+export interface ArchiveStatistics {
+  totalEvents: number;
+  discoveredEvents: number;
+  discoveredDocuments: number;
+  decisionsRecorded: number;
+  historicalProgressPercent: number;
+}
+
+export interface ArchiveTimelineComparison {
+  historical: ArchiveTimelineEntry[];
+  player: ArchiveTimelineEntry[];
+}
+
 export interface ArchiveTimelineEntry {
   id: string;
   date: string;
@@ -73,6 +86,35 @@ export function createArchiveTimeline(
   return [...historical, ...decisions].sort(
     (a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id),
   );
+}
+
+export function createTimelineComparison(
+  snapshot: GameSessionSnapshot,
+  events: HistoricalEvent[],
+): ArchiveTimelineComparison {
+  const timeline = createArchiveTimeline(snapshot, events);
+  return {
+    historical: timeline.filter((item) => item.kind === 'EVENT'),
+    player: timeline.filter((item) => item.kind === 'DECISION'),
+  };
+}
+
+export function createArchiveStatistics(
+  snapshot: GameSessionSnapshot,
+  events: HistoricalEvent[],
+  documents: HistoricalDocument[] = [],
+): ArchiveStatistics {
+  const discoveredEvents = getDiscoveredEvents(snapshot, events);
+  const discoveredDocuments = getDiscoveredDocuments(snapshot, events, documents);
+  const totalEvents = events.length;
+  return {
+    totalEvents,
+    discoveredEvents: discoveredEvents.length,
+    discoveredDocuments: discoveredDocuments.length,
+    decisionsRecorded: snapshot.decisionHistory.length,
+    historicalProgressPercent:
+      totalEvents === 0 ? 0 : Math.round((discoveredEvents.length / totalEvents) * 100),
+  };
 }
 
 export function createPlayerArchive(
