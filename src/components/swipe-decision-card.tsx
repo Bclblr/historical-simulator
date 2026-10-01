@@ -225,7 +225,7 @@ export function SwipeDecisionCard({
             pointerEvents="none"
             style={[
               styles.choicePreview,
-              styles.choicePreviewLeft,
+              styles.choicePreviewRight,
               { borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceElevated },
               leftChoiceStyle,
             ]}
@@ -237,7 +237,7 @@ export function SwipeDecisionCard({
             pointerEvents="none"
             style={[
               styles.choicePreview,
-              styles.choicePreviewRight,
+              styles.choicePreviewLeft,
               { borderColor: theme.colors.border, backgroundColor: theme.colors.surfaceElevated },
               rightChoiceStyle,
             ]}
