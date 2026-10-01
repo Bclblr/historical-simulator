@@ -1,5 +1,44 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, Screen, SectionHeader } from '@/components';
-export default function EraScreen(){return <Screen><Stack.Screen options={{title:'Dönem Seçimi'}}/><SectionHeader eyebrow="1 / 4" title="Bir dönem seç" description="İlk prototip 1933 ile başlıyor. Yeni dönemler aynı oyun motoruna eklenecek."/><Link href="/setup/country?era=1933" asChild><AppCard interactive style={s.card}><AppText variant="heading">1933</AppText><AppText muted style={s.text}>Avrupa'da siyasal dönüşüm ve uluslararası belirsizlik dönemi.</AppText></AppCard></Link></Screen>}
-const s=StyleSheet.create({card:{marginTop:28},text:{marginTop:8}});
+import { getPublishedEras } from '@/content/scenario-catalog';
+
+export default function EraScreen() {
+  const eras = getPublishedEras();
+
+  return (
+    <Screen>
+      <Stack.Screen options={{ title: 'Dönem Seçimi' }} />
+      <SectionHeader
+        eyebrow="1 / 4"
+        title="Bir dönem seç"
+        description="Her dönem kendi tarihsel içerik paketini kullanır; çekirdek oyun motoru dönemden bağımsızdır."
+      />
+      <View style={styles.list}>
+        {eras.map((era) => (
+          <Link
+            key={era.id}
+            href={{ pathname: '/setup/country', params: { era: era.id } }}
+            asChild
+          >
+            <AppCard interactive>
+              <AppText variant="heading">{era.name}</AppText>
+              <AppText muted style={styles.text}>
+                {era.description}
+              </AppText>
+              <AppText variant="label" muted style={styles.meta}>
+                {era.startDate} — {era.endDate}
+              </AppText>
+            </AppCard>
+          </Link>
+        ))}
+      </View>
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  list: { marginTop: 28, gap: 12 },
+  text: { marginTop: 8 },
+  meta: { marginTop: 14 },
+});
