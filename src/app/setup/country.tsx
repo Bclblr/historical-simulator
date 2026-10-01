@@ -7,7 +7,10 @@ import {
   Screen,
   SectionHeader,
 } from '@/components';
-import { getPublishedCountriesForEra } from '@/content/scenario-catalog';
+import {
+  getPublishedCountriesForEra,
+  getPublishedInstitutionsForSelection,
+} from '@/content/scenario-catalog';
 
 export default function CountryScreen() {
   const { era } = useLocalSearchParams<{ era?: string }>();
@@ -24,13 +27,30 @@ export default function CountryScreen() {
       />
       {countries.length ? (
         <View style={styles.list}>
-          {countries.map((country) => (
+          {countries.map((country) => {
+            const defaultInstitution =
+              eraId === 'germany-1921'
+                ? getPublishedInstitutionsForSelection(eraId, country.id)[0]
+                : undefined;
+
+            return (
             <Link
               key={country.id}
-              href={{
-                pathname: '/setup/institution',
-                params: { era: eraId, country: country.id },
-              }}
+              href={
+                eraId === 'germany-1921' && defaultInstitution
+                  ? {
+                      pathname: '/setup/role',
+                      params: {
+                        era: eraId,
+                        country: country.id,
+                        institution: defaultInstitution.id,
+                      },
+                    }
+                  : {
+                      pathname: '/setup/institution',
+                      params: { era: eraId, country: country.id },
+                    }
+              }
               asChild
             >
               <AppCard interactive>
@@ -40,7 +60,8 @@ export default function CountryScreen() {
                 </AppText>
               </AppCard>
             </Link>
-          ))}
+            );
+          })}
         </View>
       ) : (
         <View style={styles.empty}>
