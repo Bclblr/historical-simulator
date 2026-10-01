@@ -55,6 +55,7 @@ export default function GameScreen() {
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [previewDirection, setPreviewDirection] = useState<'LEFT' | 'RIGHT' | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -214,7 +215,16 @@ export default function GameScreen() {
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
-          <GameStatusBar snapshot={snapshot} />
+          <GameStatusBar
+            snapshot={snapshot}
+            previewEffects={
+              previewDirection && activeContent
+                ? (previewDirection === 'LEFT'
+                    ? activeContent.decision.left.effects
+                    : activeContent.decision.right.effects)
+                : []
+            }
+          />
           {ending ? (
             <AppCard>
               <AppText variant="label" muted>ZAMAN ÇİZGİSİ SONA ERDİ</AppText>
@@ -234,6 +244,7 @@ export default function GameScreen() {
               rightOption={activeContent.options[1]}
               actorLabel={activeContent.decision.speaker || actorLabel}
               disabled={saving}
+              onPreviewDirection={setPreviewDirection}
               onChoose={(option) => void choose(option)}
             />
           ) : (
