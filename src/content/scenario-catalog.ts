@@ -14,11 +14,11 @@ export interface ScenarioCatalogEntry {
 
 export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
   {
-    scenarioId: 'germany-1933',
+    scenarioId: 'germany-1921',
     era: createEra({
-      id: '1933',
-      name: '1933',
-      shortName: '1933',
+      id: 'germany-1921',
+      name: 'Almanya · 1921–1945',
+      shortName: '1921–1945',
       description:
         'Almanya\'da demokratik kurumların çözüldüğü ve diktatörlüğün pekiştirildiği, Avrupa çapındaki daha geniş siyasi krizin parçası olan bir dönem.',
       startDate: '1933-01-01',
@@ -29,7 +29,7 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
     countries: [
       createCountry({
         id: 'germany',
-        eraId: '1933',
+        eraId: 'germany-1921',
         name: 'Almanya',
         shortName: 'Almanya',
         description:
@@ -59,10 +59,16 @@ export function getScenarioForSelection(
   countryId: string,
 ) {
   if (
-    GERMANY_1933_SCENARIO.eraId === eraId &&
+    (eraId === 'germany-1921' || GERMANY_1933_SCENARIO.eraId === eraId) &&
     GERMANY_1933_SCENARIO.countryId === countryId
   ) {
-    return GERMANY_1933_SCENARIO;
+    return {
+      ...GERMANY_1933_SCENARIO,
+      id: 'germany-1921',
+      eraId: 'germany-1921',
+      startDate: '1921-07-29',
+      endDate: '1945-05-08',
+    };
   }
   return null;
 }
