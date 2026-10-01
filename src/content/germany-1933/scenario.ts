@@ -1,6 +1,11 @@
 import { createInitialGameState, type GameState } from '@/domain/game';
 import type { EventConnection, HistoricalDocument, HistoricalEvent, Institution, HistoricalRole } from '@/domain/history';
 import { GERMANY_1933_CHRONOLOGY } from './chronology';
+import {
+  GERMANY_1921_1932_CHRONOLOGY,
+  GERMANY_1934_1938_CHRONOLOGY,
+  GERMANY_1939_1945_CHRONOLOGY,
+} from '@/content/germany-campaign';
 import { GERMANY_1933_EVENT_CONNECTIONS } from './event-connections';
 import {
   GERMANY_1933_DEFAULT_INSTITUTION_ID,
@@ -32,7 +37,12 @@ export const GERMANY_1933_SCENARIO: Germany1933Scenario = {
   endDate: '1933-12-31',
   institutions: GERMANY_1933_INSTITUTIONS,
   roles: GERMANY_1933_ROLES,
-  events: GERMANY_1933_CHRONOLOGY,
+  events: [
+    ...GERMANY_1921_1932_CHRONOLOGY,
+    ...GERMANY_1933_CHRONOLOGY,
+    ...GERMANY_1934_1938_CHRONOLOGY,
+    ...GERMANY_1939_1945_CHRONOLOGY,
+  ].sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder),
   documents: [],
   connections: GERMANY_1933_EVENT_CONNECTIONS,
 };
