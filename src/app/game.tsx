@@ -10,6 +10,7 @@ export default function GameScreen() {
   const sessions = useGameSessionService();
   const [state, setState] = useState<GameState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [fileOpen, setFileOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -79,28 +80,33 @@ export default function GameScreen() {
   }, [state]);
 
   return (
-    <Screen centered>
+    <Screen scroll>
       <Stack.Screen options={{ title: 'Simülasyon', headerShown: true }} />
       <AppText variant="label" muted>{error ? 'KAYIT HATASI' : state ? 'OTURUM KAYDEDİLDİ' : 'OTURUM HAZIRLANIYOR'}</AppText>
       {error ? (
         <AppCard><AppText>{error}</AppText></AppCard>
       ) : state ? (
         <>
-          <DeskScreen state={state} activeFile={activeContent?.file ?? null} />
-          {activeContent ? (
+          <DeskScreen
+            state={state}
+            activeFile={activeContent?.file ?? null}
+            onOpenFile={() => setFileOpen(true)}
+          />
+          {activeContent && fileOpen ? (
             <AppCard>
               <AppText variant="label" muted>{activeContent.card.date} · TARİHSEL KAYIT</AppText>
               <AppText variant="title">{activeContent.card.title}</AppText>
               <AppText>{activeContent.card.body}</AppText>
+              <AppText variant="label" muted>Bu bölüm tarihsel olay kaydıdır; karar seçenekleri ayrı simülasyon katmanında sunulacaktır.</AppText>
             </AppCard>
-          ) : (
+          ) : !activeContent ? (
             <AppCard>
               <AppText variant="heading">Bu tarihte uygun dosya bulunamadı</AppText>
               <AppText muted>
                 Seçilen kurum ve rol için yayımlanmış olayların tarih ve koşulları kontrol edilmelidir.
               </AppText>
             </AppCard>
-          )}
+          ) : null}
         </>
       ) : null}
     </Screen>
