@@ -19,4 +19,8 @@ export const palette = {
   accent300: '#BCA98D',
   danger700: '#7B332F',
   danger300: '#D79B95',
+  archiveGreen700: '#465247',
+  archiveGreen300: '#AAB3A5',
+  stampBlue700: '#354B5B',
+  stampBlue300: '#A7BAC5',
 } as const;
