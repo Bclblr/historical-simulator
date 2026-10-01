@@ -6,6 +6,7 @@ import { useAppTheme } from '@/theme';
 import { getGermany1933CardVisual } from '@/content/germany-1933/card-visuals';
 import { getCampaignEventImage, getCampaignConversation } from '@/content/germany-campaign';
 import { AppText } from './app-text';
+import { CharacterPortrait } from './character-portrait';
 
 interface SwipeDecisionCardProps {
   event: HistoricalEvent;
@@ -123,18 +124,11 @@ export function SwipeDecisionCard({
 
         <View style={styles.scene}>
           <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
+            <CharacterPortrait name={conversation.speaker} />
             {eventImage ? (
-              <>
-                <Image source={{ uri: eventImage.uri }} style={styles.eventImage} resizeMode="cover" />
-                <AppText variant="caption" muted>{eventImage.credit}</AppText>
-              </>
+              <AppText variant="caption" muted>{eventImage.credit}</AppText>
             ) : (
-              <>
-                <View style={[styles.visualBadge, { borderColor: theme.colors.accent }]}>
-                  <AppText variant="display">{visual.glyph}</AppText>
-                </View>
-                <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
-              </>
+              <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
             )}
           </View>
           <AppText style={styles.dialogue}>“{conversation.line}”</AppText>
