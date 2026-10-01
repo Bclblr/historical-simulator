@@ -151,7 +151,7 @@ export default function GameScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: '1933 · Almanya', headerShown: true }} />
+      <Stack.Screen options={{ title: '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
