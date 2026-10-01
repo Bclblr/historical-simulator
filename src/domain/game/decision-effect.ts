@@ -38,7 +38,11 @@ export function applyDecisionEffect(
     case 'CHANGE_VARIABLE': {
       assertFinite(effect.delta, 'DecisionEffect delta');
       const current = state.variables[effect.key] ?? 0;
-      const next = current + effect.delta;
+      const isCampaignMeter = ['publicSupport', 'institutionalInfluence', 'stability', 'foreignRelations'].includes(effect.key);
+      const scaledDelta = isCampaignMeter
+        ? Math.sign(effect.delta) * Math.max(3, Math.round(Math.abs(effect.delta) * 2.5))
+        : effect.delta;
+      const next = current + scaledDelta;
       assertFinite(next, 'DecisionEffect resulting variable');
       return withGameVariable(state, effect.key, next);
     }
