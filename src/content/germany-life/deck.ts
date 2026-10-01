@@ -520,6 +520,11 @@ export function getActiveGermanyLifeCard(
     .filter((card) => flagsMatch(card, snapshot))
     .sort((a, b) => cardScore(a, snapshot) - cardScore(b, snapshot));
 
-  const card = eligible[0] ?? fallbackCard(snapshot);
+  const finalChoice =
+    snapshot.state.currentDate >= '1945-01-01'
+      ? eligible.find((card) => card.id === 'life-1945-next-step')
+      : undefined;
+
+  const card = finalChoice ?? eligible[0] ?? fallbackCard(snapshot);
   return { card, event: toEvent(card, snapshot) };
 }
