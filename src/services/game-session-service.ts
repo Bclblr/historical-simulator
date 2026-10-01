@@ -18,7 +18,17 @@ export class GameSessionService {
 
   async start(input: StartGameInput): Promise<GameSessionSnapshot> {
     const snapshot: GameSessionSnapshot = {
-      state: createInitialGameState(input),
+      state: createInitialGameState({
+        ...input,
+        variables: input.campaign
+          ? {
+              publicSupport: 55,
+              institutionalInfluence: 55,
+              stability: 50,
+              foreignRelations: 50,
+            }
+          : undefined,
+      }),
       campaign: input.campaign,
       decisionHistory: [],
       scheduledEffects: [],
