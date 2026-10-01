@@ -1,3 +1,54 @@
-import { Stack } from 'expo-router';import { StyleSheet,Text,View } from 'react-native';import { useAppTheme } from '@/theme';
-export default function SettingsScreen(){const t=useAppTheme();return <View style={[s.c,{backgroundColor:t.colors.background}]}><Stack.Screen options={{title:'Ayarlar',headerShown:true}}/><Text style={[s.title,{color:t.colors.text}]}>Ayarlar</Text><Text style={[s.text,{color:t.colors.textMuted}]}>Tema, ses, haptic ve erişilebilirlik seçenekleri burada yer alacak.</Text></View>}
-const s=StyleSheet.create({c:{flex:1,padding:28,paddingTop:80},title:{fontSize:30,fontWeight:'800'},text:{marginTop:12,fontSize:16,lineHeight:24}});
+import { Stack } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, Switch, View } from 'react-native';
+import { AppCard, AppText, Screen, SectionHeader } from '@/components';
+import {
+  getAudioPreferences,
+  setAudioPreferences,
+} from '@/services';
+import { useAppTheme } from '@/theme';
+
+export default function SettingsScreen() {
+  const theme = useAppTheme();
+  const [audio, setAudio] = useState(getAudioPreferences());
+
+  return (
+    <Screen>
+      <Stack.Screen options={{ title: 'Ayarlar', headerShown: true }} />
+      <SectionHeader
+        eyebrow="DENEYİM"
+        title="Ayarlar"
+        description="Atmosfer özellikleri oynanışı ve tarihsel içeriği değiştirmez."
+      />
+      <AppCard style={styles.card}>
+        <View style={styles.row}>
+          <View style={styles.copy}>
+            <AppText variant="heading">Ses efektleri</AppText>
+            <AppText muted>
+              Belge, mesaj ve karar arayüzü için kısa çevresel ses işaretleri.
+            </AppText>
+          </View>
+          <Switch
+            value={audio.enabled}
+            trackColor={{
+              false: theme.colors.border,
+              true: theme.colors.archive,
+            }}
+            onValueChange={(enabled) =>
+              setAudio(setAudioPreferences({ enabled }))
+            }
+          />
+        </View>
+        <AppText variant="label" muted>
+          SES DÜZEYİ · %{Math.round(audio.volume * 100)}
+        </AppText>
+      </AppCard>
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: { marginTop: 28, gap: 18 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 18 },
+  copy: { flex: 1, gap: 8 },
+});
