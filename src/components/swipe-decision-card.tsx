@@ -212,13 +212,17 @@ export function SwipeDecisionCard({
 
   return (
     <View style={styles.stage}>
+      <View style={styles.questionBlock}>
+        <AppText style={styles.question}>“{conversation.line}”</AppText>
+      </View>
+
       <GestureDetector gesture={pan}>
         <Animated.View
           style={[
             styles.card,
             {
               width: cardWidth,
-              minHeight: cardHeight,
+              height: cardHeight,
               backgroundColor: theme.colors.surfaceElevated,
               borderColor: theme.colors.border,
             },
@@ -249,37 +253,38 @@ export function SwipeDecisionCard({
             <AppText variant="label" style={styles.choiceText}>{rightOption.label} →</AppText>
           </Animated.View>
 
-          <View style={styles.header}>
-            <AppText style={styles.question}>“{conversation.line}”</AppText>
-          </View>
-
           <View style={styles.scene}>
             <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
               <CharacterPortrait name={conversation.speaker} />
-
-              <View style={styles.historicalDevelopment}>
-                <AppText variant="label" muted style={styles.historicalLabel}>
-                  {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
-                </AppText>
-                <AppText variant="heading" style={styles.speakerName}>
-                  {conversation.speaker}
-                </AppText>
-                {conversation.role ? (
-                  <AppText variant="caption" muted style={styles.speakerRole}>
-                    {conversation.role}
-                  </AppText>
-                ) : null}
-              </View>
+              <AppText variant="caption" muted style={styles.historicalLabel}>
+                {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
+              </AppText>
             </View>
           </View>
         </Animated.View>
       </GestureDetector>
+
+      <View style={styles.identityBlock}>
+        <AppText variant="heading" style={styles.speakerName}>
+          {conversation.speaker}
+        </AppText>
+        {conversation.role ? (
+          <AppText variant="caption" muted style={styles.speakerRole}>
+            {conversation.role}
+          </AppText>
+        ) : null}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  stage: { width: '100%', alignItems: 'center', justifyContent: 'center' },
+  stage: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 10,
+  },
   card: {
     overflow: 'hidden',
     borderWidth: 1,
@@ -309,19 +314,18 @@ const styles = StyleSheet.create({
   choicePreviewLeft: { left: 16, alignItems: 'flex-start' },
   choicePreviewRight: { right: 16, alignItems: 'flex-end' },
   choiceText: { textAlign: 'center', fontSize: 16, lineHeight: 21 },
-  header: {
+  questionBlock: {
+    width: '100%',
     paddingHorizontal: 18,
-    paddingTop: 16,
-    paddingBottom: 8,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 54,
   },
   scene: {
     flex: 1,
-    paddingHorizontal: 18,
-    paddingTop: 8,
-    paddingBottom: 14,
+    padding: 14,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   visualFrame: {
     width: '100%',
@@ -335,14 +339,22 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 14,
   },
-  historicalDevelopment: {
+  historicalLabel: { textAlign: 'center', maxWidth: 390 },
+  identityBlock: {
     width: '100%',
     alignItems: 'center',
-    gap: 3,
-    paddingTop: 2,
+    justifyContent: 'center',
+    gap: 2,
+    paddingHorizontal: 18,
+    paddingBottom: 2,
   },
-  historicalLabel: { textAlign: 'center', maxWidth: 390 },
-  speakerName: { textAlign: 'center', alignSelf: 'center', maxWidth: 420, fontSize: 18, lineHeight: 22 },
+  speakerName: {
+    textAlign: 'center',
+    alignSelf: 'center',
+    maxWidth: 420,
+    fontSize: 19,
+    lineHeight: 23,
+  },
   speakerRole: { textAlign: 'center', maxWidth: 390 },
   question: {
     textAlign: 'center',
