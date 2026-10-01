@@ -260,10 +260,6 @@ export default function GameScreen() {
               <AppText muted>Bu oturumda oynanabilir yeni tarihsel olay kalmadı.</AppText>
             </AppCard>
           )}
-          <View style={styles.bottomMeta}>
-            <AppText variant="caption" muted>{snapshot.state.currentDate}</AppText>
-            <AppText variant="caption" muted>{snapshot.decisionHistory.length} karar</AppText>
-          </View>
         </View>
       ) : (
         <AppText muted>Oturum hazırlanıyor…</AppText>
@@ -280,13 +276,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'space-between',
     gap: 10,
-  },
-  bottomMeta: {
-    width: '100%',
-    maxWidth: 520,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
   },
 });
