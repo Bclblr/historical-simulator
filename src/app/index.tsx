@@ -1,7 +1,7 @@
 import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Screen } from '@/components';
+import { AppButton, AppCard, AppText, Screen } from '@/components';
 import type { GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
 
@@ -12,31 +12,78 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      void sessions.resumeMostRecent().then((snapshot) => {
-        if (active) setRecent(snapshot?.state ?? null);
-      }).catch(() => {
-        if (active) setRecent(null);
-      });
-      return () => { active = false; };
+      void sessions
+        .resumeMostRecent()
+        .then((snapshot) => {
+          if (active) setRecent(snapshot?.state ?? null);
+        })
+        .catch(() => {
+          if (active) setRecent(null);
+        });
+      return () => {
+        active = false;
+      };
     }, [sessions]),
   );
 
   return (
     <Screen centered style={styles.screen}>
-      <AppText variant="label" muted>HISTORICAL SIMULATOR</AppText>
-      <AppText variant="display" style={styles.title}>Tarihi yalnızca okuma. Kararların sonuçlarını incele.</AppText>
-      <AppText muted style={styles.description}>Akademik kaynaklara dayalı, çok devletli ve çok kurumlu tarih simülasyonu.</AppText>
-      <View style={styles.actions}>
-        {recent ? (
-          <AppButton onPress={() => router.push({ pathname: '/game', params: { sessionId: recent.sessionId } })}>
-            Devam Et · {recent.currentDate}
+      <View style={styles.hero}>
+        <AppText variant="label" muted>
+          HISTORICAL SIMULATOR
+        </AppText>
+        <AppText variant="display" style={styles.title}>
+          Tarihi yalnızca okuma. Kararların sonuçlarını incele.
+        </AppText>
+        <AppText muted style={styles.description}>
+          Akademik kaynaklara dayalı, çok devletli ve çok kurumlu tarih simülasyonu.
+          Tarihsel kayıt ile alternatif sonuçlar açıkça birbirinden ayrılır.
+        </AppText>
+      </View>
+
+      {recent ? (
+        <AppCard style={styles.resumeCard}>
+          <AppText variant="label" muted>
+            SON OTURUM
+          </AppText>
+          <AppText variant="heading" style={styles.resumeTitle}>
+            {recent.selection.eraId} · {recent.selection.countryId}
+          </AppText>
+          <AppText muted>{recent.currentDate}</AppText>
+          <AppButton
+            onPress={() =>
+              router.push({
+                pathname: '/game',
+                params: { sessionId: recent.sessionId },
+              })
+            }
+          >
+            Devam Et
           </AppButton>
-        ) : null}
-        <Link href="/setup/era" asChild><AppButton variant={recent ? 'secondary' : 'primary'}>Yeni Oyun</AppButton></Link>
-        <Link href="/archive" asChild><AppButton variant="secondary">Arşiv</AppButton></Link>
-        <Link href="/settings" asChild><AppButton variant="ghost">Ayarlar</AppButton></Link>
+        </AppCard>
+      ) : null}
+
+      <View style={styles.actions}>
+        <Link href="/setup/era" asChild>
+          <AppButton variant="primary">Yeni Simülasyon</AppButton>
+        </Link>
+        <Link href="/archive" asChild>
+          <AppButton variant="secondary">Arşiv</AppButton>
+        </Link>
+        <Link href="/settings" asChild>
+          <AppButton variant="ghost">Ayarlar</AppButton>
+        </Link>
       </View>
     </Screen>
   );
 }
-const styles=StyleSheet.create({screen:{paddingHorizontal:28},title:{marginTop:12,maxWidth:520},description:{marginTop:16,maxWidth:520},actions:{maxWidth:520,marginTop:36,gap:12}});
+
+const styles = StyleSheet.create({
+  screen: { paddingHorizontal: 28 },
+  hero: { width: '100%', maxWidth: 560 },
+  title: { marginTop: 12 },
+  description: { marginTop: 16 },
+  resumeCard: { width: '100%', maxWidth: 560, marginTop: 28, gap: 12 },
+  resumeTitle: { marginTop: 4 },
+  actions: { width: '100%', maxWidth: 560, marginTop: 24, gap: 12 },
+});
