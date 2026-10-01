@@ -17,7 +17,7 @@ import {
 import { getScenarioForSelection } from '@/content/scenario-catalog';
 import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
 import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
-import { getGermanyCampaignBranchEvents, getGermanyCampaignExcludedEventIds } from '@/content/germany-campaign';
+import { getGermanyCampaignBranchEvents, getGermanyCampaignExcludedEventIds, getGermanyCareerEvents } from '@/content/germany-campaign';
 import { useGameSessionService } from '@/services';
 
 function createSimulationOptions(
@@ -121,10 +121,14 @@ export default function GameScreen() {
 
     const decidedIds = new Set(snapshot.decisionHistory.map((item) => item.eventId));
     const excludedIds = getGermanyCampaignExcludedEventIds(snapshot.decisionHistory);
-    const campaignEvents = [...scenario.events, ...getGermanyCampaignBranchEvents(snapshot.decisionHistory)]
+    const campaignEvents = [...scenario.events, ...getGermanyCareerEvents(snapshot.decisionHistory), ...getGermanyCampaignBranchEvents(snapshot.decisionHistory)]
       .filter((event) => !excludedIds.has(event.id));
-    const eligibleEvent = getEligibleEvents(campaignEvents, snapshot.state)
-      .find((item) => !decidedIds.has(item.id));
+    const eligibleEvents = getEligibleEvents(campaignEvents, snapshot.state)
+      .filter((item) => !decidedIds.has(item.id));
+    const mixSeed = snapshot.decisionHistory.length + snapshot.state.currentDate.length;
+    const eligibleEvent = eligibleEvents.length
+      ? eligibleEvents[mixSeed % eligibleEvents.length]
+      : undefined;
     const nextFutureEvent = [...campaignEvents]
       .filter(
         (item) =>
@@ -169,7 +173,7 @@ export default function GameScreen() {
       });
       const decidedIds = new Set(history.map((item) => item.eventId));
       const excludedIds = getGermanyCampaignExcludedEventIds(history);
-      const campaignEvents = [...currentScenario.events, ...getGermanyCampaignBranchEvents(history)]
+      const campaignEvents = [...currentScenario.events, ...getGermanyCareerEvents(history), ...getGermanyCampaignBranchEvents(history)]
         .filter((event) => !excludedIds.has(event.id));
       const nextEvent = [...campaignEvents]
         .filter((event) => !decidedIds.has(event.id) && event.startDate >= activeContent.event.startDate)
