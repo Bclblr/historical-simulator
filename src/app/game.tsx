@@ -358,7 +358,7 @@ export default function GameScreen() {
 
   return (
     <Screen style={styles.screen}>
-      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'germany-life' ? 'Almanya · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
+      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'germany-life' ? 'Nazi Almanyası · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
