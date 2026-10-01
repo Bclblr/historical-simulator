@@ -1,8 +1,8 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { AppCard, AppText, DeskScreen, Screen, SwipeDecisionCard } from '@/components';
+import { StyleSheet, View } from 'react-native';
+import { AppCard, AppText, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
 import {
-  createDeskFile,
   createDecisionOption,
   getEligibleEvents,
   recordDecision,
@@ -37,7 +37,6 @@ export default function GameScreen() {
   const sessions = useGameSessionService();
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [fileOpen, setFileOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -76,109 +75,62 @@ export default function GameScreen() {
     }
 
     void load();
-    return () => { active = false; };
-  }, [params.country, params.era, params.institution, params.role, params.sessionId, sessions]);
-
-  const activeContent = useMemo(() => {
-    if (!snapshot) return null;
-    const scenario = getScenarioForSelection(
-      snapshot.state.selection.eraId,
-      snapshot.state.selection.countryId,
-    );
-    if (!scenario) return null;
-
-    const decidedIds = new Set(snapshot.decisionHistory.map((item) => item.eventId));
-    const event = getEligibleEvents(scenario.events, snapshot.state)
-      .find((item) => !decidedIds.has(item.id));
-    if (!event) return null;
-
-    return {
-      event,
-      options: createSimulationOptions(event.id),
-      file: createDeskFile({
-        id: `desk-file:${event.id}`,
-        eventId: event.id,
-        title: event.title,
-        documentIds: scenario.documents
-          .filter((document) => document.eventIds.includes(event.id))
-          .map((document) => document.id),
-        status: 'OPEN',
-        priority: 100,
-      }),
-    };
-  }, [snapshot]);
-
-  async function choose(option: DecisionOption) {
-    if (!snapshot || !activeContent || saving) return;
-    setSaving(true);
-    setError(null);
-    try {
-      const scenario = getScenarioForSelection(
-        snapshot.state.selection.eraId,
-        snapshot.state.selection.countryId,
-      );
-      if (!scenario) throw new Error('Senaryo bulunamadı.');
-
-      const history = recordDecision(snapshot.decisionHistory, {
-        option,
-        decidedAt: snapshot.state.currentDate,
-      });
-      const decidedIds = new Set(history.map((item) => item.eventId));
-      const nextEvent = [...scenario.events]
-        .filter((event) => !decidedIds.has(event.id) && event.startDate > snapshot.state.currentDate)
-        .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
-
-      const next: GameSessionSnapshot = {
-        ...snapshot,
-        state: nextEvent ? withGameDate(snapshot.state, nextEvent.startDate) : snapshot.state,
-        decisionHistory: history,
-      };
-      await sessions.save(next);
-      setSnapshot(next);
-      setFileOpen(false);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Karar kaydedilemedi.');
-    } finally {
-      setSaving(false);
-    }
-  }
+    const scenario = snapshot
+    ? getScenarioForSelection(snapshot.state.selection.eraId, snapshot.state.selection.countryId)
+    : null;
+  const role = scenario?.roles.find((item) => item.id === snapshot?.state.selection.roleId);
+  const actorLabel = role?.shortName ?? role?.name ?? 'Kamu görevlisi';
 
   return (
-    <Screen scroll>
-      <Stack.Screen options={{ title: 'Simülasyon', headerShown: true }} />
-      <AppText variant="label" muted>{error ? 'HATA' : snapshot ? 'OTURUM KAYDEDİLDİ' : 'OTURUM HAZIRLANIYOR'}</AppText>
+    <Screen>
+      <Stack.Screen options={{ title: '1933 · Almanya', headerShown: true }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
-        <>
-          <DeskScreen
-            state={snapshot.state}
-            activeFile={activeContent?.file ?? null}
-            onOpenFile={() => setFileOpen(true)}
-          />
-          {activeContent && fileOpen ? (
-            <>
-              <AppCard>
-                <AppText variant="label" muted>{activeContent.event.startDate} · TARİHSEL KAYIT</AppText>
-                <AppText variant="title">{activeContent.event.title}</AppText>
-                <AppText>{activeContent.event.summary}</AppText>
-              </AppCard>
-
-              <SwipeDecisionCard
-                event={activeContent.event}
-                leftOption={activeContent.options[0]}
-                rightOption={activeContent.options[1]}
-                disabled={saving}
-                onChoose={(option) => void choose(option)}
-              />
-            </>
-          ) : !activeContent ? (
+        <View style={styles.game}>
+          <GameStatusBar snapshot={snapshot} />
+          {activeContent ? (
+            <SwipeDecisionCard
+              event={activeContent.event}
+              leftOption={activeContent.options[0]}
+              rightOption={activeContent.options[1]}
+              actorLabel={actorLabel}
+              disabled={saving}
+              onChoose={(option) => void choose(option)}
+            />
+          ) : (
             <AppCard>
-              <AppText variant="heading">Bu tarihte bekleyen dosya yok</AppText>
-              <AppText muted>Yayımlanmış ve koşulları karşılayan yeni olay bulunamadı.</AppText>
+              <AppText variant="heading">Dönem tamamlandı</AppText>
+              <AppText muted>Bu oturumda oynanabilir yeni tarihsel olay kalmadı.</AppText>
             </AppCard>
-          ) : null}
-        </>
-      ) : null}
+          )}
+          <View style={styles.bottomMeta}>
+            <AppText variant="caption" muted>{snapshot.state.currentDate}</AppText>
+            <AppText variant="caption" muted>{snapshot.decisionHistory.length} karar</AppText>
+          </View>
+        </View>
+      ) : (
+        <AppText muted>Oturum hazırlanıyor…</AppText>
+      )}
     </Screen>
   );
 }
+
+
+const styles = StyleSheet.create({
+  game: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 620,
+    alignSelf: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  bottomMeta: {
+    width: '100%',
+    maxWidth: 520,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+});
