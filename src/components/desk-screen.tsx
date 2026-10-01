@@ -44,7 +44,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
       <View style={styles.contextRow}>
         <AppCard style={styles.contextCard}>
           <AppText variant="label" muted>DEVLET</AppText>
-          <AppText>{state.selection.countryId === 'germany' ? 'Germany' : state.selection.countryId}</AppText>
+          <AppText>{scenario?.countryId === 'germany' ? 'Germany' : state.selection.countryId}</AppText>
         </AppCard>
         <AppCard style={styles.contextCard}>
           <AppText variant="label" muted>KURUM</AppText>
@@ -57,7 +57,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
       </View>
 
       <DocumentEntrance delay={80}>
-      <AppCard style={styles.activeFile}>
+        <AppCard style={styles.activeFile}>
         <View style={styles.fileHeader}>
           <AppText variant="label" muted>AKTİF DOSYA</AppText>
           <AppText variant="label" muted>
@@ -72,7 +72,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
             ? `${activeFile.documentIds.length} belge · Durum: ${activeFile.status}`
             : 'Event Engine tarafından uygun bulunan olaylar bu çalışma alanına gelecek.'}
         </AppText>
-      </AppCard>
+        </AppCard>
       </DocumentEntrance>
 
       <View style={[styles.deskEdge, { borderColor: theme.colors.border }]}>
