@@ -393,7 +393,7 @@ export default function GameScreen() {
                 snapshot.campaign?.campaignId === 'germany-life'
                   ? {
                       speaker: activeContent.decision.speaker,
-                      role: 'lifeCard' in activeContent ? activeContent.lifeCard.role : undefined,
+                      role: activeContent.lifeCard?.role,
                       line: activeContent.decision.prompt,
                     }
                   : undefined
