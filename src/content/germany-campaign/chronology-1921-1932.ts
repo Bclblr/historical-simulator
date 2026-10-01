@@ -1,0 +1,44 @@
+import { createHistoricalEvent, type HistoricalEvent } from '@/domain/history';
+
+const event = (
+  id: string,
+  title: string,
+  summary: string,
+  startDate: string,
+  sortOrder: number,
+  scope: 'NATIONAL' | 'INTERNATIONAL' = 'NATIONAL',
+): HistoricalEvent => createHistoricalEvent({
+  id, eraId: 'germany-1921', countryIds: ['germany'], title, summary, startDate,
+  scope, classification: 'HISTORICAL_FACT', sortOrder, status: 'PUBLISHED',
+});
+
+export const GERMANY_1921_1932_CHRONOLOGY: HistoricalEvent[] = [
+  event('de-1921-hitler-party-leadership','Hitler NSDAP liderliğini üstlendi','NSDAP içindeki güç mücadelesinin ardından Adolf Hitler parti liderliğini geniş yetkilerle üstlendi.','1921-07-29',10),
+  event('de-1921-sa-emerges','SA örgütlenmesi şekillenmeye başladı','Partinin toplantı ve propaganda faaliyetleri çevresindeki paramiliter yapılanma 1921 boyunca Sturmabteilung adı altında belirginleşti.','1921-10-05',20),
+  event('de-1922-party-expansion','NSDAP Bavyera dışında örgütlenmeyi genişletti','Parti, erken 1920’lerde propaganda ve yerel örgütlenme yoluyla Münih dışındaki siyasi etkisini artırmaya çalıştı.','1922-10-14',30),
+  event('de-1923-crisis-year','1923 krizi radikal siyaseti güçlendirdi','Hiperenflasyon, Ruhr krizi ve siyasal istikrarsızlık Almanya’da radikal hareketlerin faaliyet gösterdiği ortamı ağırlaştırdı.','1923-08-01',40),
+  event('de-1923-beer-hall-putsch','Birahane Darbesi başarısız oldu','NSDAP ve müttefikleri Münih’te iktidarı zorla ele geçirmeye yönelik başarısız bir girişimde bulundu.','1923-11-09',50),
+  event('de-1923-nsdap-banned','NSDAP yasaklandı','Başarısız darbe girişiminin ardından NSDAP yasaklandı ve parti liderliği dağıldı.','1923-11-10',60),
+  event('de-1924-hitler-trial','Hitler vatana ihanet davasında yargılandı','Darbe girişiminin ardından Hitler Münih’te yargılandı ve hapis cezasına mahkûm edildi.','1924-02-26',70),
+  event('de-1924-hitler-sentenced','Hitler hapis cezasına mahkûm edildi','Mahkeme Hitler’i vatana ihanetten beş yıl hapis cezasına mahkûm etti; cezanın yalnızca bir bölümü infaz edildi.','1924-04-01',80),
+  event('de-1924-hitler-released','Hitler Landsberg’den erken tahliye edildi','Hitler Landsberg’deki hapis cezasından erken tahliye edildi; yasaklı hareketin yeniden örgütlenmesi gündeme geldi.','1924-12-20',90),
+  event('de-1925-nsdap-refounded','NSDAP yeniden kuruldu','Parti yasağının ardından NSDAP yeniden kuruldu ve Hitler parti liderliğini yeniden merkezileştirdi.','1925-02-27',100),
+  event('de-1925-ss-established','SS örgütü oluşturuldu','1925 içinde Hitler’in çevresinde küçük bir koruma örgütü olarak SS oluşturuldu; sonraki yıllarda kapsamı büyük ölçüde genişledi.','1925-04-04',110),
+  event('de-1925-hitler-stateless','Hitler Avusturya vatandaşlığından çıktı','Hitler’in talebi üzerine Avusturya vatandaşlığı sona erdi ve 1932’ye kadar vatansız kaldı.','1925-04-30',120),
+  event('de-1926-bamberg-conference','Bamberg parti konferansı yapıldı','NSDAP içindeki program ve liderlik anlaşmazlıkları Bamberg toplantısında ele alındı; Hitler’in parti içindeki üstünlüğü güçlendi.','1926-02-14',130),
+  event('de-1926-hitler-youth','Hitler Gençliği parti gençlik örgütü olarak yapılandırıldı','Partinin gençlik yapılanması 1926’da Hitler Gençliği adı altında yeniden düzenlendi.','1926-07-04',140),
+  event('de-1927-nuremberg-rally','Nürnberg parti mitingi düzenlendi','NSDAP, Nürnberg’de kitlesel bir parti toplantısı düzenleyerek örgütsel görünürlüğünü artırdı.','1927-08-19',150),
+  event('de-1928-reichstag-election','NSDAP 1928 Reichstag seçiminde yüzde 2,6 aldı','Göreli ekonomik ve siyasi istikrar ortamında NSDAP Reichstag seçiminde sınırlı destek elde etti.','1928-05-20',160),
+  event('de-1929-great-depression','Büyük Buhran Almanya’daki siyasi ortamı değiştirdi','Küresel ekonomik kriz Almanya’da işsizlik ve siyasi kutuplaşmayı ağırlaştırarak radikal partilerin büyümesine zemin hazırladı.','1929-10-24',170,'INTERNATIONAL'),
+  event('de-1929-young-plan-referendum','Young Planı karşıtı kampanya yürütüldü','NSDAP, milliyetçi sağ çevrelerle birlikte savaş tazminatlarını düzenleyen Young Planı’na karşı kampanyaya katıldı.','1929-12-22',180),
+  event('de-1930-reichstag-breakthrough','NSDAP 1930 seçiminde büyük sıçrama yaptı','14 Eylül Reichstag seçiminde NSDAP oyların yaklaşık yüzde 18’ini alarak parlamentonun en büyük partilerinden biri oldu.','1930-09-14',190),
+  event('de-1931-harzburg-front','Harzburg Cephesi toplantısı yapıldı','NSDAP ve diğer sağcı örgütler Harzburg’da Weimar hükûmetine karşı ortak bir siyasi gösteride buluştu.','1931-10-11',200),
+  event('de-1932-hitler-citizenship','Hitler Alman vatandaşlığı aldı','Braunschweig eyaletindeki bir kamu görevlendirmesi aracılığıyla Hitler Alman vatandaşlığını elde etti.','1932-02-25',210),
+  event('de-1932-presidential-first-round','Cumhurbaşkanlığı seçiminin ilk turu yapıldı','Hitler Hindenburg’a karşı cumhurbaşkanlığı seçiminde aday oldu ve ilk turda yaklaşık yüzde 30 oy aldı.','1932-03-13',220),
+  event('de-1932-presidential-second-round','Hindenburg cumhurbaşkanlığı seçimini kazandı','İkinci turda Hindenburg yeniden seçildi; Hitler yaklaşık yüzde 37 oy aldı.','1932-04-10',230),
+  event('de-1932-july-election','NSDAP Reichstag’ın en büyük partisi oldu','31 Temmuz seçiminde NSDAP yüzde 37’nin üzerinde oyla Reichstag’daki en büyük parti hâline geldi.','1932-07-31',240),
+  event('de-1932-chancellorship-refused','Hindenburg Hitler’in şansölyelik talebini reddetti','Hitler en büyük parlamento grubunun lideri olarak şansölyelik istedi; Cumhurbaşkanı Hindenburg talebi kabul etmedi.','1932-08-13',250),
+  event('de-1932-goering-reichstag-president','Göring Reichstag başkanı seçildi','NSDAP’nin parlamentodaki büyümesinin ardından Hermann Göring Reichstag başkanlığına seçildi.','1932-08-30',260),
+  event('de-1932-november-election','NSDAP oy kaybetti ancak en büyük parti kaldı','6 Kasım seçiminde NSDAP yaklaşık iki milyon oy kaybetmesine rağmen Reichstag’daki en büyük parti konumunu korudu.','1932-11-06',270),
+  event('de-1932-strasser-crisis','Gregor Strasser parti görevlerinden ayrıldı','Hükûmete katılım ve parti stratejisi üzerindeki anlaşmazlığın ardından Gregor Strasser NSDAP görevlerinden çekildi.','1932-12-08',280),
+];
