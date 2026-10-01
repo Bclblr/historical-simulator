@@ -7,30 +7,44 @@ interface GameStatusBarProps {
   snapshot: GameSessionSnapshot;
 }
 
-function meter(value: number): string {
-  const clamped = Math.max(0, Math.min(100, value));
-  const filled = Math.round(clamped / 20);
-  return `${'●'.repeat(filled)}${'○'.repeat(5 - filled)}`;
+function clamp(value: number): number {
+  return Math.max(0, Math.min(100, value));
 }
 
 export function GameStatusBar({ snapshot }: GameStatusBarProps) {
   const theme = useAppTheme();
   const v = snapshot.state.variables;
   const items = [
-    ['KAMU', v.publicSupport ?? 50],
-    ['KURUM', v.institutionalInfluence ?? 50],
+    ['KAMU', v.publicSupport ?? 55],
+    ['KURUM', v.institutionalInfluence ?? 55],
     ['DÜZEN', v.stability ?? 50],
     ['DIŞ', v.foreignRelations ?? 50],
   ] as const;
 
   return (
     <View style={styles.root}>
-      {items.map(([label, value]) => (
-        <View key={label} style={styles.item}>
-          <AppText variant="label" style={{ color: theme.colors.text }}>{label}</AppText>
-          <AppText variant="caption" style={{ color: theme.colors.accent }}>{meter(value)}</AppText>
-        </View>
-      ))}
+      {items.map(([label, rawValue]) => {
+        const value = clamp(rawValue);
+        return (
+          <View key={label} style={styles.item}>
+            <View style={styles.labelRow}>
+              <AppText variant="caption" style={{ color: theme.colors.text }}>{label}</AppText>
+              <AppText variant="caption" muted>{Math.round(value)}</AppText>
+            </View>
+            <View style={[styles.track, { backgroundColor: theme.colors.border }]}>
+              <View
+                style={[
+                  styles.fill,
+                  {
+                    width: `${value}%`,
+                    backgroundColor: theme.colors.accent,
+                  },
+                ]}
+              />
+            </View>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -41,9 +55,24 @@ const styles = StyleSheet.create({
     maxWidth: 560,
     alignSelf: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 6,
+    gap: 10,
     paddingVertical: 8,
   },
-  item: { flex: 1, alignItems: 'center', gap: 5 },
+  item: { flex: 1, gap: 6 },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 4,
+  },
+  track: {
+    width: '100%',
+    height: 7,
+    borderRadius: 999,
+    overflow: 'hidden',
+  },
+  fill: {
+    height: '100%',
+    borderRadius: 999,
+  },
 });
