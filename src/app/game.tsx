@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { AppButton, AppCard, AppText, DeskScreen, Screen } from '@/components';
+import { AppCard, AppText, DeskScreen, Screen, SwipeDecisionCard } from '@/components';
 import {
   createDeskFile,
   createDecisionOption,
@@ -13,25 +13,21 @@ import {
 import { useGameSessionService } from '@/services';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
 
-function createSimulationOptions(eventId: string): DecisionOption[] {
+function createSimulationOptions(eventId: string): [DecisionOption, DecisionOption] {
   return [
     createDecisionOption({
-      id: `${eventId}:request-briefing`,
+      id: `${eventId}:request-review`,
       eventId,
-      label: 'Ayrıntılı değerlendirme iste',
-      description: 'Dosya hakkında ek kurumsal değerlendirme talep et.',
-    }),
-    createDecisionOption({
-      id: `${eventId}:record-objection`,
-      eventId,
-      label: 'Çekinceni kayda geçir',
-      description: 'Kurumsal kayda çekince ve risk notu ekle.',
+      label: 'Ek inceleme iste',
+      description: 'Dosyayı hemen ilerletmek yerine ek kurumsal değerlendirme talep et.',
+      swipeDirection: 'LEFT',
     }),
     createDecisionOption({
       id: `${eventId}:forward-file`,
       eventId,
-      label: 'Dosyayı üst makama ilet',
-      description: 'Dosyayı karar yetkisi bulunan üst makama gönder.',
+      label: 'Dosyayı ilerlet',
+      description: 'Dosyayı görev zincirinde bir sonraki aşamaya ilet.',
+      swipeDirection: 'RIGHT',
     }),
   ];
 }
@@ -167,23 +163,13 @@ export default function GameScreen() {
                 <AppText>{activeContent.event.summary}</AppText>
               </AppCard>
 
-              <AppCard>
-                <AppText variant="label" muted>KARŞI-OLGUSAL SİMÜLASYON</AppText>
-                <AppText variant="heading">Karar Simülasyonu</AppText>
-                <AppText muted>
-                  Aşağıdaki seçenekler tarihsel gerçek değildir. Seçtiğin görev çerçevesinde oyunun alternatif karar katmanıdır.
-                </AppText>
-                {activeContent.options.map((option) => (
-                  <AppButton
-                    key={option.id}
-                    variant="secondary"
-                    disabled={saving}
-                    onPress={() => void choose(option)}
-                  >
-                    {option.label}
-                  </AppButton>
-                ))}
-              </AppCard>
+              <SwipeDecisionCard
+                event={activeContent.event}
+                leftOption={activeContent.options[0]}
+                rightOption={activeContent.options[1]}
+                disabled={saving}
+                onChoose={(option) => void choose(option)}
+              />
             </>
           ) : !activeContent ? (
             <AppCard>
