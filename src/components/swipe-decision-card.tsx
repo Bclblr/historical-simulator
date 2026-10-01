@@ -4,7 +4,7 @@ import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
 import { getGermany1933CardVisual } from '@/content/germany-1933/card-visuals';
-import { getCampaignEventImage } from '@/content/germany-campaign';
+import { getCampaignEventImage, getCampaignConversation } from '@/content/germany-campaign';
 import { AppText } from './app-text';
 
 interface SwipeDecisionCardProps {
@@ -17,7 +17,8 @@ interface SwipeDecisionCardProps {
   onPreviewDirection?: (direction: 'LEFT' | 'RIGHT' | null) => void;
 }
 
-const SWIPE_THRESHOLD = 105;
+const SWIPE_THRESHOLD = 72;
+const SWIPE_VELOCITY = 0.35;
 
 export function SwipeDecisionCard({
   event,
@@ -45,30 +46,35 @@ export function SwipeDecisionCard({
     : event.id;
   const visual = getGermany1933CardVisual(visualEventId);
   const eventImage = getCampaignEventImage(visualEventId);
+  const conversation = getCampaignConversation(event.id, actorLabel, event.summary);
   const classificationLabel =
     event.classification === 'COUNTERFACTUAL_SIMULATION'
       ? 'SİMÜLASYON SONUCU'
       : 'TARİHSEL OLAY';
 
   const panResponder = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponder: (_, gesture) => !disabled && Math.abs(gesture.dx) > 5,
+    onMoveShouldSetPanResponder: (_, gesture) =>
+      !disabled && Math.abs(gesture.dx) > 3 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
+    onPanResponderTerminationRequest: () => false,
     onPanResponderMove: (_, gesture) => {
-      position.setValue({ x: gesture.dx, y: gesture.dy * 0.06 });
+      position.setValue({ x: gesture.dx, y: 0 });
       const nextDirection = gesture.dx < -18 ? 'LEFT' : gesture.dx > 18 ? 'RIGHT' : null;
       setDirection(nextDirection);
       onPreviewDirection?.(nextDirection);
     },
     onPanResponderRelease: (_, gesture) => {
-      if (Math.abs(gesture.dx) < SWIPE_THRESHOLD) {
+      const committed = Math.abs(gesture.dx) >= SWIPE_THRESHOLD || Math.abs(gesture.vx) >= SWIPE_VELOCITY;
+      if (!committed) {
         setDirection(null);
         onPreviewDirection?.(null);
         Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
         return;
       }
-      const option = gesture.dx < 0 ? leftOption : rightOption;
+      const goLeft = gesture.dx !== 0 ? gesture.dx < 0 : gesture.vx < 0;
+      const option = goLeft ? leftOption : rightOption;
       Animated.timing(position, {
-        toValue: { x: gesture.dx < 0 ? -cardWidth * 1.6 : cardWidth * 1.6, y: 0 },
-        duration: 190,
+        toValue: { x: goLeft ? -cardWidth * 1.45 : cardWidth * 1.45, y: 0 },
+        duration: 150,
         useNativeDriver: true,
       }).start(() => {
         position.setValue({ x: 0, y: 0 });
@@ -104,7 +110,10 @@ export function SwipeDecisionCard({
             <AppText variant="caption" muted>{event.startDate}</AppText>
             <AppText variant="caption" muted>{classificationLabel}</AppText>
           </View>
-          <AppText variant="heading" style={styles.eventTitle}>{event.title}</AppText>
+          <View style={styles.speakerBlock}>
+            <AppText variant="heading" style={styles.speakerName}>{conversation.speaker}</AppText>
+            {conversation.role ? <AppText variant="caption" muted>{conversation.role}</AppText> : null}
+          </View>
           {choice ? (
             <View style={[styles.choicePreview, { borderColor: theme.colors.accent }]}>
               <AppText variant="label">{direction === 'LEFT' ? '← ' : ''}{choice.label}{direction === 'RIGHT' ? ' →' : ''}</AppText>
@@ -128,11 +137,11 @@ export function SwipeDecisionCard({
               </>
             )}
           </View>
-          <AppText style={styles.summary}>{event.summary}</AppText>
+          <AppText style={styles.dialogue}>“{conversation.line}”</AppText>
         </View>
 
         <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
-          <AppText variant="label" muted>{actorLabel}</AppText>
+          <AppText variant="caption" muted>{event.title}</AppText>
           <AppText variant="caption" muted>
             {choice ? (direction === 'LEFT' ? '← SOL KARAR' : 'SAĞ KARAR →') : 'KARTI SOLA / SAĞA KAYDIR'}
           </AppText>
@@ -190,8 +199,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  eventTitle: { textAlign: 'center', alignSelf: 'center', maxWidth: 420 },
+  speakerBlock: { alignItems: 'center', gap: 2 },
+  speakerName: { textAlign: 'center', alignSelf: 'center', maxWidth: 420 },
   choicePreview: { alignSelf: 'center', borderWidth: 1, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 },
-  summary: { textAlign: 'center', maxWidth: 390 },
+  dialogue: { textAlign: 'center', maxWidth: 390, fontSize: 18, lineHeight: 27 },
   footer: { minHeight: 64, borderTopWidth: 1, paddingHorizontal: 18, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
 });
