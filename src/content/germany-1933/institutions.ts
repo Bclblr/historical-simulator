@@ -4,10 +4,10 @@ export const GERMANY_1933_INSTITUTIONS: Institution[] = [
   createInstitution({
     id: 'reich-government',
     countryId: 'germany',
-    name: 'Reich Government',
-    shortName: 'Reich Government',
+    name: 'Reich Hükûmeti',
+    shortName: 'Reich Hükûmeti',
     description:
-      'The national executive government of Germany. The 1933 scenario uses this institution to model cabinet-level state decisions while keeping party organizations and other institutions distinct.',
+      'Almanya\'nın ulusal yürütme hükûmeti. 1933 senaryosu, parti örgütleri ile diğer kurumları ayrı tutarak kabine düzeyindeki devlet süreçlerini modellemek için bu kurumu kullanır.',
     type: 'EXECUTIVE',
     sortOrder: 10,
     status: 'PUBLISHED',
