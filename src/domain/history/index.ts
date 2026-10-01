@@ -19,3 +19,4 @@ export * from './source-repository';
 export * from './event-connection';
 export * from './event-connection-repository';
 export * from './content-integrity';
+export * from './source-display';
