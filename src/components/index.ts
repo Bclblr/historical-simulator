@@ -9,3 +9,5 @@ export * from './swipe-decision-card';
 export * from './game-status-bar';
 
 export * from './character-portrait';
+
+export * from './campaign-ending-card';
