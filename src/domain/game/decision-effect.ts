@@ -65,8 +65,13 @@ export function applyDecisionEffect(
       if (!Number.isInteger(effect.days)) {
         throw new Error('DecisionEffect days must be an integer.');
       }
-      const nextDate = addHistoricalDays(parseHistoricalDate(state.currentDate), effect.days);
-      return withGameDate(state, serializeHistoricalDate(nextDate));
+      const parsedCurrentDate = parseHistoricalDate(state.currentDate);
+      const nextDate = addHistoricalDays(parsedCurrentDate, effect.days);
+      const preserveLegacyIso = /^\d{4}-\d{2}-\d{2}$/.test(state.currentDate) && nextDate.era === 'CE';
+      const nextDateValue = preserveLegacyIso
+        ? `${String(nextDate.year).padStart(4, '0')}-${String(nextDate.month).padStart(2, '0')}-${String(nextDate.day).padStart(2, '0')}`
+        : serializeHistoricalDate(nextDate);
+      return withGameDate(state, nextDateValue);
     }
 
     case 'SET_FLAG':
