@@ -79,9 +79,9 @@
 
 ## 66–75 — İlk içerik: Almanya 1933
 - [x] 66. 1933 kronolojisi
-- [ ] 67. İlk kurum seçimi
-- [ ] 68. İlk 10 olay
-- [ ] 69. 20 olay
+- [x] 67. İlk kurum seçimi
+- [x] 68. İlk 10 olay
+- [x] 69. 20 olay
 - [ ] 70. 30 olay
 - [ ] 71. 40 olay
 - [ ] 72. 50 olay
