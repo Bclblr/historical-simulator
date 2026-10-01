@@ -17,7 +17,7 @@ export type CampaignEndingKind =
 
 export interface CampaignProfile {
   playerName: string;
-  campaignId: 'germany-1921';
+  campaignId: 'germany-1921' | 'germany-life';
   startedAt: string;
   leadershipActive: boolean;
   endingId?: CampaignEndingKind;
