@@ -27,3 +27,5 @@ export * from './archive-reference';
 export * from './historical-outcome';
 export * from './historian-interpretation';
 export * from './interpretation-group';
+export * from './content-label';
+export * from './source-verification';
