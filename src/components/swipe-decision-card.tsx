@@ -34,6 +34,7 @@ export function SwipeDecisionCard({
   const { width, height } = useWindowDimensions();
   const position = useRef(new Animated.ValueXY()).current;
   const [direction, setDirection] = useState<'LEFT' | 'RIGHT' | null>(null);
+  const directionRef = useRef<'LEFT' | 'RIGHT' | null>(null);
   const cardWidth = Math.min(Math.max(width - 28, 292), 520);
   const cardHeight = Math.min(Math.max(height * 0.67, 500), 680);
 
@@ -59,13 +60,17 @@ export function SwipeDecisionCard({
     onPanResponderTerminationRequest: () => false,
     onPanResponderMove: (_, gesture) => {
       position.setValue({ x: gesture.dx, y: 0 });
-      const nextDirection = gesture.dx < -18 ? 'LEFT' : gesture.dx > 18 ? 'RIGHT' : null;
-      setDirection(nextDirection);
-      onPreviewDirection?.(nextDirection);
+      const nextDirection = gesture.dx < -14 ? 'LEFT' : gesture.dx > 14 ? 'RIGHT' : null;
+      if (nextDirection !== directionRef.current) {
+        directionRef.current = nextDirection;
+        setDirection(nextDirection);
+        onPreviewDirection?.(nextDirection);
+      }
     },
     onPanResponderRelease: (_, gesture) => {
       const committed = Math.abs(gesture.dx) >= SWIPE_THRESHOLD || Math.abs(gesture.vx) >= SWIPE_VELOCITY;
       if (!committed) {
+        directionRef.current = null;
         setDirection(null);
         onPreviewDirection?.(null);
         Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
@@ -79,12 +84,14 @@ export function SwipeDecisionCard({
         useNativeDriver: true,
       }).start(() => {
         position.setValue({ x: 0, y: 0 });
+        directionRef.current = null;
         setDirection(null);
         onPreviewDirection?.(null);
         onChoose(option);
       });
     },
     onPanResponderTerminate: () => {
+      directionRef.current = null;
       setDirection(null);
       onPreviewDirection?.(null);
       Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
@@ -153,10 +160,10 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     justifyContent: 'space-between',
     shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 },
-    elevation: 10,
+    shadowOpacity: 0.14,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   header: { paddingHorizontal: 22, paddingTop: 20, gap: 14 },
   dateRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
