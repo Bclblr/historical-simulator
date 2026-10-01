@@ -1,5 +1,5 @@
-import type { HistoricalEvent } from './historical-event';
-import { createHistoricalEvent } from './historical-event';
+import type { HistoricalEvent } from '@/domain/history';
+import { createHistoricalEvent } from '@/domain/history';
 
 export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
   createHistoricalEvent({
