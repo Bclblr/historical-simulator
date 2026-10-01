@@ -1,6 +1,7 @@
 import type { HistoricalEntityId } from './types';
 import type { HistoricalCitation } from './citation';
 import type { HistoricalSource } from './source';
+import { getSourceCategory, type SourceCategory } from './source-category';
 
 export interface SourceDisplay {
   citationId: HistoricalEntityId;
@@ -9,6 +10,7 @@ export interface SourceDisplay {
   contributors: string[];
   publicationYear: number | null;
   sourceType: HistoricalSource['type'];
+  sourceCategory: SourceCategory;
   confidence: HistoricalSource['confidence'];
   locator: string | null;
   note: string | null;
@@ -34,6 +36,7 @@ export function createSourceDisplay(
       source.authors.length > 0 ? [...source.authors] : [...source.editors],
     publicationYear: source.publicationYear,
     sourceType: source.type,
+    sourceCategory: getSourceCategory(source.type),
     confidence: source.confidence,
     locator: citation.locator,
     note: citation.note,
