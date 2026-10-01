@@ -25,12 +25,20 @@ function previewDelta(effects: DecisionEffect[], key: string): number {
 export function GameStatusBar({ snapshot, previewEffects = [] }: GameStatusBarProps) {
   const theme = useAppTheme();
   const v = snapshot.state.variables;
-  const items = [
-    ['KAMU', 'publicSupport', v.publicSupport ?? 55],
-    ['KURUM', 'institutionalInfluence', v.institutionalInfluence ?? 55],
-    ['DÜZEN', 'stability', v.stability ?? 50],
-    ['DIŞ', 'foreignRelations', v.foreignRelations ?? 50],
-  ] as const;
+  const lifeMode = snapshot.campaign?.campaignId === 'germany-life';
+  const items = lifeMode
+    ? ([
+        ['PARA', 'money', v.money ?? 50],
+        ['GÜVENLİK', 'safety', v.safety ?? 55],
+        ['ÇEVRE', 'social', v.social ?? 50],
+        ['İTİBAR', 'reputation', v.reputation ?? 50],
+      ] as const)
+    : ([
+        ['KAMU', 'publicSupport', v.publicSupport ?? 55],
+        ['KURUM', 'institutionalInfluence', v.institutionalInfluence ?? 55],
+        ['DÜZEN', 'stability', v.stability ?? 50],
+        ['DIŞ', 'foreignRelations', v.foreignRelations ?? 50],
+      ] as const);
 
   return (
     <View style={styles.root}>
