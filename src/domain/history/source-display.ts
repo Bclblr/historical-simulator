@@ -1,4 +1,5 @@
 import type { HistoricalEntityId } from './types';
+import type { ArchiveReference } from './archive-reference';
 import type { HistoricalCitation } from './citation';
 import type { CitationPages } from './citation-pages';
 import type { HistoricalSource } from './source';
@@ -18,6 +19,7 @@ export interface SourceDisplay {
   note: string | null;
   url: string | null;
   doi: string | null;
+  archiveReference: ArchiveReference | null;
 }
 
 export function createSourceDisplay(
@@ -45,6 +47,7 @@ export function createSourceDisplay(
     note: citation.note,
     url: source.url,
     doi: source.doi,
+    archiveReference: source.structuredArchiveReference ?? null,
   };
 }
 
