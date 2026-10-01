@@ -77,6 +77,25 @@ export default function GameScreen() {
       try {
         const existing = params.sessionId ? await sessions.resume(params.sessionId) : null;
         if (existing) {
+          if (
+            existing.state.selection.eraId === 'germany-1921' &&
+            existing.campaign?.campaignId !== 'germany-life'
+          ) {
+            const migrated = await sessions.start({
+              sessionId: `session-${Date.now()}`,
+              startDate: '1933-01-30',
+              selection: existing.state.selection,
+              campaign: {
+                playerName: existing.campaign?.playerName ?? params.playerName?.trim() ?? 'Oyuncu',
+                campaignId: 'germany-life',
+                startedAt: '1933-01-30',
+                leadershipActive: true,
+              },
+            });
+            if (active) setSnapshot(migrated);
+            return;
+          }
+
           if (active) setSnapshot(existing);
           return;
         }
