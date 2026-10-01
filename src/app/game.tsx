@@ -43,6 +43,17 @@ function createSimulationOptions(
   ];
 }
 
+function campaignCardScore(eventId: string, historyKey: string): number {
+  let hash = 2166136261;
+  const input = `${historyKey}|${eventId}`;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  const weight = eventId.startsWith('career-') ? 4 : eventId.startsWith('alt-') ? 5 : 2;
+  return (hash >>> 0) / weight;
+}
+
 export default function GameScreen() {
   const params = useLocalSearchParams<{
     sessionId?: string;
@@ -125,9 +136,11 @@ export default function GameScreen() {
       .filter((event) => !excludedIds.has(event.id));
     const eligibleEvents = getEligibleEvents(campaignEvents, snapshot.state)
       .filter((item) => !decidedIds.has(item.id));
-    const mixSeed = snapshot.decisionHistory.length + snapshot.state.currentDate.length;
+    const historyKey = snapshot.decisionHistory.map((item) => item.optionId).join('|');
     const eligibleEvent = eligibleEvents.length
-      ? eligibleEvents[mixSeed % eligibleEvents.length]
+      ? [...eligibleEvents].sort(
+          (a, b) => campaignCardScore(a.id, historyKey) - campaignCardScore(b.id, historyKey),
+        )[0]
       : undefined;
     const nextFutureEvent = [...campaignEvents]
       .filter(
