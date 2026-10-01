@@ -1,5 +1,13 @@
-import { useMemo, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useMemo } from 'react';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
@@ -18,8 +26,9 @@ interface SwipeDecisionCardProps {
   onPreviewDirection?: (direction: 'LEFT' | 'RIGHT' | null) => void;
 }
 
-const SWIPE_THRESHOLD = 72;
-const SWIPE_VELOCITY = 0.35;
+const COMMIT_DISTANCE = 78;
+const PREVIEW_DISTANCE = 18;
+const COMMIT_VELOCITY = 650;
 
 export function SwipeDecisionCard({
   event,
@@ -32,17 +41,11 @@ export function SwipeDecisionCard({
 }: SwipeDecisionCardProps) {
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
-  const position = useRef(new Animated.ValueXY()).current;
-  const [direction, setDirection] = useState<'LEFT' | 'RIGHT' | null>(null);
-  const directionRef = useRef<'LEFT' | 'RIGHT' | null>(null);
   const cardWidth = Math.min(Math.max(width - 28, 292), 520);
   const cardHeight = Math.min(Math.max(height * 0.67, 500), 680);
+  const translateX = useSharedValue(0);
+  const previewState = useSharedValue(0);
 
-  const rotate = position.x.interpolate({
-    inputRange: [-cardWidth, 0, cardWidth],
-    outputRange: ['-8deg', '0deg', '8deg'],
-  });
-  const choice = direction === 'LEFT' ? leftOption : direction === 'RIGHT' ? rightOption : null;
   const visualEventId = event.id.endsWith(':follow-up')
     ? event.id.slice(0, -':follow-up'.length)
     : event.id;
@@ -50,95 +53,112 @@ export function SwipeDecisionCard({
   const eventImage = getCampaignEventImage(visualEventId);
   const conversation = getCampaignConversation(event.id, actorLabel, event.summary);
 
-  const panResponder = useMemo(() => PanResponder.create({
-    onMoveShouldSetPanResponder: (_, gesture) =>
-      !disabled && Math.abs(gesture.dx) > 3 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
-    onPanResponderTerminationRequest: () => false,
-    onPanResponderMove: (_, gesture) => {
-      position.setValue({ x: gesture.dx, y: 0 });
-      const nextDirection = gesture.dx < -14 ? 'LEFT' : gesture.dx > 14 ? 'RIGHT' : null;
-      if (nextDirection !== directionRef.current) {
-        directionRef.current = nextDirection;
-        setDirection(nextDirection);
-        onPreviewDirection?.(nextDirection);
-      }
-    },
-    onPanResponderRelease: (_, gesture) => {
-      const committed = Math.abs(gesture.dx) >= SWIPE_THRESHOLD || Math.abs(gesture.vx) >= SWIPE_VELOCITY;
-      if (!committed) {
-        directionRef.current = null;
-        setDirection(null);
-        onPreviewDirection?.(null);
-        Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
-        return;
-      }
-      const goLeft = gesture.dx !== 0 ? gesture.dx < 0 : gesture.vx < 0;
-      const option = goLeft ? leftOption : rightOption;
-      Animated.timing(position, {
-        toValue: { x: goLeft ? -cardWidth * 1.45 : cardWidth * 1.45, y: 0 },
-        duration: 150,
-        useNativeDriver: true,
-      }).start(() => {
-        position.setValue({ x: 0, y: 0 });
-        directionRef.current = null;
-        setDirection(null);
-        onPreviewDirection?.(null);
-        onChoose(option);
-      });
-    },
-    onPanResponderTerminate: () => {
-      directionRef.current = null;
-      setDirection(null);
-      onPreviewDirection?.(null);
-      Animated.spring(position, { toValue: { x: 0, y: 0 }, useNativeDriver: true }).start();
-    },
-  }), [cardWidth, disabled, leftOption, onChoose, onPreviewDirection, position, rightOption]);
+  const notifyPreview = (value: number) => {
+    onPreviewDirection?.(value < 0 ? 'LEFT' : value > 0 ? 'RIGHT' : null);
+  };
+
+  const commitChoice = (direction: number) => {
+    onPreviewDirection?.(null);
+    onChoose(direction < 0 ? leftOption : rightOption);
+  };
+
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .enabled(!disabled)
+        .activeOffsetX([-5, 5])
+        .failOffsetY([-24, 24])
+        .onUpdate((event) => {
+          translateX.value = event.translationX;
+          const nextPreview =
+            event.translationX < -PREVIEW_DISTANCE
+              ? -1
+              : event.translationX > PREVIEW_DISTANCE
+                ? 1
+                : 0;
+          if (nextPreview !== previewState.value) {
+            previewState.value = nextPreview;
+            runOnJS(notifyPreview)(nextPreview);
+          }
+        })
+        .onEnd((event) => {
+          const shouldCommit =
+            Math.abs(event.translationX) >= COMMIT_DISTANCE ||
+            Math.abs(event.velocityX) >= COMMIT_VELOCITY;
+
+          if (!shouldCommit) {
+            translateX.value = withSpring(0, { damping: 20, stiffness: 240 });
+            if (previewState.value !== 0) {
+              previewState.value = 0;
+              runOnJS(notifyPreview)(0);
+            }
+            return;
+          }
+
+          const direction =
+            event.translationX !== 0
+              ? event.translationX < 0 ? -1 : 1
+              : event.velocityX < 0 ? -1 : 1;
+          previewState.value = 0;
+          translateX.value = withTiming(direction * cardWidth * 1.55, { duration: 145 }, (finished) => {
+            if (finished) {
+              translateX.value = 0;
+              runOnJS(commitChoice)(direction);
+            }
+          });
+        })
+        .onFinalize(() => {
+          if (Math.abs(translateX.value) < cardWidth) {
+            translateX.value = withSpring(0, { damping: 20, stiffness: 240 });
+          }
+        }),
+    [cardWidth, disabled, leftOption, onChoose, onPreviewDirection, rightOption],
+  );
+
+  const animatedCardStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { rotate: `${(translateX.value / cardWidth) * 7}deg` },
+    ],
+  }));
 
   return (
     <View style={styles.stage}>
-      <Animated.View
-        {...panResponder.panHandlers}
-        style={[
-          styles.card,
-          {
-            width: cardWidth,
-            minHeight: cardHeight,
-            backgroundColor: theme.colors.surfaceElevated,
-            borderColor: theme.colors.border,
-            transform: [...position.getTranslateTransform(), { rotate }],
-          },
-        ]}
-      >
-        <View style={styles.header}>
-          <View style={styles.speakerBlock}>
-            <AppText variant="heading" style={styles.speakerName}>{conversation.speaker}</AppText>
-            {conversation.role ? <AppText variant="caption" muted>{conversation.role}</AppText> : null}
-          </View>
-          {choice ? (
-            <View style={[styles.choicePreview, { borderColor: theme.colors.accent }]}>
-              <AppText variant="label">{direction === 'LEFT' ? '← ' : ''}{choice.label}{direction === 'RIGHT' ? ' →' : ''}</AppText>
+      <GestureDetector gesture={pan}>
+        <Animated.View
+          style={[
+            styles.card,
+            {
+              width: cardWidth,
+              minHeight: cardHeight,
+              backgroundColor: theme.colors.surfaceElevated,
+              borderColor: theme.colors.border,
+            },
+            animatedCardStyle,
+          ]}
+        >
+          <View style={styles.header}>
+            <View style={styles.speakerBlock}>
+              <AppText variant="heading" style={styles.speakerName}>{conversation.speaker}</AppText>
+              {conversation.role ? <AppText variant="caption" muted>{conversation.role}</AppText> : null}
             </View>
-          ) : null}
-        </View>
-
-        <View style={styles.scene}>
-          <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
-            <CharacterPortrait name={conversation.speaker} />
-            {eventImage ? (
-              <AppText variant="caption" muted>{eventImage.credit}</AppText>
-            ) : (
-              <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
-            )}
           </View>
-          <AppText style={styles.dialogue}>“{conversation.line}”</AppText>
-        </View>
 
-        <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
-          <AppText variant="caption" muted>
-            {choice ? (direction === 'LEFT' ? '←' : '→') : 'SOLA / SAĞA KAYDIR'}
-          </AppText>
-        </View>
-      </Animated.View>
+          <View style={styles.scene}>
+            <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
+              <CharacterPortrait name={conversation.speaker} />
+              <AppText variant="caption" muted>
+                {eventImage ? eventImage.credit : visual.label.toLocaleUpperCase('tr-TR')}
+              </AppText>
+            </View>
+            <AppText style={styles.dialogue}>“{conversation.line}”</AppText>
+          </View>
+
+          <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
+            <AppText variant="caption" muted>SOLA / SAĞA KAYDIR</AppText>
+          </View>
+        </Animated.View>
+      </GestureDetector>
     </View>
   );
 }
@@ -151,21 +171,13 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     justifyContent: 'space-between',
     shadowColor: '#000',
-    shadowOpacity: 0.14,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
   header: { paddingHorizontal: 22, paddingTop: 20, gap: 14 },
   scene: { flex: 1, paddingHorizontal: 22, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', gap: 18 },
-  emblem: {
-    width: 116,
-    height: 116,
-    borderWidth: 2,
-    borderRadius: 58,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   visualFrame: {
     width: '100%',
     maxWidth: 390,
@@ -177,22 +189,8 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 18,
   },
-  eventImage: {
-    width: '100%',
-    height: 190,
-    borderRadius: 14,
-  },
-  visualBadge: {
-    width: 96,
-    height: 96,
-    borderWidth: 2,
-    borderRadius: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   speakerBlock: { alignItems: 'center', gap: 2 },
   speakerName: { textAlign: 'center', alignSelf: 'center', maxWidth: 420 },
-  choicePreview: { alignSelf: 'center', borderWidth: 1, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 },
   dialogue: { textAlign: 'center', maxWidth: 390, fontSize: 18, lineHeight: 27 },
   footer: { minHeight: 44, borderTopWidth: 1, paddingHorizontal: 18, paddingVertical: 10, alignItems: 'center', justifyContent: 'center' },
 });
