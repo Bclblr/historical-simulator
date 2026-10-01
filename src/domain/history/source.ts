@@ -1,4 +1,5 @@
 import type { HistoricalEntityId } from './types';
+import type { ArchiveReference } from './archive-reference';
 
 export type SourceStatus = 'DRAFT' | 'VERIFIED' | 'ARCHIVED';
 
@@ -29,6 +30,7 @@ export interface HistoricalSource {
   issue: string | null;
   archiveName: string | null;
   archiveReference: string | null;
+  structuredArchiveReference?: ArchiveReference | null;
   url: string | null;
   accessedDate: string | null;
   isbn: string | null;
