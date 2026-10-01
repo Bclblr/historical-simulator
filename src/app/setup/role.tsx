@@ -37,7 +37,7 @@ export default function RoleScreen() {
               <AppCard interactive>
                 <AppText variant="heading">{role.name}</AppText>
                 <AppText variant="label" muted style={styles.meta}>
-                  {role.type}
+                  {role.type === 'ADMINISTRATIVE' ? 'İDARİ' : role.type}
                 </AppText>
                 <AppText muted style={styles.text}>{role.description}</AppText>
               </AppCard>
