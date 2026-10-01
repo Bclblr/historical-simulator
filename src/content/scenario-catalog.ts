@@ -17,7 +17,7 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
     scenarioId: 'germany-1921',
     era: createEra({
       id: 'germany-1921',
-      name: 'Almanya · 1933–1945',
+      name: 'Nazi Almanyası · 1933–1945',
       shortName: '1933–1945',
       description:
         '1933–1945 Almanya’sında yaşayan kurgusal bir kişinin gündelik hayatına odaklanan, kararlarla dallanan yaşam simülasyonu.',
