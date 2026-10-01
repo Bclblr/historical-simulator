@@ -106,11 +106,6 @@ export function SwipeDecisionCard({
               runOnJS(commitChoice)(direction);
             }
           });
-        })
-        .onFinalize(() => {
-          if (Math.abs(translateX.value) < cardWidth) {
-            translateX.value = withSpring(0, { damping: 20, stiffness: 240 });
-          }
         }),
     [cardWidth, disabled, leftOption, onChoose, onPreviewDirection, rightOption],
   );
