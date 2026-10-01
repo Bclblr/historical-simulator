@@ -3,6 +3,7 @@ import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'r
 import type { DecisionOption } from '@/domain/game';
 import type { HistoricalEvent } from '@/domain/history';
 import { useAppTheme } from '@/theme';
+import { getGermany1933CardVisual } from '@/content/germany-1933/card-visuals';
 import { AppText } from './app-text';
 
 interface SwipeDecisionCardProps {
@@ -37,7 +38,7 @@ export function SwipeDecisionCard({
     inputRange: [-cardWidth, 0, cardWidth],
     outputRange: ['-8deg', '0deg', '8deg'],
   });
-  const choice = direction === 'LEFT' ? leftOption : direction === 'RIGHT' ? rightOption : null;
+  const choice = direction === 'LEFT' ? leftOption : direction === 'RIGHT' ? rightOption : null;\n  const visual = getGermany1933CardVisual(event.id);
 
   const panResponder = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) => !disabled && Math.abs(gesture.dx) > 5,
@@ -94,10 +95,14 @@ export function SwipeDecisionCard({
         </View>
 
         <View style={styles.scene}>
-          <View style={[styles.emblem, { borderColor: theme.colors.accent }]}>
-            <AppText variant="display">§</AppText>
+          <View style={[styles.visualFrame, { borderColor: theme.colors.border }]}>
+            <View style={[styles.visualBadge, { borderColor: theme.colors.accent }]}>
+              <AppText variant="display">{visual.glyph}</AppText>
+            </View>
+            <AppText variant="caption" muted>{visual.label.toLocaleUpperCase('tr-TR')}</AppText>
           </View>
-          <AppText variant="label" muted style={styles.eventTitle}>{event.title}</AppText>\n          <AppText style={styles.summary}>{event.summary}</AppText>
+          <AppText variant="label" muted style={styles.eventTitle}>{event.title}</AppText>
+          <AppText style={styles.summary}>{event.summary}</AppText>
         </View>
 
         <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
@@ -136,6 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  eventTitle: { textAlign: 'center', maxWidth: 390 },\n  summary: { textAlign: 'center', maxWidth: 390 },
+  eventTitle: { textAlign: 'center', maxWidth: 390 },
+  summary: { textAlign: 'center', maxWidth: 390 },
   footer: { minHeight: 92, borderTopWidth: 1, padding: 18, justifyContent: 'space-between', gap: 10 },
 });
