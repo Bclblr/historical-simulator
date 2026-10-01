@@ -55,6 +55,33 @@ export function CampaignEndingCard({
           {ending.subtitle}
         </AppText>
 
+        {ending.pathLabel ? (
+          <View style={styles.pathBlock}>
+            <AppText variant="caption" muted style={styles.pathLabel}>
+              İZLEDİĞİN YOL
+            </AppText>
+            <AppText style={styles.pathTitle}>{ending.pathLabel}</AppText>
+            {ending.pathTraits?.length ? (
+              <View style={styles.traits}>
+                {ending.pathTraits.map((trait) => (
+                  <View
+                    key={trait}
+                    style={[
+                      styles.traitChip,
+                      {
+                        backgroundColor: theme.colors.surfaceElevated,
+                        borderColor: theme.colors.border,
+                      },
+                    ]}
+                  >
+                    <AppText variant="caption">{trait}</AppText>
+                  </View>
+                ))}
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+
         <AppText muted style={styles.description}>
           {ending.description}
         </AppText>
@@ -121,6 +148,34 @@ const styles = StyleSheet.create({
     maxWidth: 360,
     fontSize: 16,
     lineHeight: 22,
+  },
+  pathBlock: {
+    width: '100%',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 2,
+  },
+  pathLabel: {
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+  pathTitle: {
+    textAlign: 'center',
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  traits: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 7,
+  },
+  traitChip: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   description: {
     textAlign: 'center',
