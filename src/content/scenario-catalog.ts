@@ -20,7 +20,7 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
       name: '1933',
       shortName: '1933',
       description:
-        'Democratic institutions collapse and dictatorship is consolidated in Germany amid a wider European political crisis.',
+        'Almanya\'da demokratik kurumların çözüldüğü ve diktatörlüğün pekiştirildiği, Avrupa çapındaki daha geniş siyasi krizin parçası olan bir dönem.',
       startDate: '1933-01-01',
       endDate: '1933-12-31',
       sortOrder: 10,
@@ -30,10 +30,10 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
       createCountry({
         id: 'germany',
         eraId: '1933',
-        name: 'Germany',
-        shortName: 'Germany',
+        name: 'Almanya',
+        shortName: 'Almanya',
         description:
-          'The first playable historical content pack. The simulation engine itself is not Germany-specific.',
+          'İlk oynanabilir tarihsel içerik paketi. Simülasyon motoru Almanya\'ya özgü değildir.',
         sortOrder: 10,
         status: 'PUBLISHED',
       }),
