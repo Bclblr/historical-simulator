@@ -1,5 +1,6 @@
 import {
   createInitialGameState,
+  type CampaignProfile,
   type GameSelection,
   type GameSessionSnapshot,
 } from '@/domain/game';
@@ -9,6 +10,7 @@ export interface StartGameInput {
   sessionId: string;
   startDate: string;
   selection: GameSelection;
+  campaign?: CampaignProfile;
 }
 
 export class GameSessionService {
@@ -17,6 +19,7 @@ export class GameSessionService {
   async start(input: StartGameInput): Promise<GameSessionSnapshot> {
     const snapshot: GameSessionSnapshot = {
       state: createInitialGameState(input),
+      campaign: input.campaign,
       decisionHistory: [],
       scheduledEffects: [],
     };
