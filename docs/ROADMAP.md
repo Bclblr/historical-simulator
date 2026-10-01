@@ -104,9 +104,9 @@
 ## 86–92 — Arşiv/meta oyun
 - [x] 86. Oyuncu arşivi
 - [x] 87. Keşfedilen olaylar
-- [ ] 88. Keşfedilen belgeler
+- [x] 88. Keşfedilen belgeler
 - [ ] 89. Timeline
-- [ ] 90. Karar geçmişi
+- [x] 90. Karar geçmişi
 - [ ] 91. Gerçek tarih / oyuncu zaman çizgisi karşılaştırması
 - [ ] 92. İstatistik/tamamlama
 
