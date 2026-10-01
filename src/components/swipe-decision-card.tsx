@@ -49,10 +49,6 @@ export function SwipeDecisionCard({
   const visual = getGermany1933CardVisual(visualEventId);
   const eventImage = getCampaignEventImage(visualEventId);
   const conversation = getCampaignConversation(event.id, actorLabel, event.summary);
-  const classificationLabel =
-    event.classification === 'COUNTERFACTUAL_SIMULATION'
-      ? 'SİMÜLASYON SONUCU'
-      : 'TARİHSEL OLAY';
 
   const panResponder = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) =>
@@ -114,10 +110,6 @@ export function SwipeDecisionCard({
         ]}
       >
         <View style={styles.header}>
-          <View style={styles.dateRow}>
-            <AppText variant="caption" muted>{event.startDate}</AppText>
-            <AppText variant="caption" muted>{classificationLabel}</AppText>
-          </View>
           <View style={styles.speakerBlock}>
             <AppText variant="heading" style={styles.speakerName}>{conversation.speaker}</AppText>
             {conversation.role ? <AppText variant="caption" muted>{conversation.role}</AppText> : null}
@@ -142,9 +134,8 @@ export function SwipeDecisionCard({
         </View>
 
         <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
-          <AppText variant="caption" muted>{event.title}</AppText>
           <AppText variant="caption" muted>
-            {choice ? (direction === 'LEFT' ? '← SOL KARAR' : 'SAĞ KARAR →') : 'KARTI SOLA / SAĞA KAYDIR'}
+            {choice ? (direction === 'LEFT' ? '←' : '→') : 'SOLA / SAĞA KAYDIR'}
           </AppText>
         </View>
       </Animated.View>
@@ -166,7 +157,6 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   header: { paddingHorizontal: 22, paddingTop: 20, gap: 14 },
-  dateRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
   scene: { flex: 1, paddingHorizontal: 22, paddingVertical: 18, alignItems: 'center', justifyContent: 'center', gap: 18 },
   emblem: {
     width: 116,
@@ -204,5 +194,5 @@ const styles = StyleSheet.create({
   speakerName: { textAlign: 'center', alignSelf: 'center', maxWidth: 420 },
   choicePreview: { alignSelf: 'center', borderWidth: 1, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 },
   dialogue: { textAlign: 'center', maxWidth: 390, fontSize: 18, lineHeight: 27 },
-  footer: { minHeight: 64, borderTopWidth: 1, paddingHorizontal: 18, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  footer: { minHeight: 44, borderTopWidth: 1, paddingHorizontal: 18, paddingVertical: 10, alignItems: 'center', justifyContent: 'center' },
 });
