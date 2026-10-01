@@ -1,5 +1,5 @@
 import type { GameState, GameVariableKey } from './types';
-import { withGameDate, withGameVariable } from './game-state';
+import { withGameDate, withGameFlag, withGameVariable } from './game-state';
 import {
   addHistoricalDays,
   parseHistoricalDate,
@@ -20,6 +20,11 @@ export type DecisionEffect =
   | {
       type: 'ADVANCE_DAYS';
       days: number;
+    }
+  | {
+      type: 'SET_FLAG';
+      key: string;
+      value: boolean;
     };
 
 function assertFinite(value: number, field: string): void {
@@ -38,7 +43,16 @@ export function applyDecisionEffect(
     case 'CHANGE_VARIABLE': {
       assertFinite(effect.delta, 'DecisionEffect delta');
       const current = state.variables[effect.key] ?? 0;
-      const isCampaignMeter = ['publicSupport', 'institutionalInfluence', 'stability', 'foreignRelations'].includes(effect.key);
+      const isCampaignMeter = [
+        'publicSupport',
+        'institutionalInfluence',
+        'stability',
+        'foreignRelations',
+        'money',
+        'safety',
+        'social',
+        'reputation',
+      ].includes(effect.key);
       const scaledDelta = isCampaignMeter
         ? Math.sign(effect.delta) * Math.max(3, Math.round(Math.abs(effect.delta) * 2.5))
         : effect.delta;
@@ -54,6 +68,9 @@ export function applyDecisionEffect(
       const nextDate = addHistoricalDays(parseHistoricalDate(state.currentDate), effect.days);
       return withGameDate(state, serializeHistoricalDate(nextDate));
     }
+
+    case 'SET_FLAG':
+      return withGameFlag(state, effect.key, effect.value);
   }
 }
 
