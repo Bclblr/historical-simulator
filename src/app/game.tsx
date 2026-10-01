@@ -260,6 +260,7 @@ export default function GameScreen() {
                 : []
             }
           />
+          <View style={styles.decisionArea}>
           {ending ? (
             <AppCard>
               <AppText variant="label" muted>ZAMAN ÇİZGİSİ SONA ERDİ</AppText>
@@ -289,6 +290,7 @@ export default function GameScreen() {
               <AppText muted>Bu oturumda oynanabilir yeni tarihsel olay kalmadı.</AppText>
             </AppCard>
           )}
+          </View>
         </View>
       ) : (
         <AppText muted>Oturum hazırlanıyor…</AppText>
@@ -307,7 +309,14 @@ const styles = StyleSheet.create({
     maxWidth: 620,
     alignSelf: 'center',
     justifyContent: 'flex-start',
-    gap: 0,
     paddingTop: 0,
+  },
+  decisionArea: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 4,
+    paddingBottom: 24,
   },
 });
