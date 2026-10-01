@@ -21,3 +21,4 @@ export * from './event-connection-repository';
 export * from './content-integrity';
 export * from './source-display';
 export * from './source-category';
+export * from './bibliography';
