@@ -90,9 +90,9 @@
 - [x] 75. Tam oynanabilir 1933 senaryosu
 
 ## 76–85 — UX ve atmosfer
-- [ ] 76. Ana menü
-- [ ] 77. Dönem seçimi
-- [ ] 78. Devlet seçimi
+- [x] 76. Ana menü
+- [x] 77. Dönem seçimi
+- [x] 78. Devlet seçimi
 - [ ] 79. Kurum seçimi
 - [ ] 80. Rol seçimi
 - [ ] 81. Game HUD
