@@ -15,8 +15,7 @@ import {
   type GameSessionSnapshot,
 } from '@/domain/game';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
-import { getGermany1933DecisionContent, getGermany1933FollowUpDecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
-import { createGermany1933FollowUp } from '@/content/germany-1933/follow-ups';
+import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
 import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
 import { useGameSessionService } from '@/services';
 
@@ -56,7 +55,6 @@ export default function GameScreen() {
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [decisionResult, setDecisionResult] = useState<{ text: string; next: GameSessionSnapshot } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -120,24 +118,6 @@ export default function GameScreen() {
     if (!scenario) return null;
 
     const decidedIds = new Set(snapshot.decisionHistory.map((item) => item.eventId));
-    const lastDecision = [...snapshot.decisionHistory]
-      .sort((a, b) => b.sequence - a.sequence)[0];
-    const lastHistoricalEvent = lastDecision
-      ? scenario.events.find((item) => item.id === lastDecision.eventId)
-      : null;
-    const followUp = lastHistoricalEvent
-      ? createGermany1933FollowUp(lastHistoricalEvent, snapshot.decisionHistory)
-      : null;
-
-    if (followUp) {
-      const decision = getGermany1933FollowUpDecisionContent(followUp.event.id);
-      return {
-        event: followUp.event,
-        decision: { ...decision, prompt: followUp.prompt, speaker: followUp.speaker },
-        options: createSimulationOptions(followUp.event.id, decision.left, decision.right),
-      };
-    }
-
     const eligibleEvent = getEligibleEvents(scenario.events, snapshot.state)
       .find((item) => !decidedIds.has(item.id));
     const nextFutureEvent = [...scenario.events]
@@ -151,7 +131,7 @@ export default function GameScreen() {
     const event = eligibleEvent ?? nextFutureEvent;
 
     if (!event) return null;
-    const decision = getGermany1933DecisionContent(event.id);
+    const decision = getGermany1933DecisionContent(event.id, event.title, event.summary);
     return {
       event,
       decision,
@@ -183,12 +163,9 @@ export default function GameScreen() {
         decidedAt: snapshot.state.currentDate,
       });
       const decidedIds = new Set(history.map((item) => item.eventId));
-      const isFollowUp = activeContent.event.classification === 'COUNTERFACTUAL_SIMULATION';
-      const nextEvent = isFollowUp
-        ? [...currentScenario.events]
-            .filter((event) => !decidedIds.has(event.id) && event.startDate >= snapshot.state.currentDate)
-            .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0]
-        : undefined;
+      const nextEvent = [...currentScenario.events]
+        .filter((event) => !decidedIds.has(event.id) && event.startDate >= activeContent.event.startDate)
+        .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
 
       const selectedChoice =
         option.swipeDirection === 'LEFT'
@@ -199,12 +176,10 @@ export default function GameScreen() {
           ? withGameDate(snapshot.state, activeContent.event.startDate)
           : snapshot.state;
       const affectedState = applyDecisionEffects(stateAtEventDate, selectedChoice.effects);
-      const delayed = activeContent.event.classification === 'COUNTERFACTUAL_SIMULATION'
-        ? null
-        : getGermany1933DelayedConsequence(
-            activeContent.event.id,
-            selectedChoice.idSuffix,
-          );
+      const delayed = getGermany1933DelayedConsequence(
+        activeContent.event.id,
+        selectedChoice.idSuffix,
+      );
       const scheduledEffects = delayed
         ? scheduleDecisionEffect(snapshot.scheduledEffects, affectedState, {
             id: delayed.idSuffix,
@@ -225,7 +200,7 @@ export default function GameScreen() {
       };
 
       await sessions.save(next);
-      setDecisionResult({ text: selectedChoice.result, next });
+      setSnapshot(next);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Karar kaydedilemedi.');
     } finally {
@@ -239,8 +214,8 @@ export default function GameScreen() {
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
-          <GameStatusBar snapshot={decisionResult?.next ?? snapshot} />
-          {ending && !decisionResult ? (
+          <GameStatusBar snapshot={snapshot} />
+          {ending ? (
             <AppCard>
               <AppText variant="label" muted>ZAMAN ÇİZGİSİ SONA ERDİ</AppText>
               <AppText variant="heading">{ending.title}</AppText>
@@ -252,28 +227,12 @@ export default function GameScreen() {
                 {snapshot.campaign?.playerName ?? 'Oyuncu'} · {snapshot.state.currentDate} · {snapshot.decisionHistory.length} karar
               </AppText>
             </AppCard>
-          ) : decisionResult ? (
-            <AppCard>
-              <AppText variant="label" muted>KARAR SONUCU</AppText>
-              <AppText variant="heading">{decisionResult.text}</AppText>
-              <AppText muted>Kararın etkileri göstergelere işlendi.</AppText>
-              <AppText
-                variant="label"
-                onPress={() => {
-                  setSnapshot(decisionResult.next);
-                  setDecisionResult(null);
-                }}
-              >
-                SONRAKİ KART →
-              </AppText>
-            </AppCard>
           ) : activeContent ? (
             <SwipeDecisionCard
               event={activeContent.event}
               leftOption={activeContent.options[0]}
               rightOption={activeContent.options[1]}
               actorLabel={activeContent.decision.speaker || actorLabel}
-              prompt={activeContent.decision.prompt}
               disabled={saving}
               onChoose={(option) => void choose(option)}
             />
