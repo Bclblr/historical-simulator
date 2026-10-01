@@ -138,8 +138,17 @@ export default function GameScreen() {
       };
     }
 
-    const event = getEligibleEvents(scenario.events, snapshot.state)
+    const eligibleEvent = getEligibleEvents(scenario.events, snapshot.state)
       .find((item) => !decidedIds.has(item.id));
+    const nextFutureEvent = [...scenario.events]
+      .filter(
+        (item) =>
+          item.status === 'PUBLISHED' &&
+          !decidedIds.has(item.id) &&
+          item.startDate > snapshot.state.currentDate,
+      )
+      .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
+    const event = eligibleEvent ?? nextFutureEvent;
 
     if (!event) return null;
     const decision = getGermany1933DecisionContent(event.id);
