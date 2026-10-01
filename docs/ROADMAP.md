@@ -74,11 +74,11 @@
 - [x] 61. Tarihte ne oldu? ekranı
 - [x] 62. Tarihçi yorumları
 - [x] 63. Farklı akademik yorumlar
-- [ ] 64. Tarihsel gerçek / alternatif tarih etiketi
-- [ ] 65. Kaynak doğrulama standardı
+- [x] 64. Tarihsel gerçek / alternatif tarih etiketi
+- [x] 65. Kaynak doğrulama standardı
 
 ## 66–75 — İlk içerik: Almanya 1933
-- [ ] 66. 1933 kronolojisi
+- [x] 66. 1933 kronolojisi
 - [ ] 67. İlk kurum seçimi
 - [ ] 68. İlk 10 olay
 - [ ] 69. 20 olay
