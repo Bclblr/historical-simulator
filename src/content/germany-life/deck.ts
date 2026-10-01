@@ -19,6 +19,7 @@ export interface LifeCardDefinition {
   maxDate?: string;
   requires?: Record<string, boolean>;
   weight?: number;
+  category?: 'HISTORY' | 'WORK' | 'SOCIAL' | 'FAMILY' | 'SURVIVAL';
 }
 
 export interface ActiveLifeCard {
@@ -405,6 +406,376 @@ const LIFE_CARDS: LifeCardDefinition[] = [
       days(150),
     ]),
   },
+,
+  {
+    id: 'life-1933-boycott',
+    speaker: 'Herr Rosenfeld',
+    role: 'Mahalle esnafı',
+    line: 'Dükkânımın önünde bugün insanları içeri girmemeleri için durduruyorlar. Yine de alışverişe girecek misin?',
+    minDate: '1933-04-01',
+    maxDate: '1933-12-31',
+    weight: 14,
+    category: 'HISTORY',
+    left: choice('walk-away-boycott', 'Bugün uzaklaşayım', 'Dikkat çekmeden yoluna devam et.', [
+      change('safety', 2),
+      change('social', -2),
+      days(45),
+    ]),
+    right: choice('enter-shop-boycott', 'Alışveriş yapacağım', 'Baskıya rağmen dükkâna gir.', [
+      change('social', 3),
+      change('reputation', -2),
+      change('safety', -2),
+      flag('supported_rosenfeld'),
+      days(45),
+    ]),
+  },
+  {
+    id: 'life-1933-dismissed-neighbor',
+    speaker: 'Dr. Adler',
+    role: 'Eski komşun',
+    line: 'Kamu görevindeki işimi kaybettim. Bir süre mektuplarımı senin adresine göndermeme izin verir misin?',
+    minDate: '1933-04-07',
+    maxDate: '1934-12-31',
+    weight: 12,
+    category: 'HISTORY',
+    left: choice('refuse-mail', 'Beni karıştırma', 'Kendi güvenliğini öne çıkar.', [
+      change('safety', 2),
+      change('social', -2),
+      days(55),
+    ]),
+    right: choice('receive-mail', 'Adresimi kullanabilirsin', 'Komşuna küçük ama görünür bir yardım yap.', [
+      change('social', 3),
+      change('safety', -2),
+      flag('helped_adler'),
+      days(55),
+    ]),
+  },
+  {
+    id: 'life-1933-book-burning',
+    speaker: 'Lotte',
+    role: 'Üniversiteden tanıdığın',
+    line: 'Bazı kitapların meydanda yakılacağını söylüyorlar. Ben birkaçını saklamak istiyorum. Senin evinde dursunlar mı?',
+    minDate: '1933-05-01',
+    maxDate: '1934-06-30',
+    weight: 10,
+    category: 'HISTORY',
+    left: choice('refuse-books', 'Evime getirme', 'Riskten uzak dur.', [
+      change('safety', 2),
+      change('social', -1),
+      days(50),
+    ]),
+    right: choice('keep-books', 'Birkaçını sakla', 'Lotte ile bağını koru ama görünmez bir risk al.', [
+      change('social', 2),
+      change('safety', -2),
+      flag('kept_books'),
+      days(50),
+    ]),
+  },
+  {
+    id: 'life-1935-nuremberg-laws',
+    speaker: 'Anna Keller',
+    role: 'Komşun',
+    line: 'Yeni ırk yasaları yüzünden Rosenfeld ailesinin hayatı daha da zorlaştı. Onlarla görüşmeye devam edecek misin?',
+    minDate: '1935-09-15',
+    maxDate: '1937-12-31',
+    weight: 15,
+    category: 'HISTORY',
+    left: choice('distance-rosenfeld', 'Mesafemi korurum', 'Kamusal baskıdan uzak dur.', [
+      change('safety', 3),
+      change('social', -2),
+      days(70),
+    ]),
+    right: choice('keep-friendship', 'Görüşmeye devam ederim', 'Eski ilişkinizi sürdür.', [
+      change('social', 4),
+      change('safety', -2),
+      flag('kept_rosenfeld_friendship'),
+      days(70),
+    ]),
+  },
+  {
+    id: 'life-1936-olympics',
+    speaker: 'Friedrich',
+    role: 'Eski arkadaşın',
+    line: 'Berlin yabancı ziyaretçilerle doldu. Şehir kendini bambaşka gösteriyor. Birkaç günlüğüne gidip bakalım mı?',
+    minDate: '1936-07-15',
+    maxDate: '1936-09-15',
+    weight: 14,
+    category: 'HISTORY',
+    left: choice('skip-olympics', 'Burada kalalım', 'Masraf yapmadan günlük düzenini sürdür.', [
+      change('money', 2),
+      change('social', -1),
+      days(45),
+    ]),
+    right: choice('visit-olympics', 'Berlin’e gidelim', 'Kalabalık ve görünür bir etkinliğe katıl.', [
+      change('money', -2),
+      change('social', 3),
+      change('reputation', 2),
+      days(45),
+    ]),
+  },
+  {
+    id: 'life-1937-food-shortage',
+    speaker: 'Elise',
+    role: 'Aileden biri',
+    line: 'Bazı yiyecekleri bulmak giderek zorlaşıyor. Biraz para ayırıp erzak biriktirelim mi?',
+    minDate: '1937-01-01',
+    maxDate: '1939-08-31',
+    weight: 8,
+    category: 'SURVIVAL',
+    left: choice('buy-normally', 'Günlük alalım', 'Paranı elde tut.', [
+      change('money', 2),
+      change('safety', -1),
+      days(65),
+    ]),
+    right: choice('stock-food', 'Biraz stok yapalım', 'Bütçeden vazgeçip evde erzak tut.', [
+      change('money', -3),
+      change('safety', 3),
+      flag('food_stock'),
+      days(65),
+    ]),
+  },
+  {
+    id: 'life-1938-pogrom-aftermath',
+    speaker: 'Anna Keller',
+    role: 'Komşun',
+    line: 'Dün gece Rosenfeldlerin dükkânı da zarar gördü. Sabah kapılarının önünde bekliyorlar. Yanlarına gidecek misin?',
+    minDate: '1938-11-10',
+    maxDate: '1939-03-31',
+    weight: 18,
+    category: 'HISTORY',
+    left: choice('stay-away-aftermath', 'Uzakta kalacağım', 'Dikkat çekmemeyi seç.', [
+      change('safety', 3),
+      change('social', -3),
+      days(45),
+    ]),
+    right: choice('visit-rosenfeld', 'Yanlarına gideceğim', 'Komşuluk bağını sürdür.', [
+      change('social', 4),
+      change('safety', -3),
+      flag('visited_rosenfeld_after_1938'),
+      days(45),
+    ]),
+  },
+  {
+    id: 'life-1939-ration-cards',
+    speaker: 'Bakkal Schmidt',
+    role: 'Mahalle bakkalı',
+    line: 'Savaş başlayınca dağıtım değişti. Kartlarını dikkatli kullanmazsan ay sonunu zor getirirsin. Harcamaları kısacak mısın?',
+    minDate: '1939-09-01',
+    maxDate: '1941-12-31',
+    weight: 13,
+    category: 'SURVIVAL',
+    left: choice('spend-rations', 'Şimdilik idare ederiz', 'Bugünü rahat geçir ama rezervini azalt.', [
+      change('social', 2),
+      change('safety', -3),
+      days(65),
+    ]),
+    right: choice('save-rations', 'Daha dikkatli olalım', 'Günlük rahatlıktan vazgeçip rezerv tut.', [
+      change('money', 2),
+      change('safety', 3),
+      change('social', -1),
+      flag('careful_rations'),
+      days(65),
+    ]),
+  },
+  {
+    id: 'life-1939-blackout',
+    speaker: 'Blok görevlisi',
+    role: 'Mahalle görevlisi',
+    line: 'Geceleri pencerelerden ışık görünmemesi isteniyor. Perdelerini yenilemen gerekecek.',
+    minDate: '1939-09-01',
+    maxDate: '1942-12-31',
+    weight: 9,
+    category: 'HISTORY',
+    left: choice('delay-blackout', 'Sonra yaparım', 'Masrafı ertele ama dikkat çekme riskini artır.', [
+      change('money', 1),
+      change('reputation', -2),
+      change('safety', -2),
+      days(50),
+    ]),
+    right: choice('prepare-blackout', 'Hemen hallederim', 'Evi karartma kurallarına uygun hâle getir.', [
+      change('money', -2),
+      change('safety', 3),
+      change('reputation', 1),
+      flag('blackout_ready'),
+      days(50),
+    ]),
+  },
+  {
+    id: 'life-1940-shortages',
+    speaker: 'Elise',
+    role: 'Aileden biri',
+    line: 'Meyve, sebze ve gündelik bazı ürünleri bulmak zorlaştı. Pazarı dolaşıp saatler harcayalım mı?',
+    minDate: '1940-01-01',
+    maxDate: '1942-12-31',
+    weight: 10,
+    category: 'SURVIVAL',
+    left: choice('accept-shortage', 'Elimizdekiler yeter', 'Zamanını koru ama evdeki imkânlarla yetin.', [
+      change('social', 1),
+      change('safety', -1),
+      days(60),
+    ]),
+    right: choice('search-markets', 'Biraz daha arayalım', 'Daha çok zaman ve para harcayarak ihtiyaç bulmaya çalış.', [
+      change('money', -2),
+      change('safety', 2),
+      change('social', -1),
+      days(60),
+    ]),
+  },
+  {
+    id: 'life-1941-yellow-star',
+    speaker: 'Herr Rosenfeld',
+    role: 'Eski komşun',
+    line: 'Artık sokağa çıktığımda herkes beni işaret eden yıldızı görüyor. Birlikte yürümek seni rahatsız eder mi?',
+    minDate: '1941-09-19',
+    maxDate: '1942-12-31',
+    requires: { kept_rosenfeld_friendship: true },
+    weight: 18,
+    category: 'HISTORY',
+    left: choice('avoid-public-walk', 'Evde görüşelim', 'Arkadaşlığı sürdür ama kamusal görünürlüğü azalt.', [
+      change('safety', 2),
+      change('social', 1),
+      days(55),
+    ]),
+    right: choice('walk-together', 'Birlikte yürürüz', 'Kamusal baskıya rağmen arkadaşlığını gizleme.', [
+      change('social', 4),
+      change('safety', -3),
+      change('reputation', -2),
+      flag('publicly_stood_by_rosenfeld'),
+      days(55),
+    ]),
+  },
+  {
+    id: 'life-1942-rosenfeld-disappears',
+    speaker: 'Anna Keller',
+    role: 'Komşun',
+    line: 'Rosenfeld ailesinin kapısı günlerdir kapalı. Mahallede götürüldüklerini söyleyenler var. Eşyalarından kalanları koruyalım mı?',
+    minDate: '1942-01-01',
+    maxDate: '1943-12-31',
+    requires: { kept_rosenfeld_friendship: true },
+    weight: 16,
+    category: 'HISTORY',
+    left: choice('do-not-interfere', 'Karışmayalım', 'Dikkat çekmemeyi seç.', [
+      change('safety', 3),
+      change('social', -3),
+      days(70),
+    ]),
+    right: choice('protect-belongings', 'Kalanları saklayalım', 'Komşularının eşyalarını korumaya çalış.', [
+      change('social', 3),
+      change('safety', -2),
+      flag('protected_rosenfeld_belongings'),
+      days(70),
+    ]),
+  },
+  {
+    id: 'life-1943-total-war',
+    speaker: 'Bay Weber',
+    role: 'İşverenin',
+    line: 'İşyerine daha fazla üretim hedefi geldi. Vardiyalar uzayacak. Ek vardiyayı alırsan gelirini korursun.',
+    minDate: '1943-02-01',
+    maxDate: '1944-12-31',
+    weight: 12,
+    category: 'WORK',
+    left: choice('refuse-extra-war-shift', 'Ek vardiyayı istemiyorum', 'Sosyal hayatını koru ama gelirden vazgeç.', [
+      change('money', -3),
+      change('social', 3),
+      change('reputation', -2),
+      days(75),
+    ]),
+    right: choice('take-extra-war-shift', 'Vardiyayı alırım', 'Geliri koru ama zamanını işe bağla.', [
+      change('money', 4),
+      change('social', -4),
+      change('reputation', 2),
+      days(75),
+    ]),
+  },
+  {
+    id: 'life-1943-air-raid',
+    speaker: 'Elise',
+    role: 'Aileden biri',
+    line: 'Hava saldırısı uyarıları artık daha sık. Geceyi her alarmda sığınağa inmeye hazır geçirelim mi?',
+    minDate: '1943-01-01',
+    maxDate: '1945-04-30',
+    weight: 18,
+    category: 'SURVIVAL',
+    left: choice('stay-home-during-alerts', 'Her seferinde inmeyelim', 'Günlük düzeni koru ama daha fazla risk al.', [
+      change('social', 1),
+      change('safety', -4),
+      days(55),
+    ]),
+    right: choice('use-shelter', 'Alarmda sığınağa ineriz', 'Uyarıları ciddiye al ve güvenliğe öncelik ver.', [
+      change('safety', 4),
+      change('social', -2),
+      flag('uses_shelter'),
+      days(55),
+    ]),
+  },
+  {
+    id: 'life-1943-bombed-neighbor',
+    speaker: 'Friedrich',
+    role: 'Eski arkadaşın',
+    line: 'Dün geceki saldırıdan sonra Hoffmannların evi kullanılamaz durumda. Birkaç hafta bizde kalsınlar mı?',
+    minDate: '1943-01-01',
+    maxDate: '1945-04-30',
+    weight: 11,
+    category: 'SOCIAL',
+    left: choice('cannot-host-family', 'Yerimiz yok', 'Ev düzenini koru.', [
+      change('safety', 1),
+      change('social', -2),
+      days(60),
+    ]),
+    right: choice('host-family', 'Birlikte idare ederiz', 'Evini paylaş ve çevrendeki bağı güçlendir.', [
+      change('money', -2),
+      change('social', 4),
+      change('safety', -1),
+      flag('hosted_bombed_family'),
+      days(60),
+    ]),
+  },
+  {
+    id: 'life-1944-evacuation',
+    speaker: 'Belediye görevlisi',
+    role: 'Yerel görevli',
+    line: 'Çocuklu ailelerin bir bölümünü daha güvenli bölgelere göndermeye çalışıyoruz. Ailenden gidecek olanlarla sen de ayrılacak mısın?',
+    minDate: '1944-01-01',
+    maxDate: '1945-03-31',
+    weight: 14,
+    category: 'SURVIVAL',
+    left: choice('remain-city-1944', 'Şehirde kalacağım', 'İşini ve yerleşik düzenini koru.', [
+      change('money', 2),
+      change('safety', -4),
+      change('social', -1),
+      days(90),
+    ]),
+    right: choice('leave-city-1944', 'Onlarla giderim', 'İşi bırakıp güvenliğe öncelik ver.', [
+      change('money', -3),
+      change('safety', 5),
+      change('social', 2),
+      flag('evacuated_1944'),
+      days(90),
+    ]),
+  },
+  {
+    id: 'life-1945-return-home',
+    speaker: 'Friedrich',
+    role: 'Eski arkadaşın',
+    line: 'Cephe yaklaşırken herkes geleceğini düşünüyor. Savaş bittiğinde ilk iş eski evine mi döneceksin, yoksa yeni bir yerde mi kalacaksın?',
+    minDate: '1945-01-01',
+    maxDate: '1945-05-07',
+    weight: 15,
+    category: 'FAMILY',
+    left: choice('plan-return-home', 'Eski mahalleme dönerim', 'Eski bağlarını yeniden kurmaya hazırlan.', [
+      change('social', 3),
+      change('reputation', 1),
+      flag('plans_return_home'),
+      days(45),
+    ]),
+    right: choice('plan-new-place', 'Yeni bir yerde kalırım', 'Geçmiş bağların yerine güvenliği seç.', [
+      change('safety', 3),
+      change('social', -2),
+      flag('plans_new_place'),
+      days(45),
+    ]),
+  }
 ];
 
 function flagsMatch(card: LifeCardDefinition, snapshot: GameSessionSnapshot): boolean {
@@ -432,7 +803,23 @@ function hashScore(input: string): number {
 function cardScore(card: LifeCardDefinition, snapshot: GameSessionSnapshot): number {
   const historyKey = snapshot.decisionHistory.map((item) => item.optionId).join('|');
   const randomish = hashScore(`${snapshot.state.sessionId}|${historyKey}|${card.id}`);
-  return randomish / Math.max(1, card.weight ?? 1);
+
+  const recentEventIds = snapshot.decisionHistory
+    .slice(-4)
+    .map((item) => item.eventId);
+  const recentCards = recentEventIds
+    .map((id) => LIFE_CARDS.find((item) => item.id === id))
+    .filter((item): item is LifeCardDefinition => Boolean(item));
+  const sameSpeakerRecently = recentCards.some((item) => item.speaker === card.speaker);
+  const sameCategoryRecently = card.category
+    ? recentCards.some((item) => item.category === card.category)
+    : false;
+
+  return (
+    randomish / Math.max(1, card.weight ?? 1) +
+    (sameSpeakerRecently ? 0.7 : 0) +
+    (sameCategoryRecently ? 0.22 : 0)
+  );
 }
 
 function toEvent(card: LifeCardDefinition, snapshot: GameSessionSnapshot): HistoricalEvent {
@@ -452,62 +839,168 @@ function toEvent(card: LifeCardDefinition, snapshot: GameSessionSnapshot): Histo
 
 function fallbackCard(snapshot: GameSessionSnapshot): LifeCardDefinition {
   const index = snapshot.decisionHistory.length;
-  const variants: LifeCardDefinition[] = [
+  const templates: Omit<LifeCardDefinition, 'id'>[] = [
     {
-      id: `life-routine-${index}`,
       speaker: 'Friedrich',
       role: 'Eski arkadaşın',
-      line: 'Uzun zamandır yalnızca iş ve günlük koşuşturmayla uğraşıyoruz. Bu hafta sonu biraz insan içine karışalım mı?',
-      left: choice('rest-alone', 'Biraz yalnız kalayım', 'Dinlenip masraf yapma.', [
-        change('money', 1),
-        change('social', -2),
-        change('safety', 1),
-        days(75),
+      line: 'Mahalle kahvesinde herkes son siyasi değişiklikleri konuşuyor. Bu akşam kalabalığa karışacak mısın?',
+      category: 'SOCIAL',
+      left: choice('avoid-cafe-talk', 'Bu akşam gitmeyeyim', 'Daha görünmez kal.', [
+        change('safety', 2), change('social', -2), days(55),
       ]),
-      right: choice('meet-people', 'Hadi çıkalım', 'Çevrenle bağını güçlendir.', [
-        change('money', -1),
-        change('social', 3),
-        change('reputation', 1),
-        days(75),
+      right: choice('join-cafe-talk', 'Bir uğrayayım', 'Çevrendeki konuşmaları dinle.', [
+        change('social', 3), change('reputation', 1), change('safety', -1), days(55),
       ]),
     },
     {
-      id: `life-routine-${index}`,
       speaker: 'Elise',
       role: 'Aileden biri',
-      line: 'Bir süredir yorgun görünüyorsun. Daha az çalışıp kendine zaman ayırmayı düşünür müsün?',
-      left: choice('keep-working', 'Böyle devam ederim', 'Geliri koru ama sosyal hayatı geri plana at.', [
-        change('money', 2),
-        change('social', -2),
-        days(80),
+      line: 'Gazeteler her gün başka bir resmî duyuru yayımlıyor. Aboneliği sürdürelim mi, yoksa masraftan kaçınalım mı?',
+      category: 'FAMILY',
+      left: choice('cancel-paper', 'Gazeteyi bırakalım', 'Paranı koru.', [
+        change('money', 2), change('reputation', -1), days(60),
       ]),
-      right: choice('slow-down', 'Biraz yavaşlayayım', 'Gelirden vazgeçip daha dengeli yaşa.', [
-        change('money', -2),
-        change('social', 2),
-        change('safety', 1),
-        days(80),
+      right: choice('keep-paper', 'Takip etmeye devam edelim', 'Gündemi yakından takip et.', [
+        change('money', -1), change('reputation', 1), days(60),
       ]),
     },
     {
-      id: `life-routine-${index}`,
-      speaker: 'Bay Hoffmann',
-      role: 'Mahalleden bir tanıdık',
-      line: 'Mahallede herkes birbirini tanıyor. Bir toplantıya uğrarsan yeni insanlarla tanışabilirsin.',
-      left: choice('skip-meeting', 'Bu kez gitmeyeyim', 'Daha görünmez kal.', [
-        change('safety', 2),
-        change('reputation', -1),
-        days(70),
+      speaker: 'Bakkal Schmidt',
+      role: 'Mahalle bakkalı',
+      line: 'Bazı ürünler yine gelmedi. İstersen sana ayırdığım son paketi verebilirim.',
+      category: 'SURVIVAL',
+      left: choice('leave-last-package', 'Başkasına kalsın', 'Paranı koru ve çevrendeki ilişkiyi güçlendir.', [
+        change('money', 1), change('social', 2), days(50),
       ]),
-      right: choice('attend-meeting', 'Uğrarım', 'Yeni insanlarla tanış ve görünürlüğünü artır.', [
-        change('social', 2),
-        change('reputation', 2),
-        change('safety', -1),
-        days(70),
+      right: choice('take-last-package', 'Alırım', 'Evdeki ihtiyacı öncele.', [
+        change('money', -2), change('safety', 2), days(50),
+      ]),
+    },
+    {
+      speaker: 'Bay Weber',
+      role: 'İşverenin',
+      line: 'İşyerinde yeni kurallar asıldı. Herkesin zamanında gelip daha sıkı çalışması bekleniyor.',
+      category: 'WORK',
+      left: choice('work-minimum', 'Sadece işimi yaparım', 'Fazladan görünür olma.', [
+        change('safety', 1), change('reputation', -1), days(65),
+      ]),
+      right: choice('work-extra', 'Biraz daha yük alırım', 'İşyerindeki konumunu güçlendir.', [
+        change('money', 2), change('reputation', 2), change('social', -2), days(65),
+      ]),
+    },
+    {
+      speaker: 'Anna Keller',
+      role: 'Komşun',
+      line: 'Mahallede insanlar kimin kiminle görüştüğüne daha çok dikkat ediyor. Akşam yine beraber oturalım mı?',
+      category: 'SOCIAL',
+      left: choice('keep-distance-evening', 'Bu akşam olmaz', 'Dikkat çekmemeyi seç.', [
+        change('safety', 2), change('social', -2), days(55),
+      ]),
+      right: choice('visit-anna-evening', 'Gelirim', 'Komşuluk bağını koru.', [
+        change('social', 3), change('safety', -1), days(55),
+      ]),
+    },
+    {
+      speaker: 'Herr Hoffmann',
+      role: 'Mahalleden bir tanıdık',
+      line: 'Resmî törene herkesin katılması bekleniyor. Seni de listede görmek istiyorlar.',
+      category: 'HISTORY',
+      left: choice('skip-public-ceremony', 'Katılmayacağım', 'Kalabalıktan uzak dur.', [
+        change('safety', -1), change('reputation', -2), days(50),
+      ]),
+      right: choice('attend-public-ceremony', 'Uğrarım', 'Görünürlüğünü koru.', [
+        change('reputation', 2), change('social', 1), days(50),
+      ]),
+    },
+    {
+      speaker: 'Elise',
+      role: 'Aileden biri',
+      line: 'Evdeki bütçeyi yeniden hesapladım. Bir süre dışarıda daha az vakit geçirsek para biriktirebiliriz.',
+      category: 'FAMILY',
+      left: choice('keep-social-spending', 'Hayatı kısmayalım', 'Çevreni koru.', [
+        change('social', 2), change('money', -2), days(70),
+      ]),
+      right: choice('save-household-money', 'Biraz kısalım', 'Parayı ve güvenliği öne çıkar.', [
+        change('money', 3), change('social', -2), days(70),
+      ]),
+    },
+    {
+      speaker: 'Friedrich',
+      role: 'Eski arkadaşın',
+      line: 'Bir tanıdık başka şehre taşındı ve odasını boş bıraktı. Daha ucuz bir eve geçmek ister misin?',
+      category: 'SOCIAL',
+      left: choice('stay-current-home', 'Burada kalayım', 'Mevcut çevreni koru.', [
+        change('social', 2), change('money', -1), days(80),
+      ]),
+      right: choice('take-cheaper-room', 'Taşınayım', 'Masrafı azalt ama çevrenden biraz uzaklaş.', [
+        change('money', 3), change('social', -2), days(80),
+      ]),
+    },
+    {
+      speaker: 'Bay Weber',
+      role: 'İşverenin',
+      line: 'Bir iş arkadaşın ayrıldı. Onun görevlerinin bir kısmını üstlenirsen haftalık ücretin artacak.',
+      category: 'WORK',
+      left: choice('refuse-extra-duty', 'Yeterince işim var', 'Boş zamanını koru.', [
+        change('social', 2), change('money', -1), days(70),
+      ]),
+      right: choice('take-extra-duty', 'Üstlenirim', 'Geliri artır ama daha fazla çalış.', [
+        change('money', 3), change('social', -2), change('reputation', 1), days(70),
+      ]),
+    },
+    {
+      speaker: 'Anna Keller',
+      role: 'Komşun',
+      line: 'Mahallede yeni gelen bir aile kimseyi tanımıyor. Akşam yemeğine çağıralım mı?',
+      category: 'SOCIAL',
+      left: choice('do-not-invite-family', 'Bu kez olmasın', 'Kendi düzenini koru.', [
+        change('safety', 1), change('social', -1), days(60),
+      ]),
+      right: choice('invite-new-family', 'Çağıralım', 'Çevreni genişlet.', [
+        change('social', 3), change('money', -1), days(60),
+      ]),
+    },
+    {
+      speaker: 'Bakkal Schmidt',
+      role: 'Mahalle bakkalı',
+      line: 'Fiyatlar yine değişti. Daha ucuz ama kalitesi düşük mallara mı geçeceksin?',
+      category: 'SURVIVAL',
+      left: choice('buy-better-goods', 'Az alıp iyisini alırım', 'Daha çok harca.', [
+        change('money', -2), change('safety', 1), days(55),
+      ]),
+      right: choice('buy-cheaper-goods', 'Ucuz olan yeter', 'Bütçeyi koru.', [
+        change('money', 2), change('safety', -1), days(55),
+      ]),
+    },
+    {
+      speaker: 'Friedrich',
+      role: 'Eski arkadaşın',
+      line: 'Uzun zamandır aynı insanlarla görüşüyoruz. Yeni bir çevreye karışmanın zamanı geldi mi?',
+      category: 'SOCIAL',
+      left: choice('keep-old-circle', 'Eski çevrem yeter', 'Mevcut bağlarını koru.', [
+        change('social', 1), change('safety', 1), days(65),
+      ]),
+      right: choice('meet-new-circle', 'Yeni insanlarla tanışayım', 'Çevreni ve görünürlüğünü artır.', [
+        change('social', 3), change('reputation', 2), change('safety', -1), days(65),
       ]),
     },
   ];
 
-  return variants[index % variants.length];
+  const recentIds = snapshot.decisionHistory.slice(-5).map((item) => item.eventId);
+  const ranked = templates
+    .map((template, templateIndex) => ({
+      template,
+      templateIndex,
+      score: hashScore(`${snapshot.state.sessionId}|${index}|${templateIndex}`) +
+        (recentIds.some((id) => id.includes(`routine-${templateIndex}-`)) ? 2 : 0),
+    }))
+    .sort((a, b) => a.score - b.score);
+
+  const selected = ranked[0];
+  return {
+    ...selected.template,
+    id: `life-routine-${selected.templateIndex}-${index}`,
+  };
 }
 
 export function getActiveGermanyLifeCard(
