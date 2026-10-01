@@ -1,7 +1,5 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-
 import { AppCard, AppText, DeskScreen, Screen } from '@/components';
 import type { GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
@@ -59,16 +57,10 @@ export default function GameScreen() {
       <Stack.Screen options={{ title: 'Simülasyon', headerShown: true }} />
       <AppText variant="label" muted>{error ? 'KAYIT HATASI' : state ? 'OTURUM KAYDEDİLDİ' : 'OTURUM HAZIRLANIYOR'}</AppText>
       {error ? (
-        <AppCard style={styles.card}><AppText>{error}</AppText></AppCard>
+        <AppCard><AppText>{error}</AppText></AppCard>
       ) : state ? (
         <DeskScreen state={state} />
       ) : null}
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  title: { marginTop: 10 },
-  description: { marginTop: 16 },
-  card: { marginTop: 28 },
-});
