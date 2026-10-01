@@ -93,9 +93,9 @@
 - [x] 76. Ana menü
 - [x] 77. Dönem seçimi
 - [x] 78. Devlet seçimi
-- [ ] 79. Kurum seçimi
-- [ ] 80. Rol seçimi
-- [ ] 81. Game HUD
+- [x] 79. Kurum seçimi
+- [x] 80. Rol seçimi
+- [x] 81. Game HUD
 - [ ] 82. Animasyonlar
 - [ ] 83. Ses
 - [ ] 84. Döneme uygun görsel tasarım
