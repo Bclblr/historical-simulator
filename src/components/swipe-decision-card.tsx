@@ -207,7 +207,14 @@ export function SwipeDecisionCard({
   return (
     <View style={styles.stage}>
       <View style={styles.questionBlock}>
-        <AppText style={styles.question}>“{conversation.line}”</AppText>
+        <AppText
+          style={[
+            styles.question,
+            compactHeight ? styles.questionCompact : styles.questionRegular,
+          ]}
+        >
+          “{conversation.line}”
+        </AppText>
       </View>
 
       <GestureDetector gesture={pan}>
@@ -336,7 +343,13 @@ const styles = StyleSheet.create({
   question: {
     textAlign: 'center',
     maxWidth: 430,
-    fontSize: compactHeight ? 16 : 17,
-    lineHeight: compactHeight ? 21 : 23,
+  },
+  questionCompact: {
+    fontSize: 16,
+    lineHeight: 21,
+  },
+  questionRegular: {
+    fontSize: 17,
+    lineHeight: 23,
   },
 });
