@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
 import {
   applyDecisionEffects,
+  evaluateGermanyCampaignEnding,
   createDecisionOption,
   getEligibleEvents,
   recordDecision,
@@ -49,6 +50,7 @@ export default function GameScreen() {
     country?: string;
     institution?: string;
     role?: string;
+    playerName?: string;
   }>();
   const sessions = useGameSessionService();
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
@@ -78,13 +80,21 @@ export default function GameScreen() {
 
         const created = await sessions.start({
           sessionId: `session-${Date.now()}`,
-          startDate: scenario.startDate,
+          startDate: params.era === 'germany-1921' ? '1921-07-29' : scenario.startDate,
           selection: {
             eraId: params.era,
             countryId: params.country,
             institutionId: params.institution,
             roleId: params.role,
           },
+          campaign: params.era === 'germany-1921'
+            ? {
+                playerName: params.playerName?.trim() || 'Oyuncu',
+                campaignId: 'germany-1921',
+                startedAt: '1921-07-29',
+                leadershipActive: true,
+              }
+            : undefined,
         });
 
         if (active) setSnapshot(created);
@@ -144,7 +154,8 @@ export default function GameScreen() {
     ? getScenarioForSelection(snapshot.state.selection.eraId, snapshot.state.selection.countryId)
     : null;
   const role = scenario?.roles.find((item) => item.id === snapshot?.state.selection.roleId);
-  const actorLabel = role?.shortName ?? role?.name ?? 'Kamu görevlisi';
+  const actorLabel = snapshot?.campaign?.playerName ?? role?.shortName ?? role?.name ?? 'Kamu görevlisi';
+  const ending = snapshot ? evaluateGermanyCampaignEnding(snapshot) : null;
 
   async function choose(option: DecisionOption) {
     if (!snapshot || !activeContent || saving) return;
@@ -211,12 +222,24 @@ export default function GameScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
+      <Stack.Screen options={{ title: snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
           <GameStatusBar snapshot={decisionResult?.next ?? snapshot} />
-          {decisionResult ? (
+          {ending && !decisionResult ? (
+            <AppCard>
+              <AppText variant="label" muted>ZAMAN ÇİZGİSİ SONA ERDİ</AppText>
+              <AppText variant="heading">{ending.title}</AppText>
+              <AppText>{ending.description}</AppText>
+              <AppText muted>
+                {ending.classification === 'HISTORICAL_FACT' ? 'Tarihsel sınır' : 'Alternatif Simülasyon'}
+              </AppText>
+              <AppText variant="caption" muted>
+                {snapshot.campaign?.playerName ?? 'Oyuncu'} · {snapshot.state.currentDate} · {snapshot.decisionHistory.length} karar
+              </AppText>
+            </AppCard>
+          ) : decisionResult ? (
             <AppCard>
               <AppText variant="label" muted>KARAR SONUCU</AppText>
               <AppText variant="heading">{decisionResult.text}</AppText>
