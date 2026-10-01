@@ -16,6 +16,41 @@ export interface ScenarioDecisionContent {
 }
 
 const decisions: Record<string, ScenarioDecisionContent> = {
+  'de-1919-hitler-attends-dap': {
+    prompt: '', speaker: 'Siyasi çevre',
+    left: { idSuffix: 'observe-group', label: 'Mesafeyi koru', description: 'Küçük siyasi çevreyi dışarıdan izlemeyi sürdür.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'stability', delta: 2 }, { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -2 }] },
+    right: { idSuffix: 'engage-group', label: 'Toplantılara katıl', description: 'Grubun toplantılarına düzenli katılarak siyasi çevreyle bağ kur.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 2 }, { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 1 }] },
+  },
+  'de-1919-hitler-joins-dap': {
+    prompt: '', speaker: 'Parti çevresi',
+    left: { idSuffix: 'remain-member', label: 'Arka planda kal', description: 'Üyeliği sürdür ancak parti yönetiminde hemen rol arama.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'stability', delta: 2 }, { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -1 }] },
+    right: { idSuffix: 'seek-active-role', label: 'Aktif rol üstlen', description: 'Toplantı ve örgüt çalışmalarında daha görünür bir rol üstlen.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 3 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: -1 }] },
+  },
+  'de-1919-first-dap-speech': {
+    prompt: '', speaker: 'Toplantı salonu',
+    left: { idSuffix: 'measured-speech', label: 'Ölçülü konuş', description: 'Daha geniş bir dinleyici kitlesine ulaşabilecek ölçülü bir siyasi konuşma yap.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 2 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: 1 }] },
+    right: { idSuffix: 'confrontational-speech', label: 'Sert muhalefet yap', description: 'Mevcut siyasi düzene karşı daha sert ve çatışmacı bir konuşma çizgisi izle.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 2 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: -2 }] },
+  },
+  'de-1920-party-program': {
+    prompt: '', speaker: 'Program komitesi',
+    left: { idSuffix: 'broaden-program', label: 'Programı genişlet', description: 'Ekonomik ve sosyal talepleri daha geniş seçmen gruplarına hitap edecek biçimde öne çıkar.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 3 }, { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -1 }] },
+    right: { idSuffix: 'retain-radical-program', label: 'Radikal çizgiyi koru', description: 'Programdaki radikal milliyetçi ve dışlayıcı çizgiyi değiştirmeden koru.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 2 }, { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: -2 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: -2 }] },
+  },
+  'de-1920-voelkischer-beobachter': {
+    prompt: '', speaker: 'Parti basını',
+    left: { idSuffix: 'editorial-distance', label: 'Editoryal alan bırak', description: 'Gazetenin partiyle bağını korurken editoryal karar alanını tamamen merkezileştirme.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 1 }, { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -1 }] },
+    right: { idSuffix: 'central-party-paper', label: 'Merkezi yayın organı yap', description: 'Gazeteyi parti yönetiminin doğrudan siyasi yayın organı hâline getir.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 3 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: -1 }] },
+  },
+  'de-1921-leadership-struggle': {
+    prompt: '', speaker: 'Parti yönetimi',
+    left: { idSuffix: 'negotiate-leadership', label: 'Uzlaşma ara', description: 'Mevcut yönetimle yetki paylaşımı ve örgüt yapısı üzerinde uzlaşma ara.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'stability', delta: 4 }, { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -2 }] },
+    right: { idSuffix: 'challenge-leadership', label: 'Liderliğe meydan oku', description: 'Parti içindeki desteğini kullanarak yönetim değişikliği talep et.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 4 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: -3 }] },
+  },
+  'de-1921-hitler-returns-with-conditions': {
+    prompt: '', speaker: 'Parti komitesi',
+    left: { idSuffix: 'shared-authority', label: 'Yetki paylaşımını kabul et', description: 'Parti komitesiyle ortak karar modelini kabul ederek liderlik krizini yatıştır.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'stability', delta: 4 }, { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -3 }] },
+    right: { idSuffix: 'demand-chairmanship', label: 'Başkanlığı talep et', description: 'Parti liderliğini üstlenmek için geniş karar yetkisi talep et.', result: '', effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 5 }, { type: 'CHANGE_VARIABLE', key: 'stability', delta: -3 }] },
+  },
   'de-1933-schleicher-resigns': {
     prompt: 'Hükûmet krizi derinleşiyor. Kabine dosyası için nasıl bir tutum kayda geçirilsin?',
     speaker: 'Kabine Sekreterliği',
