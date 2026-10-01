@@ -6,6 +6,16 @@ export interface CampaignConversation {
 }
 
 const conversations: Record<string, CampaignConversation> = {
+  'career-1919-mayr-assignment': { speaker: 'Yüzbaşı Karl Mayr', role: 'Eski birlik bağlantın', line: 'Savaş bitti ama ordunun siyasi çevreleri takip edecek adamlara ihtiyacı var. Bir süre benimle çalışmak ister misin?' },
+  'career-1919-civilian-future': { speaker: 'Friedrich', role: 'Eski asker arkadaşın', line: 'Bu geçici görevler sonsuza kadar sürmez. Sana düzenli bir iş bulabilirim. Sivil hayata dönmeyi düşünmüyor musun?' },
+  'career-1919-beerhall-contact': { speaker: 'Georg', role: 'Yeni tanıştığın örgütçü', line: 'Bu akşam küçük bir siyasi grup buluşuyor. Büyük isimler yok; sadece tartışma. Benimle gelir misin?' },
+  'career-1919-money-problem': { speaker: 'Anna', role: 'Pansiyon görevlisi', line: 'Bu ay hesabın yine gecikti. Düzenli para kazanacağın bir iş bulmalısın. Yoksa bu toplantılar sana para mı kazandıracak?' },
+  'career-1919-small-speech': { speaker: 'Georg', role: 'Toplantı düzenleyicisi', line: 'İnsanlar seni dinliyor. Bu akşam birkaç dakika konuş. Ama ne kadar öne çıkacağına sen karar ver.' },
+  'career-1919-newspaper-contact': { speaker: 'Ernst Keller', role: 'Yerel gazeteci', line: 'Bu küçük siyasi toplantılar hakkında bir yazı hazırlıyorum. Bana konuşursan adını da anabilirim. İster misin?' },
+  'career-1920-organizer-offer': { speaker: 'Anton Drexler', role: 'Parti yöneticisi', line: 'Toplantılara gelen insan sayısı artıyor. Program kadar organizasyon da önemli. Bu işi üstlenir misin?' },
+  'career-1920-rival-organizer': { speaker: 'Otto', role: 'Parti örgütçüsü', line: 'Her toplantıda senin sözün geçmeye başladı. Bu örgüt tek kişinin çevresinde dönmemeli. Yetkileri paylaşalım mı?' },
+  'career-1920-donor-meeting': { speaker: 'Bay Hartmann', role: 'İş insanı', line: 'Salon ve baskı masraflarınıza yardım edebilirim. Karşılığında önemli toplantılarda beni de dinlemenizi isterim.' },
+  'career-1921-leadership-allies': { speaker: 'Yakın parti yöneticisi', role: 'Siyasi müttefikin', line: 'Yönetimde değişim isteyenler var. Seni destekleyebilirim. Ama başa geçersen komiteyle yetki paylaşacak mısın?' },
   'de-1919-dap-founded': {
     speaker: 'Anton Drexler',
     role: 'DAP kurucularından',
