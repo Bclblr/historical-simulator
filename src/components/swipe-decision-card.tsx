@@ -38,7 +38,15 @@ export function SwipeDecisionCard({
     inputRange: [-cardWidth, 0, cardWidth],
     outputRange: ['-8deg', '0deg', '8deg'],
   });
-  const choice = direction === 'LEFT' ? leftOption : direction === 'RIGHT' ? rightOption : null;\n  const visual = getGermany1933CardVisual(event.id);
+  const choice = direction === 'LEFT' ? leftOption : direction === 'RIGHT' ? rightOption : null;
+  const visualEventId = event.id.endsWith(':follow-up')
+    ? event.id.slice(0, -':follow-up'.length)
+    : event.id;
+  const visual = getGermany1933CardVisual(visualEventId);
+  const classificationLabel =
+    event.classification === 'COUNTERFACTUAL_SIMULATION'
+      ? 'SİMÜLASYON SONUCU'
+      : 'TARİHSEL OLAY';
 
   const panResponder = useMemo(() => PanResponder.create({
     onMoveShouldSetPanResponder: (_, gesture) => !disabled && Math.abs(gesture.dx) > 5,
@@ -87,7 +95,7 @@ export function SwipeDecisionCard({
         <View style={[styles.topBand, { backgroundColor: theme.colors.primary }]}>
           <View style={styles.dateRow}>
             <AppText variant="label" style={{ color: theme.colors.onPrimary }}>{event.startDate}</AppText>
-            <AppText variant="label" style={{ color: theme.colors.onPrimary }}>TARİHSEL OLAY</AppText>
+            <AppText variant="label" style={{ color: theme.colors.onPrimary }}>{classificationLabel}</AppText>
           </View>
           <AppText variant="heading" style={[styles.prompt, { color: theme.colors.onPrimary }]}>
             {choice?.label ?? prompt}
