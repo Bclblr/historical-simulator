@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     maxWidth: 620,
     alignSelf: 'center',
     justifyContent: 'flex-start',
-    gap: 8,
-    paddingTop: 4,
+    gap: 4,
+    paddingTop: 0,
   },
 });
