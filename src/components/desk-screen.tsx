@@ -4,6 +4,7 @@ import { getScenarioForSelection } from '@/content/scenario-catalog';
 import { useAppTheme } from '@/theme';
 import { AppCard } from './app-card';
 import { AppText } from './app-text';
+import { DocumentEntrance } from './document-entrance';
 
 interface DeskScreenProps {
   state: GameState;
@@ -55,6 +56,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
         </AppCard>
       </View>
 
+      <DocumentEntrance delay={80}>
       <AppCard style={styles.activeFile}>
         <View style={styles.fileHeader}>
           <AppText variant="label" muted>AKTİF DOSYA</AppText>
@@ -71,6 +73,7 @@ export function DeskScreen({ state, activeFile = null }: DeskScreenProps) {
             : 'Event Engine tarafından uygun bulunan olaylar bu çalışma alanına gelecek.'}
         </AppText>
       </AppCard>
+      </DocumentEntrance>
 
       <View style={[styles.deskEdge, { borderColor: theme.colors.border }]}>
         <AppText muted>Dosyalar · Telgraflar · Gazeteler · Belgeler</AppText>
@@ -93,7 +96,12 @@ const styles = StyleSheet.create({
   badge: { paddingHorizontal: 12, paddingVertical: 9, borderWidth: 1 },
   contextRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   contextCard: { flexGrow: 1, flexBasis: 180, gap: 7, padding: 14 },
-  activeFile: { minHeight: 260, justifyContent: 'center' },
+  activeFile: {
+    minHeight: 260,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 2,
+  },
   fileHeader: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
   fileTitle: { marginTop: 12 },
   fileBody: { marginTop: 14, maxWidth: 520 },
