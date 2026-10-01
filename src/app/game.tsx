@@ -10,8 +10,8 @@ import {
   type DecisionOption,
   type GameSessionSnapshot,
 } from '@/domain/game';
-import { useGameSessionService } from '@/services';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
+import { useGameSessionService } from '@/services';
 
 function createSimulationOptions(eventId: string): [DecisionOption, DecisionOption] {
   return [
@@ -19,7 +19,7 @@ function createSimulationOptions(eventId: string): [DecisionOption, DecisionOpti
       id: `${eventId}:request-review`,
       eventId,
       label: 'Ek inceleme iste',
-      description: 'Dosyayı hemen ilerletmek yerine ek kurumsal değerlendirme talep et.',
+      description: 'Dosya hakkında ek kurumsal değerlendirme talep et.',
       swipeDirection: 'LEFT',
     }),
     createDecisionOption({
@@ -33,7 +33,13 @@ function createSimulationOptions(eventId: string): [DecisionOption, DecisionOpti
 }
 
 export default function GameScreen() {
-  const params = useLocalSearchParams<{ sessionId?: string; era?: string; country?: string; institution?: string; role?: string }>();
+  const params = useLocalSearchParams<{
+    sessionId?: string;
+    era?: string;
+    country?: string;
+    institution?: string;
+    role?: string;
+  }>();
   const sessions = useGameSessionService();
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +61,9 @@ export default function GameScreen() {
         }
 
         const scenario = getScenarioForSelection(params.era, params.country);
-        if (!scenario) throw new Error('Seçilen dönem ve devlet için yayımlanmış senaryo bulunamadı.');
+        if (!scenario) {
+          throw new Error('Seçilen dönem ve devlet için yayımlanmış senaryo bulunamadı.');
+        }
 
         const created = await sessions.start({
           sessionId: `session-${Date.now()}`,
@@ -70,16 +78,76 @@ export default function GameScreen() {
 
         if (active) setSnapshot(created);
       } catch (cause) {
-        if (active) setError(cause instanceof Error ? cause.message : 'Oyun kaydı yüklenemedi.');
+        if (active) {
+          setError(cause instanceof Error ? cause.message : 'Oyun kaydı yüklenemedi.');
+        }
       }
     }
 
     void load();
-    const scenario = snapshot
+    return () => {
+      active = false;
+    };
+  }, [params.country, params.era, params.institution, params.role, params.sessionId, sessions]);
+
+  const activeContent = useMemo(() => {
+    if (!snapshot) return null;
+    const scenario = getScenarioForSelection(
+      snapshot.state.selection.eraId,
+      snapshot.state.selection.countryId,
+    );
+    if (!scenario) return null;
+
+    const decidedIds = new Set(snapshot.decisionHistory.map((item) => item.eventId));
+    const event = getEligibleEvents(scenario.events, snapshot.state)
+      .find((item) => !decidedIds.has(item.id));
+
+    return event
+      ? { event, options: createSimulationOptions(event.id) }
+      : null;
+  }, [snapshot]);
+
+  const scenario = snapshot
     ? getScenarioForSelection(snapshot.state.selection.eraId, snapshot.state.selection.countryId)
     : null;
   const role = scenario?.roles.find((item) => item.id === snapshot?.state.selection.roleId);
   const actorLabel = role?.shortName ?? role?.name ?? 'Kamu görevlisi';
+
+  async function choose(option: DecisionOption) {
+    if (!snapshot || !activeContent || saving) return;
+    setSaving(true);
+    setError(null);
+
+    try {
+      const currentScenario = getScenarioForSelection(
+        snapshot.state.selection.eraId,
+        snapshot.state.selection.countryId,
+      );
+      if (!currentScenario) throw new Error('Senaryo bulunamadı.');
+
+      const history = recordDecision(snapshot.decisionHistory, {
+        option,
+        decidedAt: snapshot.state.currentDate,
+      });
+      const decidedIds = new Set(history.map((item) => item.eventId));
+      const nextEvent = [...currentScenario.events]
+        .filter((event) => !decidedIds.has(event.id) && event.startDate > snapshot.state.currentDate)
+        .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.sortOrder - b.sortOrder)[0];
+
+      const next: GameSessionSnapshot = {
+        ...snapshot,
+        state: nextEvent ? withGameDate(snapshot.state, nextEvent.startDate) : snapshot.state,
+        decisionHistory: history,
+      };
+
+      await sessions.save(next);
+      setSnapshot(next);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Karar kaydedilemedi.');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <Screen>
@@ -114,7 +182,6 @@ export default function GameScreen() {
     </Screen>
   );
 }
-
 
 const styles = StyleSheet.create({
   game: {
