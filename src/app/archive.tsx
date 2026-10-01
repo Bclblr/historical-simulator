@@ -4,7 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, Screen, SectionHeader } from '@/components';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
 import {
-  createArchiveTimeline,
+  createArchiveStatistics,
+  createTimelineComparison,
   createPlayerArchive,
   getDecisionHistory,
   getDiscoveredDocuments,
@@ -39,12 +40,15 @@ export default function ArchiveScreen() {
   const documents = scenario && snapshot
     ? getDiscoveredDocuments(snapshot, scenario.events, scenario.documents)
     : [];
-  const timeline = scenario && snapshot
-    ? createArchiveTimeline(snapshot, scenario.events)
-    : [];
+  const comparison = scenario && snapshot
+    ? createTimelineComparison(snapshot, scenario.events)
+    : { historical: [], player: [] };
   const decisions = snapshot ? getDecisionHistory(snapshot) : [];
   const archive = scenario && snapshot
     ? createPlayerArchive(snapshot, scenario.events, scenario.documents)
+    : null;
+  const statistics = scenario && snapshot
+    ? createArchiveStatistics(snapshot, scenario.events, scenario.documents)
     : null;
 
   return (
@@ -69,24 +73,41 @@ export default function ArchiveScreen() {
             <Stat label="KEŞFEDİLEN OLAY" value={archive.discoveredEventIds.length} />
             <Stat label="KEŞFEDİLEN BELGE" value={archive.discoveredDocumentIds.length} />
             <Stat label="KAYITLI KARAR" value={archive.decisionsRecorded} />
+            <Stat
+              label="TARİHSEL İLERLEME"
+              value={statistics?.historicalProgressPercent ?? 0}
+              suffix="%"
+            />
           </View>
 
-          <ArchiveSection title="Zaman Çizgisi">
-            {timeline.map((item) => (
-              <AppCard key={item.id}>
-                <View style={styles.header}>
-                  <AppText variant="label" muted>{item.date}</AppText>
-                  <AppText variant="label" muted>
-                    {item.kind === 'EVENT' ? 'TARİHSEL KAYIT' : 'OYUNCU KARARI'}
-                  </AppText>
-                </View>
-                <AppText variant="heading" style={styles.title}>{item.title}</AppText>
-                {item.optionId ? (
+          <View style={styles.comparison}>
+            <ArchiveSection title="Gerçek Tarih">
+              {comparison.historical.map((item) => (
+                <AppCard key={item.id}>
+                  <View style={styles.header}>
+                    <AppText variant="label" muted>{item.date}</AppText>
+                    <AppText variant="label" muted>TARİHSEL KAYIT</AppText>
+                  </View>
+                  <AppText variant="heading" style={styles.title}>{item.title}</AppText>
+                </AppCard>
+              ))}
+            </ArchiveSection>
+
+            <ArchiveSection title="Oyuncu Zaman Çizgisi">
+              {comparison.player.length ? comparison.player.map((item) => (
+                <AppCard key={item.id}>
+                  <View style={styles.header}>
+                    <AppText variant="label" muted>{item.date}</AppText>
+                    <AppText variant="label" muted>OYUNCU KARARI</AppText>
+                  </View>
+                  <AppText variant="heading" style={styles.title}>{item.title}</AppText>
                   <AppText muted style={styles.text}>Seçenek: {item.optionId}</AppText>
-                ) : null}
-              </AppCard>
-            ))}
-          </ArchiveSection>
+                </AppCard>
+              )) : (
+                <AppCard><AppText muted>Henüz kayıtlı oyuncu kararı yok.</AppText></AppCard>
+              )}
+            </ArchiveSection>
+          </View>
 
           <ArchiveSection title="Keşfedilen Belgeler">
             {documents.length ? documents.map((document) => (
@@ -146,11 +167,11 @@ export default function ArchiveScreen() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value, suffix = '' }: { label: string; value: number; suffix?: string }) {
   return (
     <AppCard style={styles.stat}>
       <AppText variant="label" muted>{label}</AppText>
-      <AppText variant="title">{value}</AppText>
+      <AppText variant="title">{value}{suffix}</AppText>
     </AppCard>
   );
 }
@@ -169,6 +190,7 @@ const styles = StyleSheet.create({
   text: { marginTop: 8 },
   stats: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 28 },
   stat: { flexGrow: 1, flexBasis: 150, gap: 8 },
+  comparison: { marginTop: 4 },
   section: { marginTop: 30 },
   list: { marginTop: 14, gap: 12 },
   header: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
