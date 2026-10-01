@@ -208,6 +208,9 @@ export function SwipeDecisionCard({
     <View style={styles.stage}>
       <View style={styles.questionBlock}>
         <AppText
+          numberOfLines={4}
+          adjustsFontSizeToFit
+          minimumFontScale={0.82}
           style={[
             styles.question,
             compactHeight ? styles.questionCompact : styles.questionRegular,
@@ -311,11 +314,12 @@ const styles = StyleSheet.create({
   },
   questionBlock: {
     width: '100%',
-    height: 92,
-    paddingHorizontal: 18,
+    minHeight: 92,
+    paddingHorizontal: 28,
+    paddingTop: 14,
+    paddingBottom: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 4,
   },
   scene: {
     flex: 1,
@@ -330,7 +334,7 @@ const styles = StyleSheet.create({
     gap: 1,
     paddingHorizontal: 18,
     paddingBottom: 0,
-    marginTop: 16,
+    marginTop: 10,
   },
   speakerName: {
     textAlign: 'center',
@@ -341,8 +345,10 @@ const styles = StyleSheet.create({
   },
   speakerRole: { textAlign: 'center', maxWidth: 390, fontSize: 13, lineHeight: 17 },
   question: {
+    width: '100%',
     textAlign: 'center',
-    maxWidth: 430,
+    maxWidth: 390,
+    alignSelf: 'center',
   },
   questionCompact: {
     fontSize: 16,
