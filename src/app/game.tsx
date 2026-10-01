@@ -170,6 +170,10 @@ export default function GameScreen() {
 
   async function choose(option: DecisionOption) {
     if (!snapshot || !activeContent || saving) return;
+
+    const previousSnapshot = snapshot;
+    let optimisticSnapshotApplied = false;
+
     setSaving(true);
     setError(null);
 
@@ -224,9 +228,16 @@ export default function GameScreen() {
         scheduledEffects: processed.pending,
       };
 
-      await sessions.save(next);
+      // Reigns-style loop: the next card appears immediately after the outgoing
+      // card finishes its throw. Persistence continues without holding the old
+      // card on screen.
       setSnapshot(next);
+      optimisticSnapshotApplied = true;
+      await sessions.save(next);
     } catch (cause) {
+      if (optimisticSnapshotApplied) {
+        setSnapshot(previousSnapshot);
+      }
       setError(cause instanceof Error ? cause.message : 'Karar kaydedilemedi.');
     } finally {
       setSaving(false);
