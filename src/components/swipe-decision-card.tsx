@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     alignItems: 'stretch',
-    justifyContent: 'stretch',
+    justifyContent: 'flex-start',
   },
   identityBlock: {
     width: '100%',
