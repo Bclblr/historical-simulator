@@ -96,9 +96,9 @@
 - [x] 79. Kurum seçimi
 - [x] 80. Rol seçimi
 - [x] 81. Game HUD
-- [ ] 82. Animasyonlar
-- [ ] 83. Ses
-- [ ] 84. Döneme uygun görsel tasarım
+- [x] 82. Animasyonlar
+- [x] 83. Ses
+- [x] 84. Döneme uygun görsel tasarım
 - [ ] 85. Haptic + final UI polish
 
 ## 86–92 — Arşiv/meta oyun
