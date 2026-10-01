@@ -1,5 +1,64 @@
-import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { StyleSheet } from 'react-native';
-import { AppCard, AppText, Screen, SectionHeader } from '@/components';
-export default function CountryScreen(){const {era}=useLocalSearchParams<{era?:string}>();return <Screen><Stack.Screen options={{title:'Devlet Seçimi'}}/><SectionHeader eyebrow={`2 / 4 · ${era??'Dönem'}`} title="Bir devlet seç"/><Link href={{pathname:'/setup/institution',params:{era:era??'1933',country:'germany'}}} asChild><AppCard interactive style={s.card}><AppText variant="heading">Almanya</AppText><AppText muted style={s.text}>İlk içerik paketi. Motor Almanya'ya özel değildir.</AppText></AppCard></Link></Screen>}
-const s=StyleSheet.create({card:{marginTop:28},text:{marginTop:8}});
+import { Link, Stack, router, useLocalSearchParams } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
+import {
+  AppButton,
+  AppCard,
+  AppText,
+  Screen,
+  SectionHeader,
+} from '@/components';
+import { getPublishedCountriesForEra } from '@/content/scenario-catalog';
+
+export default function CountryScreen() {
+  const { era } = useLocalSearchParams<{ era?: string }>();
+  const eraId = typeof era === 'string' ? era : '';
+  const countries = getPublishedCountriesForEra(eraId);
+
+  return (
+    <Screen>
+      <Stack.Screen options={{ title: 'Devlet Seçimi' }} />
+      <SectionHeader
+        eyebrow={`2 / 4 · ${eraId || 'Dönem seçilmedi'}`}
+        title="Bir devlet seç"
+        description="Yalnızca seçilen dönem için yayımlanmış içerik paketleri gösterilir."
+      />
+      {countries.length ? (
+        <View style={styles.list}>
+          {countries.map((country) => (
+            <Link
+              key={country.id}
+              href={{
+                pathname: '/setup/institution',
+                params: { era: eraId, country: country.id },
+              }}
+              asChild
+            >
+              <AppCard interactive>
+                <AppText variant="heading">{country.name}</AppText>
+                <AppText muted style={styles.text}>
+                  {country.description}
+                </AppText>
+              </AppCard>
+            </Link>
+          ))}
+        </View>
+      ) : (
+        <View style={styles.empty}>
+          <AppText variant="heading">Yayımlanmış devlet bulunamadı</AppText>
+          <AppText muted style={styles.text}>
+            Önce geçerli bir dönem seç.
+          </AppText>
+          <AppButton variant="secondary" onPress={() => router.replace('/setup/era')}>
+            Dönem seçimine dön
+          </AppButton>
+        </View>
+      )}
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  list: { marginTop: 28, gap: 12 },
+  empty: { marginTop: 28, gap: 14 },
+  text: { marginTop: 8 },
+});
