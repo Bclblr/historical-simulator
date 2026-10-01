@@ -245,7 +245,7 @@ export default function GameScreen() {
   }
 
   return (
-    <Screen>
+    <Screen style={styles.screen}>
       <Stack.Screen options={{ title: snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
@@ -298,13 +298,16 @@ export default function GameScreen() {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingTop: 0,
+  },
   game: {
     flex: 1,
     width: '100%',
     maxWidth: 620,
     alignSelf: 'center',
     justifyContent: 'flex-start',
-    gap: 4,
+    gap: 0,
     paddingTop: 0,
   },
 });
