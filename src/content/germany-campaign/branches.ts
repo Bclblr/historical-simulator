@@ -86,7 +86,7 @@ const BRANCHES: BranchDefinition[] = [
     'Gerilimi müzakere yoluyla sınırlama tercihi uluslararası ilişkilerde farklı bir yol açtı. Bu kart alternatif simülasyondur.',
     '1936-03-10',
     906,
-  ),,
+  ),
   branch('alt-1920-program-coalition','alt-1920-broader-program','moderate-response','Program uzlaşması yeni bir parti koalisyonu doğurdu','Daha geniş program çizgisi farklı siyasi çevrelerle iş birliği olasılığını artırdı. Bu alternatif simülasyon kartıdır.','1920-04-10',907),
   branch('alt-1921-committee-charter','alt-1921-shared-party-leadership','moderate-response','Parti komitesi için yeni yetki düzeni hazırlandı','Güç paylaşımının sürmesi üzerine parti içi yetkileri tanımlayan alternatif bir örgüt modeli gündeme geldi.','1921-08-05',908),
   branch('alt-1923-deescalation','de-1923-crisis-year','limit-escalation','1923 krizinde siyasi gerilim sınırlanmaya çalışıldı','Kriz sırasında çatışmayı büyütmek yerine yasal ve siyasi kanallara ağırlık verilmesi farklı bir parti stratejisi doğurdu.','1923-09-01',909),
