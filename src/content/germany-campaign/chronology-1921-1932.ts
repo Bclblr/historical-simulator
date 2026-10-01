@@ -13,6 +13,16 @@ const event = (
 });
 
 export const GERMANY_1921_1932_CHRONOLOGY: HistoricalEvent[] = [
+  event('de-1919-dap-founded','Alman İşçi Partisi kuruldu','Anton Drexler ve Karl Harrer, Münih’te küçük bir siyasi oluşum olan Alman İşçi Partisi’ni (DAP) kurdu.','1919-01-05',1),
+  event('de-1919-hitler-attends-dap','Hitler DAP toplantısına katıldı','Hitler, askerî görevi kapsamında Münih’teki küçük Alman İşçi Partisi’nin bir toplantısına katıldı; kısa süre sonra partiye katılmaya yöneldi.','1919-09-12',2),
+  event('de-1919-hitler-joins-dap','Hitler DAP üyesi oldu','Eylül 1919’daki toplantının ardından Hitler DAP’a katıldı ve kısa sürede parti faaliyetlerinde daha görünür bir rol üstlenmeye başladı.','1919-10-01',3),
+  event('de-1919-first-dap-speech','Hitler DAP adına ilk resmî konuşmasını yaptı','Hitler Münih’te bir birahanede DAP adına ilk resmî konuşmasını yaptı ve parti içinde konuşmacı olarak öne çıkmaya başladı.','1919-10-16',4),
+  event('de-1920-party-program','DAP’nin 25 maddelik programı açıklandı','Münih Hofbräuhaus’taki büyük toplantıda partinin 25 maddelik programı açıklandı; program ırkçı antisemitizm ve radikal milliyetçilik içeriyordu.','1920-02-24',5),
+  event('de-1920-nsdap-name','DAP, NSDAP adını aldı','Alman İşçi Partisi 1920’de adını Nasyonal Sosyalist Alman İşçi Partisi (NSDAP) olarak değiştirdi.','1920-02-24',6),
+  event('de-1920-hitler-leaves-army','Hitler ordudan ayrılarak siyasete yoğunlaştı','Mart 1920’nin sonunda Hitler Bavyera ordusundan ayrıldı ve zamanını giderek parti siyasetine ayırdı.','1920-03-31',7),
+  event('de-1920-voelkischer-beobachter','Völkischer Beobachter parti gazetesi hâline geldi','NSDAP çevresi Völkischer Beobachter gazetesini satın aldı; gazete daha sonra partinin başlıca yayın organı oldu.','1920-12-17',8),
+  event('de-1921-leadership-struggle','NSDAP içinde liderlik krizi derinleşti','1921 yazında parti içindeki örgütlenme ve ittifak tartışmaları Hitler ile mevcut parti yönetimi arasındaki güç mücadelesini keskinleştirdi.','1921-07-11',9),
+  event('de-1921-hitler-returns-with-conditions','Hitler parti liderliği için geniş yetkiler talep etti','Parti içindeki kriz sırasında Hitler, geri dönüşü ve liderliği için karar yetkisinin büyük ölçüde kendi elinde toplanmasını şart koştu.','1921-07-26',10),
   event('de-1921-hitler-party-leadership','Hitler NSDAP liderliğini üstlendi','NSDAP içindeki güç mücadelesinin ardından Adolf Hitler parti liderliğini geniş yetkilerle üstlendi.','1921-07-29',10),
   event('de-1921-sa-emerges','SA örgütlenmesi şekillenmeye başladı','Partinin toplantı ve propaganda faaliyetleri çevresindeki paramiliter yapılanma 1921 boyunca Sturmabteilung adı altında belirginleşti.','1921-10-05',20),
   event('de-1922-party-expansion','NSDAP Bavyera dışında örgütlenmeyi genişletti','Parti, erken 1920’lerde propaganda ve yerel örgütlenme yoluyla Münih dışındaki siyasi etkisini artırmaya çalıştı.','1922-10-14',30),
