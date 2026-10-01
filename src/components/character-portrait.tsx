@@ -26,11 +26,11 @@ function keyFor(name: string): PortraitKey {
   return aliases.find(([pattern]) => pattern.test(name))?.[1] ?? 'advisor';
 }
 
-export function CharacterPortrait({ name }: { name: string }) {
+export function CharacterPortrait({ name, fill = false }: { name: string; fill?: boolean }) {
   const t = traits[keyFor(name)];
 
   return (
-    <View style={styles.frame}>
+    <View style={[styles.frame, fill && styles.frameFill]}>
       <View style={styles.backdrop} />
       <View style={[styles.shoulders, { backgroundColor: t.coat }]} />
       <View style={styles.neck} />
@@ -62,6 +62,7 @@ export function CharacterPortrait({ name }: { name: string }) {
 
 const styles = StyleSheet.create({
   frame: { width: '100%', height: 230, overflow: 'hidden', borderRadius: 18, position: 'relative', backgroundColor: '#171717' },
+  frameFill: { height: '100%', borderRadius: 0 },
   backdrop: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 92, backgroundColor: '#25211F' },
   shoulders: { position: 'absolute', width: 210, height: 105, borderRadius: 80, bottom: -38, alignSelf: 'center', left: '50%', marginLeft: -105 },
   neck: { position: 'absolute', width: 45, height: 45, backgroundColor: '#C98D69', bottom: 53, left: '50%', marginLeft: -22 },
