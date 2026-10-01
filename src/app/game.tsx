@@ -3,13 +3,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
 import {
-  applyDecisionEffects,\n  createDecisionOption,\n  getEligibleEvents,
+  applyDecisionEffects,
+  createDecisionOption,
+  getEligibleEvents,
   recordDecision,
+  processDueDecisionEffects,
+  scheduleDecisionEffect,
   withGameDate,
   type DecisionOption,
   type GameSessionSnapshot,
 } from '@/domain/game';
-import { getScenarioForSelection } from '@/content/scenario-catalog';\nimport { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
+import { getScenarioForSelection } from '@/content/scenario-catalog';
+import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/content/germany-1933/decisions';
+import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
 import { useGameSessionService } from '@/services';
 
 function createSimulationOptions(
@@ -46,7 +52,8 @@ export default function GameScreen() {
   const sessions = useGameSessionService();
   const [snapshot, setSnapshot] = useState<GameSessionSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);\n  const [decisionResult, setDecisionResult] = useState<{ text: string; next: GameSessionSnapshot } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [decisionResult, setDecisionResult] = useState<{ text: string; next: GameSessionSnapshot } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -146,13 +153,31 @@ export default function GameScreen() {
           ? activeContent.decision.left
           : activeContent.decision.right;
       const affectedState = applyDecisionEffects(snapshot.state, selectedChoice.effects);
+      const delayed = getGermany1933DelayedConsequence(
+        activeContent.event.id,
+        selectedChoice.idSuffix,
+      );
+      const scheduledEffects = delayed
+        ? scheduleDecisionEffect(snapshot.scheduledEffects, affectedState, {
+            id: delayed.idSuffix,
+            delayDays: delayed.delayDays,
+            effects: delayed.effects,
+          })
+        : snapshot.scheduledEffects;
+
+      const datedState = nextEvent
+        ? withGameDate(affectedState, nextEvent.startDate)
+        : affectedState;
+      const processed = processDueDecisionEffects(datedState, scheduledEffects);
       const next: GameSessionSnapshot = {
         ...snapshot,
-        state: nextEvent ? withGameDate(affectedState, nextEvent.startDate) : affectedState,
+        state: processed.state,
         decisionHistory: history,
+        scheduledEffects: processed.pending,
       };
 
-      await sessions.save(next);\n      setDecisionResult({ text: selectedChoice.result, next });
+      await sessions.save(next);
+      setDecisionResult({ text: selectedChoice.result, next });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Karar kaydedilemedi.');
     } finally {
@@ -166,7 +191,7 @@ export default function GameScreen() {
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
-          <GameStatusBar snapshot={snapshot} />
+          <GameStatusBar snapshot={decisionResult?.next ?? snapshot} />
           {decisionResult ? (
             <AppCard>
               <AppText variant="label" muted>KARAR SONUCU</AppText>
@@ -179,7 +204,7 @@ export default function GameScreen() {
                   setDecisionResult(null);
                 }}
               >
-                SONRAKİ DOSYA →
+                SONRAKİ KART →
               </AppText>
             </AppCard>
           ) : activeContent ? (
