@@ -1,5 +1,5 @@
 import { Stack, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, Screen, SectionHeader } from '@/components';
 import { getScenarioForSelection } from '@/content/scenario-catalog';
@@ -28,28 +28,33 @@ export default function ArchiveScreen() {
     }, [sessions]),
   );
 
-  const scenario = snapshot
-    ? getScenarioForSelection(
-        snapshot.state.selection.eraId,
-        snapshot.state.selection.countryId,
-      )
-    : null;
-  const events = scenario && snapshot
-    ? getDiscoveredEvents(snapshot, scenario.events)
-    : [];
-  const documents = scenario && snapshot
-    ? getDiscoveredDocuments(snapshot, scenario.events, scenario.documents)
-    : [];
-  const comparison = scenario && snapshot
-    ? createTimelineComparison(snapshot, scenario.events)
-    : { historical: [], player: [] };
-  const decisions = snapshot ? getDecisionHistory(snapshot) : [];
-  const archive = scenario && snapshot
-    ? createPlayerArchive(snapshot, scenario.events, scenario.documents)
-    : null;
-  const statistics = scenario && snapshot
-    ? createArchiveStatistics(snapshot, scenario.events, scenario.documents)
-    : null;
+  const derived = useMemo(() => {
+    if (!snapshot) return null;
+    const scenario = getScenarioForSelection(
+      snapshot.state.selection.eraId,
+      snapshot.state.selection.countryId,
+    );
+    if (!scenario) return null;
+
+    const events = getDiscoveredEvents(snapshot, scenario.events);
+    return {
+      scenario,
+      events,
+      documents: getDiscoveredDocuments(snapshot, scenario.events, scenario.documents),
+      comparison: createTimelineComparison(snapshot, scenario.events),
+      decisions: getDecisionHistory(snapshot),
+      archive: createPlayerArchive(snapshot, scenario.events, scenario.documents),
+      statistics: createArchiveStatistics(snapshot, scenario.events, scenario.documents),
+    };
+  }, [snapshot]);
+
+  const scenario = derived?.scenario ?? null;
+  const events = derived?.events ?? [];
+  const documents = derived?.documents ?? [];
+  const comparison = derived?.comparison ?? { historical: [], player: [] };
+  const decisions = derived?.decisions ?? [];
+  const archive = derived?.archive ?? null;
+  const statistics = derived?.statistics ?? null;
 
   return (
     <Screen>
@@ -176,7 +181,7 @@ function Stat({ label, value, suffix = '' }: { label: string; value: number; suf
   );
 }
 
-function ArchiveSection({ title, children }: { title: string; children: React.ReactNode }) {
+function ArchiveSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <View style={styles.section}>
       <AppText variant="title">{title}</AppText>
