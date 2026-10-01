@@ -21,7 +21,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Reichstag yangını',
     summary:
-      'Berlin'deki Reichstag binası yandı. Rejim, yangını siyasi muhaliflere yönelik baskıyı yoğunlaştırmak için kullandı.',
+      "Berlin'deki Reichstag binası yandı. Rejim, yangını siyasi muhaliflere yönelik baskıyı yoğunlaştırmak için kullandı.",
     startDate: '1933-02-27',
     scope: 'NATIONAL',
     classification: 'HISTORICAL_FACT',
@@ -47,7 +47,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Reichstag seçimi',
     summary:
-      'Nazi Partisi oyların yüzde 43,9'unu aldı ve parlamentoda çoğunluk için koalisyon ortağına bağımlı kalmaya devam etti.',
+      "Nazi Partisi oyların yüzde 43,9'unu aldı ve parlamentoda çoğunluk için koalisyon ortağına bağımlı kalmaya devam etti.",
     startDate: '1933-03-05',
     scope: 'NATIONAL',
     classification: 'HISTORICAL_FACT',
@@ -73,7 +73,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Yetki Kanunu kabul edildi',
     summary:
-      'Reichstag, hükûmetin parlamentonun onayı olmadan yasa çıkarmasına imkân veren ve diktatörlüğün kurulmasında temel rol oynayan Yetki Kanunu'nu kabul etti.',
+      "Reichstag, hükûmetin parlamentonun onayı olmadan yasa çıkarmasına imkân veren ve diktatörlüğün kurulmasında temel rol oynayan Yetki Kanunu'nu kabul etti.",
     startDate: '1933-03-23',
     scope: 'NATIONAL',
     classification: 'HISTORICAL_FACT',
@@ -125,7 +125,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Almanya tek partili devlete dönüştü',
     summary:
-      '14 Temmuz itibarıyla Nazi Partisi Almanya'daki tek yasal siyasi parti hâline geldi.',
+      "14 Temmuz itibarıyla Nazi Partisi Almanya'daki tek yasal siyasi parti hâline geldi.",
     startDate: '1933-07-14',
     scope: 'NATIONAL',
     classification: 'HISTORICAL_FACT',
@@ -138,7 +138,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Eyalet hükûmetleri merkezi denetim altına alındı',
     summary:
-      'Merkezi hükûmet olağanüstü yetkileri kullanarak eyalet hükûmetlerini devre dışı bıraktı ve Berlin'e bağlı Reich komiserleri atadı.',
+      "Merkezi hükûmet olağanüstü yetkileri kullanarak eyalet hükûmetlerini devre dışı bıraktı ve Berlin'e bağlı Reich komiserleri atadı.",
     startDate: '1933-03-09',
     endDate: '1933-03-11',
     scope: 'NATIONAL',
@@ -165,7 +165,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Prusya Gizli Devlet Polisi teşkilatı kuruldu',
     summary:
-      'Hermann Göring, Prusya'daki mevcut siyasi polis yapılanmasını temel alarak Gizli Devlet Polisi teşkilatını kurdu.',
+      "Hermann Göring, Prusya'daki mevcut siyasi polis yapılanmasını temel alarak Gizli Devlet Polisi teşkilatını kurdu.",
     startDate: '1933-04-26',
     scope: 'REGIONAL',
     classification: 'HISTORICAL_FACT',
@@ -228,9 +228,9 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     id: 'de-1933-league-withdrawal-announced',
     eraId: '1933',
     countryIds: ['germany'],
-    title: 'Milletler Cemiyeti'nden çekilme açıklandı',
+    title: "Milletler Cemiyeti'nden çekilme açıklandı",
     summary:
-      'Alman hükûmeti Milletler Cemiyeti'nden ve Cenevre Silahsızlanma Konferansı'ndan çekileceğini açıkladı.',
+      "Alman hükûmeti Milletler Cemiyeti'nden ve Cenevre Silahsızlanma Konferansı'ndan çekileceğini açıkladı.",
     startDate: '1933-10-14',
     scope: 'INTERNATIONAL',
     classification: 'HISTORICAL_FACT',
@@ -256,7 +256,7 @@ export const GERMANY_1933_CHRONOLOGY: HistoricalEvent[] = [
     countryIds: ['germany'],
     title: 'Parti ile devletin birliğine ilişkin kanun',
     summary:
-      'Aralık ayında çıkarılan bir kanun, Nazi Partisi'ni kamu hukuku kurumu olarak devlete resmen bağladı ve tek parti diktatörlüğünü daha da kurumsallaştırdı.',
+      "Aralık ayında çıkarılan bir kanun, Nazi Partisi'ni kamu hukuku kurumu olarak devlete resmen bağladı ve tek parti diktatörlüğünü daha da kurumsallaştırdı.",
     startDate: '1933-12-01',
     scope: 'NATIONAL',
     classification: 'HISTORICAL_FACT',
