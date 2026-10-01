@@ -66,7 +66,7 @@
 - [x] 55. Perspektif değiştirme temeli
 
 ## 56–65 — Akademik tarih sistemi
-- [ ] 56. Kaynak gösterimi
+- [x] 56. Kaynak gösterimi
 - [ ] 57. Birincil/ikincil kaynak ayrımı
 - [ ] 58. Bibliyografya
 - [ ] 59. Sayfa numarası desteği
