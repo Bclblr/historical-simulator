@@ -1,5 +1,5 @@
 import { createInitialGameState, type GameState } from '@/domain/game';
-import type { EventConnection, HistoricalEvent, Institution, HistoricalRole } from '@/domain/history';
+import type { EventConnection, HistoricalDocument, HistoricalEvent, Institution, HistoricalRole } from '@/domain/history';
 import { GERMANY_1933_CHRONOLOGY } from './chronology';
 import { GERMANY_1933_EVENT_CONNECTIONS } from './event-connections';
 import {
@@ -20,6 +20,7 @@ export interface Germany1933Scenario {
   institutions: Institution[];
   roles: HistoricalRole[];
   events: HistoricalEvent[];
+  documents: HistoricalDocument[];
   connections: EventConnection[];
 }
 
@@ -32,6 +33,7 @@ export const GERMANY_1933_SCENARIO: Germany1933Scenario = {
   institutions: GERMANY_1933_INSTITUTIONS,
   roles: GERMANY_1933_ROLES,
   events: GERMANY_1933_CHRONOLOGY,
+  documents: [],
   connections: GERMANY_1933_EVENT_CONNECTIONS,
 };
 
