@@ -114,6 +114,27 @@ const decisions: Record<string, ScenarioDecisionContent> = {
   },
 };
 
+export function getGermany1933FollowUpDecisionContent(eventId: string): ScenarioDecisionContent {
+  return {
+    prompt: 'Önceki kararınızın ardından yeni bir kurumsal değerlendirme gerekiyor. Nasıl ilerleyeceksiniz?',
+    speaker: 'Takip dosyası',
+    left: {
+      idSuffix: 'record-follow-up',
+      label: 'Sonucu kayda geçir',
+      description: 'Ortaya çıkan sonucu kurumsal kayda al ve sonraki değerlendirmelerde görünür tut.',
+      result: 'Takip sonucu kayda geçirildi. Kurumsal hafıza güçlendi.',
+      effects: [{ type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 2 }],
+    },
+    right: {
+      idSuffix: 'close-follow-up',
+      label: 'Dosyayı kapat',
+      description: 'Takip değerlendirmesini tamamla ve gündemi sonraki olaya taşı.',
+      result: 'Takip dosyası kapatıldı ve kurumun gündemi sonraki gelişmeye geçti.',
+      effects: [{ type: 'CHANGE_VARIABLE', key: 'stability', delta: 1 }],
+    },
+  };
+}
+
 export function getGermany1933DecisionContent(eventId: string): ScenarioDecisionContent {
   return decisions[eventId] ?? {
     prompt: 'Bu tarihsel gelişme için kurumunuzdan bir idari tutum belirlemeniz isteniyor. Nasıl ilerleyeceksiniz?',
