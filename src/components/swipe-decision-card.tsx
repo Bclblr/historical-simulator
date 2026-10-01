@@ -24,6 +24,11 @@ interface SwipeDecisionCardProps {
   disabled?: boolean;
   onChoose: (option: DecisionOption) => void;
   onPreviewDirection?: (direction: 'LEFT' | 'RIGHT' | null) => void;
+  conversationOverride?: {
+    speaker: string;
+    role?: string;
+    line: string;
+  };
 }
 
 const PREVIEW_DISTANCE = 16;
@@ -42,6 +47,7 @@ export function SwipeDecisionCard({
   disabled = false,
   onChoose,
   onPreviewDirection,
+  conversationOverride,
 }: SwipeDecisionCardProps) {
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
@@ -61,7 +67,9 @@ export function SwipeDecisionCard({
   const previewState = useSharedValue(0);
   const isCommitting = useSharedValue(false);
 
-  const conversation = getCampaignConversation(event.id, actorLabel, event.summary);
+  const conversation =
+    conversationOverride ??
+    getCampaignConversation(event.id, actorLabel, event.summary);
 
   const notifyPreview = useCallback(
     (value: number) => {
