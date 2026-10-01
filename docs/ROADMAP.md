@@ -115,9 +115,9 @@
 - [x] 94. Game engine unit testleri
 - [x] 95. Event/flag tutarlılık testleri
 - [x] 96. Save corruption/migration testleri
-- [ ] 97. Performans optimizasyonu
+- [x] 97. Performans optimizasyonu
 - [ ] 98. Android/iOS gerçek cihaz testleri
-- [ ] 99. Test buildleri
+- [x] 99. Test buildleri
 - [ ] 100. v1.0 Release Candidate
 
 > 100/100 bütün dünya tarihinin tamamlanması değil, genişletilebilir v1.0 platformunun Release Candidate seviyesine ulaşmasıdır.
