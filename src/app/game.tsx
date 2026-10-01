@@ -5,6 +5,7 @@ import { StyleSheet } from 'react-native';
 import { AppCard, AppText, DeskScreen, Screen } from '@/components';
 import type { GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
+import { getScenarioForSelection } from '@/content/scenario-catalog';
 
 export default function GameScreen() {
   const params = useLocalSearchParams<{ sessionId?: string; era?: string; country?: string; institution?: string; role?: string }>();
@@ -27,9 +28,14 @@ export default function GameScreen() {
           throw new Error('Oyun oturumu başlatmak için seçim bilgileri eksik.');
         }
 
+        const scenario = getScenarioForSelection(params.era, params.country);
+        if (!scenario) {
+          throw new Error('Seçilen dönem ve devlet için yayımlanmış senaryo bulunamadı.');
+        }
+
         const created = await sessions.start({
           sessionId: `session-${Date.now()}`,
-          startDate: `${params.era}-01-01`,
+          startDate: scenario.startDate,
           selection: {
             eraId: params.era,
             countryId: params.country,
