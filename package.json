@@ -10,9 +10,10 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "doctor": "expo-doctor",
-    "check": "npm run typecheck && npx expo-doctor",
+    "check": "npm run typecheck && npm test && npx expo-doctor",
     "sdk:fix": "expo install --fix",
-    "sdk:check": "expo install --check"
+    "sdk:check": "expo install --check",
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "expo": "^57.0.0",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "tsx": "^4.20.6"
   }
 }
