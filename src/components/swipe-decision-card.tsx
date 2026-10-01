@@ -10,6 +10,7 @@ interface SwipeDecisionCardProps {
   leftOption: DecisionOption;
   rightOption: DecisionOption;
   actorLabel: string;
+  prompt: string;
   disabled?: boolean;
   onChoose: (option: DecisionOption) => void;
 }
@@ -21,6 +22,7 @@ export function SwipeDecisionCard({
   leftOption,
   rightOption,
   actorLabel,
+  prompt,
   disabled = false,
   onChoose,
 }: SwipeDecisionCardProps) {
@@ -87,7 +89,7 @@ export function SwipeDecisionCard({
             <AppText variant="label" style={{ color: theme.colors.onPrimary }}>TARİHSEL OLAY</AppText>
           </View>
           <AppText variant="heading" style={[styles.prompt, { color: theme.colors.onPrimary }]}>
-            {choice?.label ?? event.title}
+            {choice?.label ?? prompt}
           </AppText>
         </View>
 
@@ -95,7 +97,7 @@ export function SwipeDecisionCard({
           <View style={[styles.emblem, { borderColor: theme.colors.accent }]}>
             <AppText variant="display">§</AppText>
           </View>
-          <AppText style={styles.summary}>{event.summary}</AppText>
+          <AppText variant="label" muted style={styles.eventTitle}>{event.title}</AppText>\n          <AppText style={styles.summary}>{event.summary}</AppText>
         </View>
 
         <View style={[styles.footer, { borderTopColor: theme.colors.border }]}>
@@ -134,6 +136,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  summary: { textAlign: 'center', maxWidth: 390 },
+  eventTitle: { textAlign: 'center', maxWidth: 390 },\n  summary: { textAlign: 'center', maxWidth: 390 },
   footer: { minHeight: 92, borderTopWidth: 1, padding: 18, justifyContent: 'space-between', gap: 10 },
 });
