@@ -170,6 +170,21 @@ export function getGermany1933FollowUpDecisionContent(eventId: string): Scenario
   };
 }
 
+function variantFor(eventId: string, count: number): number {
+  let hash = 0;
+  for (let i = 0; i < eventId.length; i += 1) hash = (hash * 31 + eventId.charCodeAt(i)) >>> 0;
+  return hash % count;
+}
+
+function choice(
+  idSuffix: string,
+  label: string,
+  description: string,
+  effects: DecisionEffect[],
+): ScenarioDecisionChoice {
+  return { idSuffix, label, description, result: '', effects };
+}
+
 export function getGermany1933DecisionContent(
   eventId: string,
   eventTitle = '',
@@ -180,191 +195,118 @@ export function getGermany1933DecisionContent(
 
   const context = `${eventTitle} ${eventSummary}`.toLocaleLowerCase('tr-TR');
 
+  if (/yahudi|ayrım|dışlan|kısırlaştır|toplama kamp|pogrom|katliam|ırkçı/.test(context)) {
+    const variants: ScenarioDecisionContent[] = [
+      { prompt: '', speaker: 'Hükûmet hukuk danışmanı',
+        left: choice('challenge-discriminatory-policy','İtirazı kayda geçir','Ayrımcı uygulamaya hukuki ve kurumsal itirazı resmî kayda geçir.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:-1}]),
+        right: choice('seek-limitation','Uygulamayı sınırla','Politikanın kapsamını daraltacak hukuki ve idari sınırlar ara.',[{type:'CHANGE_VARIABLE',key:'stability',delta:1},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2}]) },
+      { prompt: '', speaker: 'Adalet Bakanlığı görevlisi',
+        left: choice('request-court-review','Yargı incelemesi iste','Düzenlemenin hukuki dayanağının bağımsız biçimde incelenmesini talep et.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:4},{type:'CHANGE_VARIABLE',key:'stability',delta:-2}]),
+        right: choice('document-objections','İtirazları belgelet','Kurumların ve etkilenen kesimlerin itirazlarını dosyada görünür tut.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:2},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
+  }
+
   if (/seçim|reichstag|oy|referandum|plebisit/.test(context)) {
-    return {
-      prompt: '',
-      speaker: 'Siyasi strateji',
-      left: {
-        idSuffix: 'broaden-campaign',
-        label: 'Desteği genişlet',
-        description: 'Daha geniş seçmen desteğine yönelen siyasi çizgiyi öne çıkar.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 4 },
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -1 },
-        ],
-      },
-      right: {
-        idSuffix: 'consolidate-base',
-        label: 'Tabanı koru',
-        description: 'Mevcut destek tabanını ve parti örgütünü sağlamlaştırmaya ağırlık ver.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 3 },
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: -1 },
-        ],
-      },
-    };
+    const variants: ScenarioDecisionContent[] = [
+      { prompt:'', speaker:'Seçim danışmanı',
+        left:choice('seek-cross-party-talks','Diğer gruplarla görüş','Parlamentodaki diğer gruplarla sınırlı iş birliği zemini ara.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2},{type:'CHANGE_VARIABLE',key:'stability',delta:2}]),
+        right:choice('focus-electorate','Seçmene dön','Yeni parlamento pazarlığı yerine seçmen desteğini büyütmeye odaklan.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:4},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:-1}]) },
+      { prompt:'', speaker:'Parlamento danışmanı',
+        left:choice('accept-parliamentary-compromise','Uzlaşma zemini ara','Mecliste çoğunluk sağlayacak sınırlı bir program üzerinde görüş.',[{type:'CHANGE_VARIABLE',key:'stability',delta:3},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:1}]),
+        right:choice('remain-opposition','Muhalefette kal','Hükûmet pazarlığına girmeden siyasi muhalefeti sürdür.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:2},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:-2}]) },
+      { prompt:'', speaker:'Yerel teşkilat temsilcisi',
+        left:choice('invest-local-network','Yerel örgütlere yönel','Ulusal pazarlık yerine yerel siyasi ağları güçlendirmeye kaynak ayır.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+        right:choice('prioritize-reichstag','Reichstag’a odaklan','Siyasi enerjiyi parlamento grubunun etkisini artırmaya yönelt.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:-1}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
   }
 
   if (/parti|dap|nsdap|lider|örgüt|konferans|strasser|gençli/.test(context)) {
-    return {
-      prompt: '',
-      speaker: 'Parti yönetimi',
-      left: {
-        idSuffix: 'decentralize-party',
-        label: 'Yerel kadrolara alan aç',
-        description: 'Yerel örgütlerin karar alanını genişlet ve parti içindeki farklı gruplarla uzlaş.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 2 },
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -2 },
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: 2 },
-        ],
-      },
-      right: {
-        idSuffix: 'centralize-party',
-        label: 'Yönetimi merkezileştir',
-        description: 'Parti kararlarını merkezde toplayarak örgütsel kontrolü artır.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 3 },
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: -2 },
-        ],
-      },
-    };
+    const variants: ScenarioDecisionContent[] = [
+      { prompt:'', speaker:'Parti komitesi üyesi',
+        left:choice('share-organizational-power','Yetkiyi paylaş','Yerel yöneticilere daha fazla karar alanı bırak.',[{type:'CHANGE_VARIABLE',key:'stability',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:-2}]),
+        right:choice('tighten-headquarters','Merkezi güçlendir','Örgütsel kararları genel merkezde daha sıkı koordine et.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:-2}]) },
+      { prompt:'', speaker:'Bölge teşkilatı temsilcisi',
+        left:choice('consult-regions','Bölgeleri dinle','Bölge örgütlerinin taleplerini karar sürecine daha fazla kat.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:2},{type:'CHANGE_VARIABLE',key:'stability',delta:2}]),
+        right:choice('enforce-common-line','Ortak çizgi iste','Bütün teşkilatlardan aynı örgütsel çizgiyi izlemesini talep et.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:-1}]) },
+      { prompt:'', speaker:'Parti mali işler görevlisi',
+        left:choice('prioritize-membership','Üyeliği büyüt','Kaynakları yeni üye ve yerel toplantılara yönelt.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:-1}]),
+        right:choice('professionalize-office','Merkezi büroyu kur','Kaynakları profesyonel bir genel merkez yapısına yönelt.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
   }
 
   if (/pakt|anlaşma|dış politika|milletler cemiyeti|avusturya|saar|münih|uluslararası/.test(context)) {
-    return {
-      prompt: '',
-      speaker: 'Dış politika',
-      left: {
-        idSuffix: 'seek-negotiation',
-        label: 'Müzakereyi sürdür',
-        description: 'Diplomatik görüşmeleri ve uluslararası anlaşma zeminini öne çıkar.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'foreignRelations', delta: 4 },
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: -1 },
-        ],
-      },
-      right: {
-        idSuffix: 'take-unilateral-line',
-        label: 'Tek taraflı çizgi izle',
-        description: 'Dış baskıya rağmen mevcut hedefi tek taraflı siyasi adımlarla sürdür.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 2 },
-          { type: 'CHANGE_VARIABLE', key: 'foreignRelations', delta: -4 },
-        ],
-      },
-    };
+    const variants: ScenarioDecisionContent[] = [
+      { prompt:'', speaker:'Dışişleri danışmanı',
+        left:choice('open-bilateral-talks','İkili görüşme aç','Karşı tarafla doğrudan diplomatik görüşme kanalı aç.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:4},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+        right:choice('seek-multilateral-forum','Çok taraflı görüş','Konuyu daha geniş bir uluslararası görüşme zeminine taşı.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:1}]) },
+      { prompt:'', speaker:'Büyükelçilik temsilcisi',
+        left:choice('offer-compromise','Taviz paketi sun','Krizi düşürecek sınırlı bir diplomatik uzlaşma öner.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:4},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:-1}]),
+        right:choice('delay-decision','Kararı ertele','Yeni bilgi gelene kadar bağlayıcı adımı ertele.',[{type:'CHANGE_VARIABLE',key:'stability',delta:2},{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:1}]) },
+      { prompt:'', speaker:'Dışişleri müsteşarı',
+        left:choice('reassure-neighbors','Komşulara güvence ver','Komşu devletlerin kaygılarını azaltacak diplomatik güvence hazırla.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:4},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:-1}]),
+        right:choice('keep-options-open','Seçenekleri açık tut','Bağlayıcı taahhüt vermeden görüşmeleri sürdür.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2},{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:-1}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
   }
 
   if (/savaş|işgal|asker|ordu|taarruz|muharebe|cephe|silah|ren bölgesi/.test(context)) {
-    return {
-      prompt: '',
-      speaker: 'Kriz masası',
-      left: {
-        idSuffix: 'limit-escalation',
-        label: 'Gerilimi sınırla',
-        description: 'Siyasi ve diplomatik seçenekleri öne çıkararak gerilimin büyümesini sınırlamaya çalış.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'foreignRelations', delta: 3 },
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: 1 },
-        ],
-      },
-      right: {
-        idSuffix: 'maintain-course',
-        label: 'Mevcut çizgiyi sürdür',
-        description: 'Mevcut devlet politikasını değiştirmeden süreci devam ettir.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: -2 },
-          { type: 'CHANGE_VARIABLE', key: 'foreignRelations', delta: -3 },
-        ],
-      },
-    };
+    const variants: ScenarioDecisionContent[] = [
+      { prompt:'', speaker:'Kabine danışmanı',
+        left:choice('pursue-deescalation','Tırmanmayı durdur','Askerî gerilimin büyümesini sınırlayacak siyasi seçenekleri araştır.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:2}]),
+        right:choice('request-diplomatic-channel','Diplomatik kanal aç','Krizi askerî genişleme yerine doğrudan görüşmeye taşı.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:4},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:1}]) },
+      { prompt:'', speaker:'Dış politika danışmanı',
+        left:choice('seek-ceasefire-contact','Temas ara','Çatışmanın kapsamını azaltabilecek temas imkânlarını araştır.',[{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:4},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+        right:choice('prioritize-defense','Savunmaya çekil','Yeni genişleme yerine mevcut sınırların savunulmasına öncelik ver.',[{type:'CHANGE_VARIABLE',key:'stability',delta:3},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:-1}]) },
+      { prompt:'', speaker:'Sivil idare temsilcisi',
+        left:choice('protect-civilian-administration','Sivil idareyi koru','Kriz kararlarında sivil kurumların çalışmasını sürdürmeye öncelik ver.',[{type:'CHANGE_VARIABLE',key:'stability',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2}]),
+        right:choice('request-political-review','Siyasi inceleme iste','Yeni askerî adımlardan önce kabine düzeyinde siyasi değerlendirme talep et.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'foreignRelations',delta:2}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
   }
 
   if (/kanun|yasa|kararname|vatandaş|kamu hizmet|polis|mahkeme|hukuk|yasak/.test(context)) {
-    return {
-      prompt: '',
-      speaker: 'Hukuk ve kurumlar',
-      left: {
-        idSuffix: 'protect-procedure',
-        label: 'Hukuki sınırları koru',
-        description: 'İşlemin mevcut hukuk ve kurumsal denetim sınırları içinde kalmasını savun.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 4 },
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: -1 },
-        ],
-      },
-      right: {
-        idSuffix: 'accept-policy',
-        label: 'Politikayı uygula',
-        description: 'Yeni politikayı mevcut devlet mekanizması içinde uygulamaya geçir.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: 2 },
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: -3 },
-        ],
-      },
-    };
+    const variants: ScenarioDecisionContent[] = [
+      { prompt:'', speaker:'Hükûmet hukuk danışmanı',
+        left:choice('request-constitutional-review','Anayasal inceleme iste','Düzenlemenin yetki ve temel hak sınırlarını incelet.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:4},{type:'CHANGE_VARIABLE',key:'stability',delta:-1}]),
+        right:choice('narrow-administration','Kapsamı daralt','İdari uygulamanın kapsamını mümkün olduğunca sınırlı tut.',[{type:'CHANGE_VARIABLE',key:'stability',delta:2},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2}]) },
+      { prompt:'', speaker:'Adalet Bakanlığı görevlisi',
+        left:choice('require-written-basis','Yazılı gerekçe iste','Her uygulama için açık hukuki dayanak ve yazılı gerekçe talep et.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:4},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+        right:choice('send-to-committee','Komisyona gönder','Düzenlemeyi uygulamadan önce kurumlar arası komisyona gönder.',[{type:'CHANGE_VARIABLE',key:'stability',delta:2},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2}]) },
+      { prompt:'', speaker:'Kamu idaresi görevlisi',
+        left:choice('preserve-appeal','İtiraz yolunu koru','İşlemden etkilenenler için idari itiraz yolunu açık tut.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:2},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3}]),
+        right:choice('audit-implementation','Uygulamayı denetle','Yerel uygulamaların hukuki sınırları aşıp aşmadığını denetlet.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:2}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
   }
 
   if (/ekonomi|işsiz|emek|sendika|çiftlik|işletme|buhran|enflasyon/.test(context)) {
-    return {
-      prompt: '',
-      speaker: 'İç politika',
-      left: {
-        idSuffix: 'social-relief',
-        label: 'Toplumsal yükü azalt',
-        description: 'Ekonomik ve toplumsal baskıyı azaltacak önlemlere öncelik ver.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: 3 },
-          { type: 'CHANGE_VARIABLE', key: 'stability', delta: 1 },
-        ],
-      },
-      right: {
-        idSuffix: 'institutional-control',
-        label: 'Merkezi politikayı sürdür',
-        description: 'Ekonomik ve toplumsal alanı merkezi devlet politikasıyla yönet.',
-        result: '',
-        effects: [
-          { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 2 },
-          { type: 'CHANGE_VARIABLE', key: 'publicSupport', delta: -2 },
-        ],
-      },
-    };
+    const variants: ScenarioDecisionContent[] = [
+      { prompt:'', speaker:'Ekonomi danışmanı',
+        left:choice('target-unemployment','İşsizliğe odaklan','Kaynakları doğrudan işsizliği azaltacak programlara yönelt.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:2}]),
+        right:choice('stabilize-budget','Bütçeyi dengele','Kısa vadeli destek yerine kamu maliyesini istikrara kavuşturmaya öncelik ver.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:-1}]) },
+      { prompt:'', speaker:'Çalışma Bakanlığı görevlisi',
+        left:choice('protect-labor-dialogue','Çalışma diyaloğunu koru','İşçi ve işveren temsilcileriyle kurumsal müzakereyi sürdür.',[{type:'CHANGE_VARIABLE',key:'stability',delta:3},{type:'CHANGE_VARIABLE',key:'publicSupport',delta:2}]),
+        right:choice('fund-public-works','Kamu işlerini artır','İstihdam için kamu altyapı harcamalarını artır.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:1}]) },
+      { prompt:'', speaker:'Maliye görevlisi',
+        left:choice('support-households','Haneleri destekle','Ekonomik krizin haneler üzerindeki baskısını azaltacak destek hazırla.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:4},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+        right:choice('support-local-government','Yerel bütçeleri destekle','Kriz yükünü taşıyan yerel yönetimlere mali destek aktar.',[{type:'CHANGE_VARIABLE',key:'stability',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:1}]) },
+    ];
+    return variants[variantFor(eventId, variants.length)];
   }
 
-  return {
-    prompt: '',
-    speaker: 'Siyasi gündem',
-    left: {
-      idSuffix: 'moderate-response',
-      label: 'Temkinli hareket et',
-      description: 'Gelişmenin etkilerini sınırlı ve kademeli bir siyasi tepkiyle karşıla.',
-      result: '',
-      effects: [
-        { type: 'CHANGE_VARIABLE', key: 'stability', delta: 2 },
-        { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 1 },
-      ],
-    },
-    right: {
-      idSuffix: 'assertive-response',
-      label: 'Daha hızlı hareket et',
-      description: 'Gelişmeye daha hızlı ve merkezi bir siyasi tepki ver.',
-      result: '',
-      effects: [
-        { type: 'CHANGE_VARIABLE', key: 'institutionalInfluence', delta: 2 },
-        { type: 'CHANGE_VARIABLE', key: 'stability', delta: -2 },
-      ],
-    },
-  };
+  const general: ScenarioDecisionContent[] = [
+    { prompt:'', speaker:'Kabine danışmanı',
+      left:choice('request-more-information','Daha fazla bilgi iste','Karardan önce ilgili kurumlardan ek bilgi ve değerlendirme iste.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+      right:choice('delegate-review','Danışmana bırak','Konuyu uzman bir danışmana inceletip sonraki görüşmeye taşı.',[{type:'CHANGE_VARIABLE',key:'stability',delta:2},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:1}]) },
+    { prompt:'', speaker:'Yerel yönetim temsilcisi',
+      left:choice('hear-local-view','Yerel görüşü dinle','Karardan önce yerel kurumların değerlendirmesini al.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:2},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]),
+      right:choice('convene-cabinet','Kabineyi topla','Konuyu tek başına kararlaştırmak yerine kabine gündemine taşı.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:2},{type:'CHANGE_VARIABLE',key:'stability',delta:2}]) },
+    { prompt:'', speaker:'Siyasi danışman',
+      left:choice('seek-public-feedback','Kamu tepkisini ölç','Yeni adım atmadan önce toplumdaki tepkiyi değerlendirmeye çalış.',[{type:'CHANGE_VARIABLE',key:'publicSupport',delta:3},{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:-1}]),
+      right:choice('seek-institutional-consensus','Kurumlarla uzlaş','İlgili devlet kurumları arasında ortak bir yaklaşım oluşturmaya çalış.',[{type:'CHANGE_VARIABLE',key:'institutionalInfluence',delta:3},{type:'CHANGE_VARIABLE',key:'stability',delta:1}]) },
+  ];
+  return general[variantFor(eventId, general.length)];
 }
