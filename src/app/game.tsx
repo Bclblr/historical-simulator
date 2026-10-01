@@ -263,6 +263,7 @@ export default function GameScreen() {
             </AppCard>
           ) : activeContent ? (
             <SwipeDecisionCard
+              key={`${activeContent.event.id}:${snapshot.decisionHistory.length}`}
               event={activeContent.event}
               leftOption={activeContent.options[0]}
               rightOption={activeContent.options[1]}
