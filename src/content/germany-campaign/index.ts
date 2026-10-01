@@ -4,3 +4,4 @@ export * from './chronology-1939-1945';
 export * from './branches';
 export * from './event-images';
 export * from './conversations';
+export * from './career-events';
