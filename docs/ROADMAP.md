@@ -105,13 +105,13 @@
 - [x] 86. Oyuncu arşivi
 - [x] 87. Keşfedilen olaylar
 - [x] 88. Keşfedilen belgeler
-- [ ] 89. Timeline
+- [x] 89. Timeline
 - [x] 90. Karar geçmişi
-- [ ] 91. Gerçek tarih / oyuncu zaman çizgisi karşılaştırması
-- [ ] 92. İstatistik/tamamlama
+- [x] 91. Gerçek tarih / oyuncu zaman çizgisi karşılaştırması
+- [x] 92. İstatistik/tamamlama
 
 ## 93–100 — Test ve yayın
-- [ ] 93. TypeScript/typecheck temizliği
+- [x] 93. TypeScript/typecheck temizliği
 - [ ] 94. Game engine unit testleri
 - [ ] 95. Event/flag tutarlılık testleri
 - [ ] 96. Save corruption/migration testleri
