@@ -1,43 +1,57 @@
 import { StyleSheet, View } from 'react-native';
-import type { GameSessionSnapshot } from '@/domain/game';
+import type { DecisionEffect, GameSessionSnapshot } from '@/domain/game';
 import { useAppTheme } from '@/theme';
 import { AppText } from './app-text';
 
 interface GameStatusBarProps {
   snapshot: GameSessionSnapshot;
+  previewEffects?: DecisionEffect[];
 }
 
 function clamp(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
 
-export function GameStatusBar({ snapshot }: GameStatusBarProps) {
+function previewDelta(effects: DecisionEffect[], key: string): number {
+  return effects.reduce((total, effect) => {
+    if (effect.type === 'CHANGE_VARIABLE' && effect.key === key) return total + effect.delta;
+    return total;
+  }, 0);
+}
+
+export function GameStatusBar({ snapshot, previewEffects = [] }: GameStatusBarProps) {
   const theme = useAppTheme();
   const v = snapshot.state.variables;
   const items = [
-    ['KAMU', v.publicSupport ?? 55],
-    ['KURUM', v.institutionalInfluence ?? 55],
-    ['DÜZEN', v.stability ?? 50],
-    ['DIŞ', v.foreignRelations ?? 50],
+    ['KAMU', 'publicSupport', v.publicSupport ?? 55],
+    ['KURUM', 'institutionalInfluence', v.institutionalInfluence ?? 55],
+    ['DÜZEN', 'stability', v.stability ?? 50],
+    ['DIŞ', 'foreignRelations', v.foreignRelations ?? 50],
   ] as const;
 
   return (
     <View style={styles.root}>
-      {items.map(([label, rawValue]) => {
+      {items.map(([label, key, rawValue]) => {
         const value = clamp(rawValue);
+        const delta = previewDelta(previewEffects, key);
+        const previewValue = clamp(value + delta);
+        const changing = delta !== 0;
+        const fillColor = changing
+          ? delta > 0 ? '#2EAD62' : '#D94B4B'
+          : theme.colors.accent;
+
         return (
           <View key={label} style={styles.item}>
-            <View style={styles.labelRow}>
-              <AppText variant="caption" style={{ color: theme.colors.text }}>{label}</AppText>
-              <AppText variant="caption" muted>{Math.round(value)}</AppText>
-            </View>
+            <AppText variant="caption" style={{ color: theme.colors.text, textAlign: 'center' }}>
+              {label}{changing ? (delta > 0 ? ' ↑' : ' ↓') : ''}
+            </AppText>
             <View style={[styles.track, { backgroundColor: theme.colors.border }]}>
               <View
                 style={[
                   styles.fill,
                   {
-                    width: `${value}%`,
-                    backgroundColor: theme.colors.accent,
+                    width: `${changing ? previewValue : value}%`,
+                    backgroundColor: fillColor,
                   },
                 ]}
               />
@@ -59,15 +73,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   item: { flex: 1, gap: 6 },
-  labelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 4,
-  },
   track: {
     width: '100%',
-    height: 7,
+    height: 8,
     borderRadius: 999,
     overflow: 'hidden',
   },
