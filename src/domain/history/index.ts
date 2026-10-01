@@ -25,3 +25,5 @@ export * from './bibliography';
 export * from './citation-pages';
 export * from './archive-reference';
 export * from './historical-outcome';
+export * from './historian-interpretation';
+export * from './interpretation-group';
