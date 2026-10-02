@@ -68,10 +68,7 @@ function Meter({
         <AppText variant="caption" style={styles.label}>
           {label}
         </AppText>
-        <AppText variant="caption" style={styles.value}>
-          {Math.round(changing ? previewValue : value)}
-          {changing ? (delta > 0 ? ' ↑' : ' ↓') : ''}
-        </AppText>
+        <View style={styles.valuePlaceholder} />
       </View>
       <View style={[styles.track, { backgroundColor: track }]}>
         <Animated.View
@@ -104,20 +101,15 @@ export function GameStatusBar({ snapshot, previewEffects = [] }: GameStatusBarPr
 
   // Reigns-style: the four core meters stay visible, move smoothly after
   // every decision, and preview the next balance while the card is dragged.
-  const lifeMode = snapshot.campaign?.campaignId === 'germany-life';
-  const items = lifeMode
-    ? ([
-        ['PARA', 'money', v.money ?? 50],
-        ['GÜVENLİK', 'safety', v.safety ?? 55],
-        ['ÇEVRE', 'social', v.social ?? 50],
-        ['İTİBAR', 'reputation', v.reputation ?? 50],
-      ] as const)
-    : ([
-        ['KAMU', 'publicSupport', v.publicSupport ?? 55],
-        ['KURUM', 'institutionalInfluence', v.institutionalInfluence ?? 55],
-        ['DÜZEN', 'stability', v.stability ?? 50],
-        ['DIŞ', 'foreignRelations', v.foreignRelations ?? 50],
-      ] as const);
+  // Ottoman Mediterranean and the removed Germany-life content both use
+  // the same four visible Reigns meters. The important fix is that the
+  // Ottoman cards actually modify these exact variables.
+  const items = ([
+    ['PARA', 'money', v.money ?? 50],
+    ['GÜVENLİK', 'safety', v.safety ?? 55],
+    ['ÇEVRE', 'social', v.social ?? 50],
+    ['İTİBAR', 'reputation', v.reputation ?? 50],
+  ] as const);
 
   return (
     <View style={styles.root}>
@@ -161,10 +153,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 14,
   },
-  value: {
-    fontSize: 11,
-    lineHeight: 14,
-    fontVariant: ['tabular-nums'],
+  valuePlaceholder: {
+    width: 1,
+    height: 1,
+    opacity: 0,
   },
   track: {
     position: 'relative',
