@@ -298,9 +298,10 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     const chapter = Number(context[1]);
     const variant = Number(context[2]);
     if (left) {
-      return variant < 6 ? `med-context-${chapter}-${variant + 1}` : null;
+      if (variant < 6) return `med-context-${chapter}-${variant + 1}`;
+      return chapter < 20 ? `med-context-${chapter + 1}-1` : 'med-epilogue-1';
     }
-    return chapter < 20 ? `med-context-${chapter + 1}-1` : null;
+    return chapter < 20 ? `med-context-${chapter + 1}-1` : 'med-epilogue-2';
   }
 
   const scale = current.id.match(/^med-reigns-([^-]+)-(\\d+)$/);
