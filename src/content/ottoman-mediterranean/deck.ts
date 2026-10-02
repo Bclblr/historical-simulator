@@ -290,11 +290,27 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
       : scene < 18 ? `med-arc-${scene + 1}-${place}` : `med-arc-1-${place}`;
   }
 
-  const scale = current.id.match(/^med-reigns-[^-]+-(\\d+)$/);
+  const scale = current.id.match(/^med-reigns-([^-]+)-(\\d+)$/);
   if (scale) {
-    const place = Number(scale[1]);
-    const prefix = current.id.replace(/-\\d+$/, '');
-    return place < 25 ? `${prefix}-${place + 1}` : null;
+    const scene = scale[1];
+    const place = Number(scale[2]);
+    if (left) {
+      return place < 25 ? `med-reigns-${scene}-${place + 1}` : null;
+    }
+
+    // Right swipe moves the story to the next scene while keeping the
+    // geographical position. The scene order is taken from the generated
+    // deck itself, so new scenes automatically participate in the chain.
+    const prefixes = Array.from(
+      new Set(
+        ALL_MEDITERRANEAN_CARDS
+          .map((item) => item.id.match(/^med-reigns-([^-]+)-\\d+$/)?.[1])
+          .filter((value): value is string => Boolean(value)),
+      ),
+    );
+    const index = prefixes.indexOf(scene);
+    const nextScene = prefixes[index + 1];
+    return nextScene ? `med-reigns-${nextScene}-${place}` : null;
   }
 
   return null;
