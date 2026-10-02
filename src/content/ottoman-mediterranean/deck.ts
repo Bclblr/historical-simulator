@@ -2,6 +2,7 @@ import type { DecisionEffect, GameSessionSnapshot } from '@/domain/game';
 import { createHistoricalEvent, type HistoricalEvent } from '@/domain/history';
 import { EXPANDED_MEDITERRANEAN_CARDS } from './expanded-cards';
 import { REIGNS_SCALE_CARDS } from './reigns-scale-cards';
+import { HISTORICAL_MEDITERRANEAN_CARDS } from './historical-spine';
 
 export interface MediterraneanChoice {
   idSuffix: string;
@@ -272,7 +273,7 @@ const FALLBACKS: MediterraneanCardDefinition[] = [
     choice('leave','Şimdi işe dönmem gerekiyor mu?','Kendi hayatının peşinden git.',[change('money',2),change('familyTies',-1),days(100)])),
 ];
 
-const ALL_MEDITERRANEAN_CARDS = [...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS];
+const ALL_MEDITERRANEAN_CARDS = [...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS];
 
 export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
 
@@ -313,6 +314,30 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     return nextScene ? `med-reigns-${nextScene}-${place}` : null;
   }
 
+  const historical: Record<string, { left?: string; right?: string }> = {
+    "med-history-port": { left: "med-history-network", right: "med-history-network" },
+    "med-history-sailor": { left: "med-history-network", right: "med-history-network" },
+    "med-history-trader": { left: "med-history-merchant-report", right: "med-history-network" },
+    "med-history-interpreter": { left: "med-history-network", right: "med-history-muhtedi" },
+    "med-history-network": { left: "med-history-letter", right: "med-history-disinformation" },
+    "med-history-merchant-report": { left: "med-history-ragusa", right: "med-history-ragusa" },
+    "med-history-letter": { left: "med-history-counter", right: "med-history-counter" },
+    "med-history-captive": { left: "med-history-muhtedi", right: "med-history-counter" },
+    "med-history-muhtedi": { left: "med-history-counter", right: "med-history-counter" },
+    "med-history-counter": { left: "med-history-disinformation", right: "med-history-disinformation" },
+    "med-history-disinformation": { left: "med-history-habsburg", right: "med-history-ragusa" },
+    "med-history-ragusa": { left: "med-history-habsburg", right: "med-history-habsburg" },
+    "med-history-habsburg": { left: "med-history-cerbe", right: "med-history-cerbe" },
+    "med-history-cerbe": { left: "med-history-after-cerbe", right: "med-history-after-cerbe" },
+    "med-history-after-cerbe": { left: "med-history-malta", right: "med-history-malta" },
+    "med-history-malta": { left: "med-history-inquiry", right: "med-history-inquiry" },
+    "med-history-inquiry": { left: "med-history-lepanto", right: "med-history-lepanto" },
+    "med-history-lepanto": { left: "med-history-final-network", right: "med-history-final-network" },
+    "med-history-final-network": { left: "med-history-final-port", right: "med-history-final-port" },
+    "med-history-final-port": { left: "med-history-final-family", right: "med-history-final-family" },
+    "med-history-final-family": { left: "med-port-authority", right: "med-final-family" },
+  };
+
   const authored: Record<string, { left?: string; right?: string }> = {
     "med-port-first-work": { left: "med-port-rumor", right: "med-port-sailor" },
     "med-port-rumor": { left: "med-merchant-contact", right: "med-strange-question" },
@@ -349,6 +374,9 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     "med-language-gain": { left: "med-retirement-trade", right: "med-informant-choice" },
     "med-retirement-trade": { left: "med-old-friend", right: "med-final-port" },
   };
+  const historicalBranch = historical[current.id];
+  if (historicalBranch) return historicalBranch[left ? 'left' : right ? 'right' : 'left'] ?? null;
+
   const branch = authored[current.id];
   return branch?.[left ? 'left' : right ? 'right' : 'left'] ?? null;
 }
@@ -358,10 +386,10 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
 
   if (snapshot.decisionHistory.length === 0) {
     const starts: Record<string, string> = {
-      'med-port-worker': 'med-port-first-work',
-      'med-sailor': 'med-port-sailor',
-      'med-trader': 'med-merchant-contact',
-      'med-interpreter': 'med-strange-question',
+      'med-port-worker': 'med-history-port',
+      'med-sailor': 'med-history-sailor',
+      'med-trader': 'med-history-trader',
+      'med-interpreter': 'med-history-interpreter',
     };
     const startId = starts[snapshot.state.selection.roleId] ?? 'med-port-first-work';
     const start = ALL_MEDITERRANEAN_CARDS.find((item) => item.id === startId);
