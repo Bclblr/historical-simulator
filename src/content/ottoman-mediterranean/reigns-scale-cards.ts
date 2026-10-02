@@ -90,18 +90,57 @@ const periods = [
   ['1580-01-01','1589-12-31'],['1590-01-01','1599-12-31'],
 ];
 
+const placeLines: Record<string, [string, string]> = {
+  Galata: ['Galata’da bu haber hızla yayılıyor.', 'Galata’daki tüccarlar aynı şeyi söylüyor mu?'],
+  İstanbul: ['İstanbul’da bunun konuşulduğunu duydum.', 'Payitahtta kimler bu haberden söz ediyor?'],
+  Venedik: ['Venedik’ten gelen haberler birbirini tutmuyor.', 'Venedikli tüccarlardan başka kim konuşuyor?'],
+  Ragusa: ['Ragusa’dan gelen aracılar farklı şeyler anlatıyor.', 'Bu haberi Ragusa’da kim doğrulayabilir?'],
+  Cezayir: ['Cezayir tarafında denizciler bunu konuşuyor.', 'Mağrib’den gelen başka bir kaynağın var mı?'],
+  Tunus: ['Tunus bağlantıları yeniden hareketlenmiş.', 'Tunus’taki aracılar ne biliyor?'],
+  Trablusgarp: ['Trablusgarp’tan gelen haber gecikmiş.', 'Bu haberi başka hangi limandan kontrol edebiliriz?'],
+  Cerbe: ['Cerbe çevresinden gelen haber hâlâ konuşuluyor.', 'Cerbe’den kim daha ayrıntılı bilgi getirdi?'],
+  Malta: ['Malta çevresindeki haberler limanı meşgul ediyor.', 'Malta’dan gelen haberi kim doğruladı?'],
+  Sicilya: ['Sicilya’dan gelen gemiler farklı haberler getiriyor.', 'Sicilya hattında kimlerle konuşabiliriz?'],
+  Messina: ['Messina’dan gelen tüccar beklenmedik bir şey anlattı.', 'Messina haberini başka kim duymuş?'],
+  Napoli: ['Napoli tarafındaki tüccarlar yeni bir hesap yapıyor.', 'Napoli bağlantısını kim yönetiyor?'],
+  Korfu: ['Korfu üzerinden geçenler farklı söylentiler taşıyor.', 'Korfu haberini hangi kaynakla karşılaştıracağız?'],
+  Girit: ['Girit’teki denizciler yolu iyi biliyor.', 'Girit üzerinden gelen haber güvenilir mi?'],
+  Kıbrıs: ['Kıbrıs hakkında yeni haberler dolaşıyor.', 'Kıbrıs haberini kimden aldın?'],
+  Rodos: ['Rodos’tan gelen haber limanda yankılandı.', 'Rodos bağlantısını kim doğrulayabilir?'],
+  İskenderiye: ['İskenderiye’den gelen tüccarlar yeni haberler taşıyor.', 'İskenderiye hattında başka kim var?'],
+  İzmir: ['İzmir limanında aynı konu konuşuluyor.', 'İzmir’den gelen bilgiyi kontrol ettin mi?'],
+  Ancona: ['Ancona’dan gelen tüccar farklı bir fiyat söyledi.', 'Ancona haberini kim destekliyor?'],
+  Livorno: ['Livorno bağlantısı yeni bir haber getirdi.', 'Livorno’dan başka kim konuşuyor?'],
+  Marsilya: ['Marsilya’dan gelen haber burada da duyulmuş.', 'Marsilya kaynağını nasıl doğrulayacağız?'],
+  Barselona: ['Barselona hattından gelen haber gecikmiş.', 'Barselona bağlantısı kime ait?'],
+  Valensiya: ['Valensiya’dan gelen tüccar farklı bir rota anlatıyor.', 'Valensiya haberini kim doğrulayabilir?'],
+  Palermo: ['Palermo’dan gelen denizciler başka bir şey söylüyor.', 'Palermo hattında kimlerle görüşebiliriz?'],
+  Dubrovnik: ['Dubrovnik’ten gelen aracı eski bağlantılardan söz ediyor.', 'Dubrovnik’te bu haberi kim biliyor?'],
+};
+
+const variantQuestions = [
+  ['Bunu kimden duydun?', 'Önce kaynağını söyle.'],
+  ['Başka kim aynı şeyi söylüyor?', 'Bunu bir kaynak daha doğruluyor mu?'],
+  ['Bu haber kimin işine yarıyor?', 'Bundan kim kazanç sağlıyor?'],
+  ['Bunu kayıtlarla karşılaştırdın mı?', 'Eski kayıtlarda buna rastladın mı?'],
+  ['Bu kişiyle daha önce görüştün mü?', 'Bu bağlantıyı nereden tanıyorsun?'],
+  ['Şimdi ne yapmamı bekliyorsun?', 'Benden tam olarak ne istiyorsun?'],
+];
+
 export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap((scene, si) =>
   places.map(([place], pi) => {
     const period = periods[(si + pi) % periods.length];
     const positive = 2 + ((si * 3 + pi) % 4);
     const risk = 1 + ((si + pi) % 3);
+    const local = placeLines[place] ?? [`${place} çevresinden bir haber geldi.`, `${place} hakkında başka ne biliyorsun?`];
+    const question = variantQuestions[(si + pi) % variantQuestions.length];
     const leftLabels = decisionPairs.map((pair) => pair[0]);
     const rightLabels = decisionPairs.map((pair) => pair[1]);
     return {
       id: `med-reigns-${scene.id}-${pi + 1}`,
       speaker: scene.speaker,
       role: scene.role,
-      line: scene.line,
+      line: `${scene.line} ${local[pi % 2]} ${question[0]}`,
       category: scene.category,
       minDate: period[0],
       maxDate: period[1],
