@@ -95,6 +95,8 @@ export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap(
     const period = periods[(si + pi) % periods.length];
     const positive = 2 + ((si * 3 + pi) % 4);
     const risk = 1 + ((si + pi) % 3);
+    const leftLabels = decisionPairs.map((pair) => pair[0]);
+    const rightLabels = decisionPairs.map((pair) => pair[1]);
     return {
       id: `med-reigns-${scene.id}-${pi + 1}`,
       speaker: scene.speaker,
@@ -106,14 +108,14 @@ export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap(
       weight: 3 + ((si + pi) % 8),
       left: choice(
         'cautious',
-        ['Beklerim','Bu insanlara neden güveneyim?','Önce araştırırım','Bunun benimle ilgisi ne?'][si % 4],
-        'Bu soruya temkinli bir cevap ver; güvenliği ve mevcut bağları koru.',
+        leftLabels[si],
+        'Önce neyi öğrenmen gerektiğine odaklan.',
         [change(scene.a, positive), change('safety', 1), days(35 + ((si + pi) % 5) * 15)],
       ),
       right: choice(
         'engage',
-        ['İşe girerim','Bağlantıyı kullanırım','Haberin peşine düşerim','Aracılık ederim'][pi % 4],
-        'Soruyu doğrudan karşıla; bağlantıyı güçlendirirken daha fazla risk üstlen.',
+        rightLabels[si],
+        'Soruyu doğrudan karşıla; daha fazla bağlantı kur.',
         [change(scene.b, positive + 1), change('safety', -risk), change('reputation', (si % 3) - 1), flag(`${scene.flag}_${pi + 1}`), days(45 + ((si * 2 + pi) % 6) * 15)],
       ),
     };
