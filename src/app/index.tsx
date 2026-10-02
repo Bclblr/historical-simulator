@@ -2,6 +2,7 @@ import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppButton, AppCard, AppText, Screen } from '@/components';
+import { OTTOMAN_MEDITERRANEAN_SCENARIO } from '@/content/ottoman-mediterranean';
 import type { GameState } from '@/domain/game';
 import { useGameSessionService } from '@/services';
 
@@ -64,9 +65,20 @@ export default function HomeScreen() {
       ) : null}
 
       <View style={styles.actions}>
-        <Link href="/setup/era" asChild>
-          <AppButton variant="primary">Yeni Simülasyon</AppButton>
-        </Link>
+        <AppButton
+          variant="primary"
+          onPress={() => router.push({
+            pathname: '/game',
+            params: {
+              era: OTTOMAN_MEDITERRANEAN_SCENARIO.eraId,
+              country: OTTOMAN_MEDITERRANEAN_SCENARIO.countryId,
+              institution: OTTOMAN_MEDITERRANEAN_SCENARIO.institutions[0]?.id,
+              role: OTTOMAN_MEDITERRANEAN_SCENARIO.roles[0]?.id,
+            },
+          })}
+        >
+          Akdeniz’e Gir
+        </AppButton>
         <Link href="/archive" asChild>
           <AppButton variant="secondary">Arşiv</AppButton>
         </Link>
