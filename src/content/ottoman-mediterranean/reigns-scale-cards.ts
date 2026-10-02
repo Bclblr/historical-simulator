@@ -22,7 +22,7 @@ const choice = (idSuffix: string, label: string, description: string, effects: a
 const scenes: Scene[] = [
   {id:'agent',speaker:'Bir aracı',role:'Haber taşıyıcısı',line:'Bu haberi kimden duydun?',category:'INTELLIGENCE',a:'information',b:'intelligenceNetwork',flag:'agent_network'},
   {id:'merchant',speaker:'Bir tüccar',role:'Tüccar',line:'Bu fiyat değişikliği sana da garip gelmiyor mu?',category:'TRADE',a:'money',b:'merchantNetwork',flag:'merchant_route'},
-  {id:'venetian',speaker:'Venedikli tüccar',role:'Yabancı tüccar',line:'Venedik\'ten geldim. Burada neler oluyor?'ten geldim. Limanda kimin konuştuğunu bilmek, neyin satıldığını bilmek kadar önemli. Bana ne duyduğunu anlat.',category:'TRADE',a:'merchantNetwork',b:'information',flag:'venetian_contact'},
+  {id:'venetian',speaker:'Venedikli tüccar',role:'Yabancı tüccar',line:'Venedik\'ten geldim. Burada neler oluyor?',category:'TRADE',a:'merchantNetwork',b:'information',flag:'venetian_contact'},
   {id:'interpreter',speaker:'Bir tercüman',role:'Tercüman',line:'Bu sözü doğru çevirdiğinden emin misin?',category:'IDENTITY',a:'language',b:'information',flag:'interpreter_contact'},
   {id:'clerk',speaker:'Kayıt memuru',role:'Liman kâtibi',line:'Şu kayda bir bak. Sence burada ne eksik?',category:'PORT',a:'information',b:'reputation',flag:'clerk_contact'},
   {id:'sailor',speaker:'Bir denizci',role:'Denizci',line:'Bu gemi nereye gidiyor, biliyor musun?',category:'SEA',a:'sailorNetwork',b:'information',flag:'sailor_contact'},
