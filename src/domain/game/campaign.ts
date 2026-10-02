@@ -31,7 +31,7 @@ export type CampaignEndingKind =
   | 'MEDITERRANEAN_QUIET_END';
 
 export interface CampaignProfile {
-  playerName: string;
+  playerName?: string;
   campaignId: 'germany-1921' | 'germany-life' | 'ottoman-mediterranean';
   startedAt: string;
   leadershipActive: boolean;
