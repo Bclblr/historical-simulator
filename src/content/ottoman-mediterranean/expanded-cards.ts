@@ -13,6 +13,28 @@ const makeChoice = (idSuffix: string, label: string, description: string, effect
 
 const asReply=(side:0|1)=>side===0?'Önce bunu açıkça anlat.':'Bunu doğrulamadan ilerlemeyeceğim.';
 
+const sceneReplies: Array<[string,string]> = [
+['Mektubu kimin gönderdiğini söyle.', 'Mektubu doğrulamadan taşıyamam.'],
+['Venedikli tüccarın benden ne istediğini anlat.', 'Onunla görüşmeden önce bağlantısını bilmek istiyorum.'],
+['Fiyatın neden değiştiğini açıkla.', 'Bu değişikliğin arkasındaki kişileri öğrenmek istiyorum.'],
+['Denizcinin hangi limandan geldiğini söyle.', 'Haberini başka bir denizciden de doğrulayacağım.'],
+['Aracının kim adına konuştuğunu söyle.', 'Beni bu işe sokmadan önce şartları açıkla.'],
+['Yükün neden beklediğini anlat.', 'Önce liman görevlilerinden doğrulayacağım.'],
+['Kayıdın nasıl kaybolduğunu anlat.', 'Bu işin arkasında kimin olduğunu araştıracağım.'],
+['Esaretten dönen adamın yaşadıklarını anlatmasına izin ver.', 'Önce anlattıklarını başka birinden doğrulayacağım.'],
+['Beni tanıştıracağın çevrenin kimlerden oluştuğunu anlat.', 'Bu insanlara güvenmeden önce bağlantılarını öğrenmek istiyorum.'],
+['Sefer için neyin eksik olduğunu söyle.', 'Yola çıkmadan önce hazırlıkları tamamlayacağım.'],
+['Üç haberin kaynaklarını tek tek söyle.', 'Hiçbirini doğrulamadan kabul etmeyeceğim.'],
+['Eski borcun hesabını açıkça çıkar.', 'Yeni bir anlaşmaya girmeden önce şartları göreceğim.'],
+['Benden ne öğrenmek istediklerini söyle.', 'Görüştüğüm kişileri açıklamayacağım.'],
+['Yeni aracının kimlerle bağlantılı olduğunu anlat.', 'Onu kullanmadan önce güvenilirliğini sınayacağım.'],
+['Yükün kime ait olduğunu ve neden gizlendiğini söyle.', 'Bu işin ticaret mi başka bir şey mi olduğunu önce anlayacağım.'],
+['Evdekilerin neden çağırdığını anlat.', 'Dönmeden önce onların durumunu öğrenmek istiyorum.'],
+['Adımın neden sık geçtiğini açıkla.', 'Bir süre daha görünür olmadan hareket edeceğim.'],
+['Yolun neden uzadığını ve erzağın ne durumda olduğunu söyle.', 'Tayfanın durumunu görmeden karar vermeyeceğim.']
+];
+const replyForScene = (index:number, side:0|1) => sceneReplies[index % sceneReplies.length][side];
+
 const scenes = [
   ['şifreli bir mektup', 'Mektubu sana ulaştıran aracı, içeriğini bilmediğini söylüyor.', 'information', 'intelligenceNetwork'],
   ['bir Venedik tüccarının haberi', 'Tüccar, limana gelen gemiler hakkında senden fikir istiyor.', 'merchantNetwork', 'information'],
@@ -199,13 +221,13 @@ export const EXPANDED_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[] = scene
         weight: 4 + ((sceneIndex + placeIndex) % 7),
         left: makeChoice(
           'hold-back',
-          asReply(0),
+          replyForScene(sceneIndex,0),
           'Sakin konuşup önce bilgiyi sınayacağım.',
           leftEffects,
         ),
         right: makeChoice(
           'step-in',
-          asReply(1),
+          replyForScene(sceneIndex,1),
           'Konuşmayı sürdüreceğim ama söylediklerini doğrulayacağım.',
           rightEffects,
         ),
