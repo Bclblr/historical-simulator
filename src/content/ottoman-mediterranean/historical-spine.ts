@@ -192,4 +192,26 @@ export const HISTORICAL_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[] = [
     { weight: 34 },
   ),
 
+
+  H('med-epilogue-1', 'Yusuf', 'Eski bağlantı',
+    'İnebahtıdan sonra yıllar geçti. Limanlar değişti, insanlar değişti. Sen hangi hayatı sürdürmek istiyorsun?', 'INTELLIGENCE',
+    c('network', 'Bağlantılarımı koruyacağım.', 'Eski bilgi çevreni sonraki yıllara taşı.', [change('intelligenceNetwork', 4), change('reputation', 2), flag('med_path_network'), days(2400)]),
+    c('shore', 'Artık daha sakin yaşayacağım.', 'Daha güvenli ve düzenli bir hayata yönel.', [change('safety', 4), change('familyTies', 3), flag('med_path_quiet'), days(2400)]),
+    { weight: 50 }),
+  H('med-epilogue-2', 'Hassan', 'Eski tüccar',
+    'Yıllar içinde ticaret yolları yeniden düzenlendi. Senin limandaki yerin de buna göre değişti.', 'TRADE',
+    c('trade', 'Ticarete devam edeceğim.', 'Liman bağlantılarını kalıcı bir geçime dönüştür.', [change('merchantNetwork', 5), change('money', 4), flag('med_path_trade'), days(2400)]),
+    c('family', 'Artık aileme daha çok vakit ayıracağım.', 'Ticaretin yanında daha yerleşik bir hayat kur.', [change('familyTies', 5), change('safety', 3), flag('med_path_family'), days(2400)]),
+    { weight: 50 }),
+  H('med-epilogue-3', 'Giovanni', 'Eski aracı',
+    '1580lerden sonra yeni insanlar ve yeni haber yolları ortaya çıktı. Eski çevrenden hangisini yanında taşıyacaksın?', 'IDENTITY',
+    c('information', 'Haber ağını sürdüreceğim.', 'Farklı limanlardan gelen bilgileri birbirine bağla.', [change('intelligenceNetwork', 5), change('information', 4), flag('med_path_network'), days(2400)]),
+    c('sea', 'Denizden tamamen kopmayacağım.', 'Deniz çevresindeki ilişkilerini sürdür.', [change('sailorNetwork', 5), change('safety', -1), flag('med_path_sea'), days(2400)]),
+    { weight: 50 }),
+  H('med-epilogue-4', 'Meryem', 'Aileden biri',
+    '1590lara geldik. Artık gençliğindeki liman hayatından çok daha fazlasını gördün. Geride ne bırakmak istiyorsun?', 'FAMILY',
+    c('family', 'Ailemle kalacağım.', 'Son yıllarını aile bağlarını güçlendirmeye ayır.', [change('familyTies', 6), change('safety', 4), flag('med_path_family'), flag('mediterranean_ended'), days(2400)]),
+    c('world', 'Kendi yoluma devam edeceğim.', 'Deniz, ticaret ve bilgi çevrelerinden öğrendiklerini yanında taşı.', [change('reputation', 4), change('social', 3), flag('med_path_quiet'), flag('mediterranean_ended'), days(2400)]),
+    { weight: 50 }),
+
 ];
