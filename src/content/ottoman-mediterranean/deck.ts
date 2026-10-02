@@ -319,7 +319,7 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
   const historical: Record<string, { left?: string; right?: string }> = {
     "med-history-port": { left: "med-history-network", right: "med-history-network" },
     "med-history-sailor": { left: "med-history-network", right: "med-history-network" },
-    "med-history-trader": { left: "med-history-merchant-report", right: "med-history-network" },
+    "med-history-trader": { left: "med-history-merchant-source", right: "med-history-network" },
     "med-history-interpreter": { left: "med-history-network", right: "med-history-muhtedi" },
     "med-history-network": { left: "med-history-merchant-source", right: "med-history-intermediary" },
     "med-history-merchant-report": { left: "med-history-diplomacy", right: "med-history-ragusa" },
@@ -346,8 +346,7 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     "med-history-inquiry": { left: "med-history-lepanto", right: "med-history-lepanto" },
     "med-history-lepanto": { left: "med-history-final-network", right: "med-history-final-network" },
     "med-history-final-network": { left: "med-history-final-port", right: "med-history-final-port" },
-    "med-history-final-port": { left: "med-history-final-family", right: "med-history-final-family" },
-    "med-history-final-family": { left: "med-port-authority", right: "med-final-family" },
+    "med-history-final-port": { left: "med-final-family", right: "med-final-family" },
   };
 
   const authored: Record<string, { left?: string; right?: string }> = {
