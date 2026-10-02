@@ -578,6 +578,37 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
     }
   }
 
+  // Once the new historical spine has started, older generated cards are no
+  // longer random interruptions. They become side events inside the same
+  // chapter: intelligence cards feed the espionage thread, sea/captivity cards
+  // feed the corsair thread, and trade/port/family/identity cards flesh out the
+  // human world around them. A source-grounded spine card remains the anchor.
+  const spineIds = MEDITERRANEAN_STORY_SPINE.map((item) => item.id);
+  const lastSpineIndex = snapshot.decisionHistory
+    .slice()
+    .reverse()
+    .map((item) => spineIds.indexOf(item.eventId))
+    .find((index) => index >= 0);
+  if (lastSpineIndex !== undefined && lastSpineIndex >= 0 && lastSpineIndex < spineIds.length - 1) {
+    const anchor = MEDITERRANEAN_STORY_SPINE[lastSpineIndex];
+    const chapterCards = ALL_MEDITERRANEAN_CARDS
+      .filter((card) => !spineIds.includes(card.id))
+      .filter((card) => !decided.has(card.id))
+      .filter((card) => matches(card, snapshot))
+      .filter((card) => {
+        if (anchor.source === 'SULTANIN_CASUSLARI') return card.category === 'INTELLIGENCE' || card.category === 'PORT';
+        if (anchor.source === 'SULTANIN_KORSANLARI') return card.category === 'SEA' || card.category === 'CAPTIVITY' || card.category === 'TRADE';
+        return true;
+      })
+      .sort((a, b) => score(a, snapshot) - score(b, snapshot));
+
+    const sideEvent = chapterCards[0];
+    if (sideEvent && snapshot.decisionHistory.length % 3 !== 0) {
+      const normalized = ensureVisibleConsequences(sideEvent);
+      return { card: normalized, event: toEvent(normalized, snapshot) };
+    }
+  }
+
   const eligible = ALL_MEDITERRANEAN_CARDS
     .filter((card) => !decided.has(card.id))
     .filter((card) => matches(card, snapshot))
