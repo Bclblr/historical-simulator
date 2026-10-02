@@ -5,7 +5,40 @@ const change=(key:string,delta:number)=>({type:'CHANGE_VARIABLE',key,delta} as c
 const days=(n:number)=>({type:'ADVANCE_DAYS',days:n} as const);
 const flag=(key:string)=>({type:'SET_FLAG',key,value:true} as const);
 
-const asReply=(text:string, side:0|1)=>side===0?`Önce bunu açıklamanı istiyorum.`:`Bunu doğrulamadan ilerlemeyeceğim.`;
+const directReplyByTopic = (topic:number, side:0|1) => {
+  const replies: Array<[string,string]> = [
+    ['İşaretin neyi gösterdiğini bana anlat.', 'Bu işareti başka bir kayıtta da doğrulayacağım.'],
+    ['Fiyatın neden değiştiğini açıkça söyle.', 'Bu değişiklikten kimin kazandığını bilmek istiyorum.'],
+    ['Sözün asıl anlamını bana aktar.', 'Çeviriyi başka bir tercümanla da karşılaştıracağım.'],
+    ['Kayıttaki eksikliği bana göster.', 'Bu kaydın neden değiştiğini araştıracağım.'],
+    ['Hangi limandan geldiğini anlat.', 'Aynı haberi başka bir yolcudan da dinleyeceğim.'],
+    ['Denizde ne gördüğünü baştan anlat.', 'Bu haberi başka bir denizciden de doğrulayacağım.'],
+    ['İki kaynağın neden ayrıldığını açıkla.', 'İkisini de ayrı ayrı dinleyeceğim.'],
+    ['Beni tanıştıracağın tüccarın şartlarını anlat.', 'Önce onunla neden iş yaptığını bilmek istiyorum.'],
+    ['Eski kaydın bana ne söylediğini göster.', 'Kayıttaki ismi başka bir yerden doğrulayacağım.'],
+    ['Benden hangi bilgiyi istediğinizi açıkça söyleyin.', 'Kimlerle görüştüğümü size anlatmayacağım.'],
+    ['Kaç kaynağa baktığımı sana söyleyeceğim; ama hepsini açıklamayacağım.', 'Önce senin hangi kaynaklara güvendiğini öğrenmek istiyorum.'],
+    ['Beni kiminle görüştüreceğini söyle.', 'Önce bu kişinin neden önemli olduğunu anlat.'],
+    ['Evdekilerin neye ihtiyacı olduğunu anlat.', 'Onlara haber göndermenin yolunu bulacağım.'],
+    ['Limanın ne konuştuğunu anlat.', 'Söylentiyi büyütmeden önce kaynağını bulacağım.'],
+    ['Haberi kime ulaştıracağını açıkça söyle.', 'Mesajın kimlerin elinden geçeceğini bilmek istiyorum.'],
+    ['Malın gerçek değerini ve fiyatın neden değiştiğini anlat.', 'Bu alışverişte kimin çıkarı olduğunu öğrenmeden karar vermem.'],
+    ['Rotanın neden uzadığını anlat.', 'Tayfanın ve geminin durumunu önce göreceğim.'],
+    ['Mektubun kimden geldiğini ve kime gideceğini söyle.', 'Bu yazıyı başka bir gözün de okuyup okumadığını bilmek istiyorum.'],
+    ['Haberi kime ulaştıracağımızı söyle.', 'Önce bu haberin değerini ve riskini anlayacağım.'],
+    ['Kayıtla haber arasındaki farkı bana göster.', 'Hangisinin eski olduğunu araştıracağım.'],
+    ['Ragusa bağlantısının ne getirdiğini anlat.', 'Bu haberi başka bir tüccardan da doğrulayacağım.'],
+    ['İki yolcunun neden birbirini tanımadığını anlat.', 'İkisinin de geçmişini ayrı ayrı dinleyeceğim.'],
+    ['Benden tam olarak ne öğrenmek istediğinizi söyleyin.', 'Bana sorulanı cevaplamadan önce sebebini bilmek istiyorum.'],
+    ['Evdekilerin neden beklediğini anlat.', 'Onlara haber göndermenin güvenli yolunu bulacağım.'],
+    ['Limanda gördüğün kişileri ve gemileri anlat.', 'Bu bilgiyi kiminle paylaşacağımı ben seçeceğim.'],
+    ['Mektubun neden geciktiğini anlat.', 'Haberin doğruluğunu gecikmeden bağımsız kontrol edeceğim.'],
+    ['Beni tanıştıracağın iki tarafın şartlarını anlat.', 'Önce ikisinin de ne istediğini öğrenmek istiyorum.'],
+    ['Eski bağlantının neden geri döndüğünü anlat.', 'Bu kişiye yeniden güvenmeden önce geçmişini kontrol edeceğim.'],
+    ['Bu kadar farklı haber arasında hangisini doğruladığını söyle.', 'Ben tek bir söze güvenmeden önce kaynakları karşılaştıracağım.'],
+  ];
+  return replies[topic % replies.length][side];
+};
 
 const topics=[
 ['Bir kâtip','Yazıcı','Bu işaretin ne anlama geldiğini sen de biliyor musun?','INTELLIGENCE','information','language'],
@@ -131,8 +164,8 @@ const placeHints = ['Galata','İstanbul','Ragusa','Venedik','Cezayir','Tunus','C
 
 export const EXTRA_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[]=topics.flatMap(([speaker,role,line,category,a,b],i)=>Array.from({length:10},(_,j)=>({
  id:`med-extra-${i+1}-${j+1}`,speaker,role,line:`${line} ${placeHints[(i+j)%placeHints.length]}.`,category:category as MediterraneanCardDefinition['category'],weight:4+(j%6),
- left:c('hold',asReply('',0),'Bilgiyi sınayarak ilerle.',[change(a,2+(j%3)),days(40+(j%4)*20)]),
- right:c('answer',asReply('',1),'Konuşmayı sürdür ve yeni bir bağlantı kur.',[change(b,3+(j%4)),change('safety',-1),flag(`extra_${i+1}_${j+1}`),days(50+(j%5)*20)]),
+ left:c('hold',directReplyByTopic(i,0),'Bilgiyi sınayarak ilerle.',[change(a,2+(j%3)),days(40+(j%4)*20)]),
+ right:c('answer',directReplyByTopic(i,1),'Konuşmayı sürdür ve yeni bir bağlantı kur.',[change(b,3+(j%4)),change('safety',-1),flag(`extra_${i+1}_${j+1}`),days(50+(j%5)*20)]),
 })));
 
 export const EXTRA_MEDITERRANEAN_CARD_COUNT=EXTRA_MEDITERRANEAN_CARDS.length;
