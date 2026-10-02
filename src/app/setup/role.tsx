@@ -18,19 +18,21 @@ export default function RoleScreen() {
   const roles = getPublishedRolesForInstitution(era, country, institution);
   const theme = useAppTheme();
   const [playerName, setPlayerName] = useState('');
-  const isGermanyCampaign = era === 'germany-1921';
+  const isLifeCampaign = era === 'germany-1921' || era === 'mediterranean-1550';
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: isGermanyCampaign ? 'Karakter' : 'Rol Seçimi' }} />
+      <Stack.Screen options={{ title: isLifeCampaign ? 'Karakter' : 'Rol Seçimi' }} />
       <SectionHeader
         eyebrow="4 / 4"
-        title={isGermanyCampaign ? 'Karakterini oluştur' : 'Görevini seç'}
-        description={isGermanyCampaign
-          ? '1933 Almanyası’nda yaşayan kurgusal karakterinin adını belirle. Mesleğin, çevren ve yaşam çizgin seçim yaptıkça şekillenecek.'
+        title={isLifeCampaign ? 'Karakterini oluştur' : 'Görevini seç'}
+        description={isLifeCampaign
+          ? era === 'mediterranean-1550'
+            ? '16. yüzyıl Akdeniz dünyasında kurgusal karakterinin adını ve başlangıç yolunu belirle. Liman, deniz, ticaret ve bilgi ağları seçimlerinle şekillenecek.'
+            : '1933 Almanyası’nda yaşayan kurgusal karakterinin adını belirle. Mesleğin, çevren ve yaşam çizgin seçim yaptıkça şekillenecek.'
           : 'Rol, kurum içindeki bakış açını belirler. Kurgusal roller tarihsel kişilerden açıkça ayrılır.'}
       />
-      {isGermanyCampaign && roles[0] ? (
+      {isLifeCampaign ? (
         <View style={styles.list}>
           <AppCard>
             <AppText variant="label" muted>KARAKTER ADI</AppText>
