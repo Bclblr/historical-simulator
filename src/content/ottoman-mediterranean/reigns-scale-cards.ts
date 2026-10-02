@@ -48,32 +48,33 @@ const scenes: Scene[] = [
 ];
 
 
-const decisionPairs: Array<[string, string]> = [
-  ['Bu haberi kimden duydun?', 'Bunu sana neden anlatayım?'],
-  ['Bu fiyat neden değişti?', 'Bunun bana ne faydası var?'],
-  ['Burada tam olarak ne oluyor?', 'Önce sen anlat.'],
-  ['Bunu doğru mu anladım?', 'Bunu kim doğrulayabilir?'],
-  ['Kaydı bana göster.', 'Bunun benimle ilgisi ne?'],
-  ['Bu gemi nereye gidiyor?', 'Sana neden güveneyim?'],
-  ['Evdekiler beni neden bekliyor?', 'Yolculuk daha ne kadar sürecek?'],
-  ['Beni kimlerle tanıştıracaksın?', 'Bu insanlara neden güveneyim?'],
-  ['Ne zaman dönmemi istiyorsunuz?', 'Burada daha ne kadar kalmalıyım?'],
-  ['Beni kim izliyor?', 'Neden geri çekileyim?'],
-  ['Bu söylentiyi kim çıkardı?', 'Buna neden inanayım?'],
-  ['Borcu kapatmak için ne öneriyorsun?', 'Yeni işin şartları ne?'],
-  ['Sefer için ne eksik?', 'Neden şimdi yola çıkalım?'],
-  ['Bu haberi kime götüreceğim?', 'Bu haber kime gidecek?'],
-  ['Benden tam olarak ne öğrenmek istiyorsun?', 'Bunu sana neden anlatayım?'],
-  ['Beni kimlerle tanıştıracaksın?', 'Sana neden ihtiyacım olsun?'],
-  ['Neden bu limana gidelim?', 'Uzak limanda ne bulacağız?'],
-  ['Bu mektup kimden geliyor?', 'Bunu neden bana getirdin?'],
-  ['Ne zaman dönmemi istiyorsunuz?', 'Daha ne kadar beklememi istiyorsunuz?'],
-  ['Eski dostlarım nerede?', 'Yeni çevre bana ne kazandıracak?'],
-  ['Kapıdan kimler giriyor?', 'Neden kapıyı açık tutalım?'],
-  ['Önce güveni nasıl sağlayacağız?', 'Bu işten ne kazanacağım?'],
-  ['Yolculuk için ne hazırlamalıyım?', 'Neden şimdi çıkalım?'],
-  ['Ne gördün?', 'Bunu kendim görmem mi gerekiyor?'],
-];
+const decisionPairsByScene: Record<string, [string, string]> = {
+  agent: ['Önce kaynağını söyle.', 'Bunu bana neden anlatıyorsun?'],
+  merchant: ['Fiyat neden değişti?', 'Bu değişiklikten kim kazanıyor?'],
+  venetian: ['Venedik tarafında ne duydun?', 'Bunu neden benimle paylaşasın?'],
+  interpreter: ['Bu sözün asıl anlamı ne?', 'Bunu kim doğrulayabilir?'],
+  clerk: ['Kayıtta ne eksik?', 'Bu kaydı neden bana gösteriyorsun?'],
+  sailor: ['Bu gemi nereye gidiyor?', 'Bu bilgiyi sana kim verdi?'],
+  captive: ['Döndüğünde ne öğrendin?', 'Geçmişini neden anlatıyorsun?'],
+  convert: ['Beni kimlerle tanıştırabilirsin?', 'Bu insanlara neden güveneyim?'],
+  family: ['Evdekiler benden ne bekliyor?', 'Daha ne kadar uzak kalacağım?'],
+  official: ['Beni kim izliyor?', 'Neden geri çekilmemi istiyorsun?'],
+  rumor: ['Bu söylentiyi kim çıkardı?', 'Buna neden inanayım?'],
+  debt: ['Borcu nasıl kapatacağız?', 'Yeni işin şartları ne?'],
+  shipmaster: ['Seferde ne eksik?', 'Neden şimdi yola çıkalım?'],
+  messenger: ['Bu haber kime gidecek?', 'Neden bu haberi ben taşıyayım?'],
+  portmaster: ['Limanda tam olarak ne oluyor?', 'Benden ne öğrenmek istiyorsun?'],
+  broker: ['Beni kimle tanıştıracaksın?', 'Bu bağlantının karşılığı ne?'],
+  mapmaker: ['Hangi liman daha önemli?', 'Bu yolu neden seçelim?'],
+  translator: ['Mektup kimden geliyor?', 'Bunu bana neden getirdin?'],
+  household: ['Evdekiler benden ne bekliyor?', 'Daha ne kadar beklememi istiyorsunuz?'],
+  veteran: ['Eski dostlarım nerede?', 'Onlara yeniden güvenebilir miyim?'],
+  guard: ['Kapıdan kimler geçiyor?', 'Bu insanları neden kontrol ediyoruz?'],
+  financier: ['Bu iş için ne kadar sermaye gerekiyor?', 'Güvenimi nasıl kazanacaksın?'],
+  doctor: ['Yolculuğa hazır mıyız?', 'Bu yolculukta neye dikkat edelim?'],
+  dockworker: ['Limanda ne gördün?', 'Bunu kimlerle paylaşmalıyım?'],
+  broker_woman: ['Haberi kime ulaştıracaksın?', 'Bu işi neden sessiz yapmalıyız?'],
+};
 
 const places = [
   ['Galata','Galata'],['İstanbul','payitaht'],['Venedik','Venedik'],['Ragusa','Ragusa'],
@@ -133,9 +134,7 @@ export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap(
     const positive = 2 + ((si * 3 + pi) % 4);
     const risk = 1 + ((si + pi) % 3);
     const local = placeLines[place] ?? [`${place} çevresinden bir haber geldi.`, `${place} hakkında başka ne biliyorsun?`];
-    const question = variantQuestions[(si + pi) % variantQuestions.length];
-    const leftLabels = decisionPairs.map((pair) => pair[0]);
-    const rightLabels = decisionPairs.map((pair) => pair[1]);
+    const question = decisionPairsByScene[scene.id];
     return {
       id: `med-reigns-${scene.id}-${pi + 1}`,
       speaker: scene.speaker,
@@ -147,13 +146,13 @@ export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap(
       weight: 3 + ((si + pi) % 8),
       left: choice(
         'cautious',
-        leftLabels[si],
+        question[0],
         'Önce neyi öğrenmen gerektiğine odaklan.',
         [change(scene.a, positive), change('safety', 1), days(35 + ((si + pi) % 5) * 15)],
       ),
       right: choice(
         'engage',
-        rightLabels[si],
+        question[1],
         'Soruyu doğrudan karşıla; daha fazla bağlantı kur.',
         [change(scene.b, positive + 1), change('safety', -risk), change('reputation', (si % 3) - 1), flag(`${scene.flag}_${pi + 1}`), days(45 + ((si * 2 + pi) % 6) * 15)],
       ),
