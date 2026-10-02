@@ -267,6 +267,13 @@ function ensureVisibleConsequences(card: MediterraneanCardDefinition): Mediterra
 }
 
 function score(card: MediterraneanCardDefinition, snapshot: GameSessionSnapshot): number {
+  const vars = snapshot.state.variables;
+  const barBias =
+    (card.category === 'TRADE' && (vars.money ?? 0) < 30 ? -0.9 : 0) +
+    (card.category === 'SEA' && (vars.safety ?? 0) < 35 ? -0.6 : 0) +
+    (card.category === 'INTELLIGENCE' && (vars.intelligenceNetwork ?? 0) > 8 ? -0.8 : 0) +
+    (card.category === 'FAMILY' && (vars.familyTies ?? 0) > 8 ? -0.5 : 0) +
+    (card.category === 'PORT' && (vars.portReputation ?? 0) > 8 ? -0.4 : 0);
   const history = snapshot.decisionHistory.map((item) => item.optionId).join('|');
   const recent = snapshot.decisionHistory.slice(-5).map((item) => item.eventId);
   const sameCategory = snapshot.decisionHistory
@@ -281,7 +288,8 @@ function score(card: MediterraneanCardDefinition, snapshot: GameSessionSnapshot)
     hashScore(`${snapshot.state.sessionId}|${history}|${card.id}`) / Math.max(1, card.weight ?? 1) +
     (recent.includes(card.id) ? 2 : 0) +
     (sameCategory ? 0.2 : 0) +
-    (sameSpeaker ? 0.7 : 0)
+    (sameSpeaker ? 0.7 : 0) +
+    barBias
   );
 }
 
@@ -301,6 +309,34 @@ function toEvent(card: MediterraneanCardDefinition, snapshot: GameSessionSnapsho
   });
 }
 
+const STATE_TRIGGER_CARDS: MediterraneanCardDefinition[] = [
+  C('med-state-poor', 'Hassan', 'Tüccar', 'Hassan: Kasandaki para azalmış. Eski bir borcun kapısını çalıyorlar. Ne yapacaksın?', 'TRADE',
+    choice('find-work', 'Yeni iş ararım', 'Borcu büyütmeden gelir bul.', [change('money', 3), change('debt', -2), days(90)]),
+    choice('ask-credit', 'Bir süre daha borçlanırım', 'Kısa vadede rahatla ama yükü artır.', [change('money', 5), change('debt', 4), change('safety', -2), days(100)]),
+    { requires: { low_money_pressure: true }, weight: 14 }),
+  C('med-state-danger', 'Mehmet', 'Liman görevlisi', 'Mehmet: Son günlerde fazla görünür oldun. Bir süre geri çekilmen daha iyi olabilir.', 'INTELLIGENCE',
+    choice('lie-low', 'Bir süre görünmem', 'Dikkati üzerinden uzaklaştır.', [change('safety', 5), change('reputation', -1), days(80)]),
+    choice('keep-network', 'Bağlantılarımı korurum', 'Ağını kaybetme ama riski göze al.', [change('intelligenceNetwork', 3), change('safety', -4), days(90)]),
+    { requires: { low_safety_pressure: true }, weight: 14 }),
+  C('med-state-network', 'Yusuf', 'Eski bağlantı', 'Yusuf: Çevren genişlemiş. Şimdi senden daha değerli bir bilgi bekliyorlar.', 'INTELLIGENCE',
+    choice('verify-first', 'Önce doğrularım', 'Ağını kullan ama acele etme.', [change('information', 4), change('reputation', 1), days(100)]),
+    choice('use-network', 'Ağı hemen kullanırım', 'Daha hızlı sonuç al ama görünürlüğün artsın.', [change('intelligenceNetwork', 5), change('safety', -3), days(110)]),
+    { requires: { strong_network: true }, weight: 15 }),
+  C('med-state-family', 'Meryem', 'Aileden biri', 'Meryem: Evdekiler senin yokluğuna alıştı ama bağımız zayıflamasın istiyoruz.', 'FAMILY',
+    choice('return-home', 'Bir süre eve dönerim', 'Aile bağını güçlendir.', [change('familyTies', 5), change('sailorNetwork', -2), change('safety', 2), days(120)]),
+    choice('support-away', 'Uzakta destek olurum', 'Hareketli hayatını sürdürürken aileyi ihmal etme.', [change('familyTies', 3), change('money', -2), days(120)]),
+    { requires: { strong_family: true }, weight: 13 }),
+];
+
+function addDynamicFlags(snapshot: GameSessionSnapshot): void {
+  const vars = snapshot.state.variables;
+  const flags = snapshot.state.flags;
+  if ((vars.money ?? 0) < 25) flags.low_money_pressure = true;
+  if ((vars.safety ?? 0) < 30) flags.low_safety_pressure = true;
+  if ((vars.intelligenceNetwork ?? 0) >= 10) flags.strong_network = true;
+  if ((vars.familyTies ?? 0) >= 10) flags.strong_family = true;
+}
+
 const FALLBACKS: MediterraneanCardDefinition[] = [
   C('med-fallback-port','Liman sakini','Tanıdık','Liman sakini: Bugün liman sakin. Çalışacak mısın, yoksa biraz etrafı mı gözleyeceksin?','PORT',
     choice('watch','Önce ne olduğunu anlat.','Çevreyi ve insanları gözlemle.',[change('information',2),days(90)]),
@@ -310,7 +346,7 @@ const FALLBACKS: MediterraneanCardDefinition[] = [
     choice('leave','Şimdi işe dönmem gerekiyor mu?','Kendi hayatının peşinden git.',[change('money',2),change('familyTies',-1),days(100)])),
 ];
 
-export const ALL_MEDITERRANEAN_CARDS = [...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS, ...EXTRA_MEDITERRANEAN_CARDS, ...HISTORICAL_CONTEXT_CARDS, ...MEDITERRANEAN_MEMORY_CARDS];
+export const ALL_MEDITERRANEAN_CARDS = [...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS, ...EXTRA_MEDITERRANEAN_CARDS, ...HISTORICAL_CONTEXT_CARDS, ...MEDITERRANEAN_MEMORY_CARDS, ...STATE_TRIGGER_CARDS];
 
 export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
 
@@ -453,6 +489,7 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
 
 export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot): ActiveMediterraneanCard {
   const decided = new Set(snapshot.decisionHistory.map((item) => item.eventId));
+  addDynamicFlags(snapshot);
 
   if (snapshot.decisionHistory.length === 0) {
     const startId = 'med-opening';
