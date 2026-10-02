@@ -7,36 +7,123 @@ const flag=(key:string)=>({type:'SET_FLAG',key,value:true} as const);
 
 const directReplyByTopic = (topic:number, side:0|1) => {
   const replies: Array<[string,string]> = [
-    ['İşaretin neyi gösterdiğini bana anlat.', 'Bu işareti başka bir kayıtta da doğrulayacağım.'],
-    ['Fiyatın neden değiştiğini açıkça söyle.', 'Bu değişiklikten kimin kazandığını bilmek istiyorum.'],
-    ['Sözün asıl anlamını bana aktar.', 'Çeviriyi başka bir tercümanla da karşılaştıracağım.'],
-    ['Kayıttaki eksikliği bana göster.', 'Bu kaydın neden değiştiğini araştıracağım.'],
-    ['Hangi limandan geldiğini anlat.', 'Aynı haberi başka bir yolcudan da dinleyeceğim.'],
-    ['Denizde ne gördüğünü baştan anlat.', 'Bu haberi başka bir denizciden de doğrulayacağım.'],
-    ['İki kaynağın neden ayrıldığını açıkla.', 'İkisini de ayrı ayrı dinleyeceğim.'],
-    ['Beni tanıştıracağın tüccarın şartlarını anlat.', 'Önce onunla neden iş yaptığını bilmek istiyorum.'],
-    ['Eski kaydın bana ne söylediğini göster.', 'Kayıttaki ismi başka bir yerden doğrulayacağım.'],
-    ['Benden hangi bilgiyi istediğinizi açıkça söyleyin.', 'Kimlerle görüştüğümü size anlatmayacağım.'],
-    ['Kaç kaynağa baktığımı sana söyleyeceğim; ama hepsini açıklamayacağım.', 'Önce senin hangi kaynaklara güvendiğini öğrenmek istiyorum.'],
-    ['Beni kiminle görüştüreceğini söyle.', 'Önce bu kişinin neden önemli olduğunu anlat.'],
-    ['Evdekilerin neye ihtiyacı olduğunu anlat.', 'Onlara haber göndermenin yolunu bulacağım.'],
-    ['Limanın ne konuştuğunu anlat.', 'Söylentiyi büyütmeden önce kaynağını bulacağım.'],
-    ['Haberi kime ulaştıracağını açıkça söyle.', 'Mesajın kimlerin elinden geçeceğini bilmek istiyorum.'],
-    ['Malın gerçek değerini ve fiyatın neden değiştiğini anlat.', 'Bu alışverişte kimin çıkarı olduğunu öğrenmeden karar vermem.'],
-    ['Rotanın neden uzadığını anlat.', 'Tayfanın ve geminin durumunu önce göreceğim.'],
-    ['Mektubun kimden geldiğini ve kime gideceğini söyle.', 'Bu yazıyı başka bir gözün de okuyup okumadığını bilmek istiyorum.'],
-    ['Haberi kime ulaştıracağımızı söyle.', 'Önce bu haberin değerini ve riskini anlayacağım.'],
-    ['Kayıtla haber arasındaki farkı bana göster.', 'Hangisinin eski olduğunu araştıracağım.'],
-    ['Ragusa bağlantısının ne getirdiğini anlat.', 'Bu haberi başka bir tüccardan da doğrulayacağım.'],
-    ['İki yolcunun neden birbirini tanımadığını anlat.', 'İkisinin de geçmişini ayrı ayrı dinleyeceğim.'],
-    ['Benden tam olarak ne öğrenmek istediğinizi söyleyin.', 'Bana sorulanı cevaplamadan önce sebebini bilmek istiyorum.'],
-    ['Evdekilerin neden beklediğini anlat.', 'Onlara haber göndermenin güvenli yolunu bulacağım.'],
-    ['Limanda gördüğün kişileri ve gemileri anlat.', 'Bu bilgiyi kiminle paylaşacağımı ben seçeceğim.'],
-    ['Mektubun neden geciktiğini anlat.', 'Haberin doğruluğunu gecikmeden bağımsız kontrol edeceğim.'],
-    ['Beni tanıştıracağın iki tarafın şartlarını anlat.', 'Önce ikisinin de ne istediğini öğrenmek istiyorum.'],
-    ['Eski bağlantının neden geri döndüğünü anlat.', 'Bu kişiye yeniden güvenmeden önce geçmişini kontrol edeceğim.'],
-    ['Bu kadar farklı haber arasında hangisini doğruladığını söyle.', 'Ben tek bir söze güvenmeden önce kaynakları karşılaştıracağım.'],
-  ];
+  [
+    "Bu işaretin anlamını seninle birlikte çözmek istiyorum.",
+    "Bunu başka bir kayıtta da kontrol edeceğim; içim rahat etsin."
+  ],
+  [
+    "Fiyatın neden değiştiğini birlikte anlamaya çalışalım.",
+    "Ben önce kimin kazandığına bakacağım; sonra karar veririz."
+  ],
+  [
+    "Sözün asıl anlamını bana anlat; yanlış anlamak istemiyorum.",
+    "Bir tercüman daha dinleyelim, sonra karar veririz."
+  ],
+  [
+    "Kayıttaki eksikliği bana göster; belki iz oradadır.",
+    "Neden değiştirildiğini anlamadan bu kayda güvenemem."
+  ],
+  [
+    "Gittiğin limanda ne duyduysan baştan anlat.",
+    "Ben de başka bir yolcudan dinleyip karşılaştıracağım."
+  ],
+  [
+    "Denizde ne gördüğünü anlat; seni dinliyorum.",
+    "Bu haberi başka bir denizciden de doğrulayacağım."
+  ],
+  [
+    "İki kaynağı da dinleyelim; acele etmeyelim.",
+    "Ben ikisini karşılaştırmadan birine güvenmem."
+  ],
+  [
+    "Beni tanıştıracağın tüccarın şartlarını anlat.",
+    "Önce senin ona neden güvendiğini bilmek istiyorum."
+  ],
+  [
+    "Eski kaydı birlikte inceleyelim; belki aradığımız iz orada.",
+    "İsmi başka bir kaynaktan da kontrol edeceğim."
+  ],
+  [
+    "Benden ne öğrenmek istediklerini açıkça söyle.",
+    "Kimlerle görüştüğümü anlatmayacağım; bunu sen de bilirsin."
+  ],
+  [
+    "Baktığım kaynakları sana anlatırım ama hepsini açmam.",
+    "Önce senin hangi kaynaklara güvendiğini bilmek istiyorum."
+  ],
+  [
+    "Beni görüştüreceğin kişiyi anlat; yabancı değilse konuşuruz.",
+    "Önce bu kişinin neden önemli olduğunu anlamak istiyorum."
+  ],
+  [
+    "Evdekilerin neye ihtiyacı olduğunu anlat; elimden geleni yaparım.",
+    "Onlara haber göndermenin güvenli bir yolunu bulalım."
+  ],
+  [
+    "Limanın ne konuştuğunu anlat; aramızda kalsın.",
+    "Söylenti büyümeden kaynağını bulmak daha iyi."
+  ],
+  [
+    "Haberin kime gideceğini söyle; yolu ona göre seçelim.",
+    "Mesajın kimlerin elinden geçeceğini bilmeden taşıyamam."
+  ],
+  [
+    "Malın gerçek değerini ve değişen fiyatı birlikte hesaplayalım.",
+    "Bu alışverişin kime yaradığını anlamadan el sıkışmam."
+  ],
+  [
+    "Rotanın neden uzadığını anlat; tayfayı da düşünelim.",
+    "Önce gemiyi ve tayfayı göreyim, sonra karar verelim."
+  ],
+  [
+    "Mektubun kimden geldiğini anlat; belki yardımcı olurum.",
+    "Başka bir göz de okusun; sonra yanlış anlamayalım."
+  ],
+  [
+    "Haberi kime ulaştıracağımızı birlikte kararlaştıralım.",
+    "Önce haberin değerini ve riskini anlayalım."
+  ],
+  [
+    "Kayıtla haber arasındaki farkı göster; beraber bakalım.",
+    "Hangisinin eski olduğunu bulmadan ilerlemeyelim."
+  ],
+  [
+    "Ragusa bağlantısının ne getirdiğini anlat; merak ettim.",
+    "Ben bunu başka bir tüccardan da doğrulayacağım."
+  ],
+  [
+    "İki yolcunun geçmişini ayrı ayrı dinleyelim.",
+    "Aralarındaki meseleyi bilmeden taraf tutmayacağım."
+  ],
+  [
+    "Benden ne öğrenmek istediklerini açıkça söyleyin.",
+    "Önce neden sorduklarını bilmek istiyorum."
+  ],
+  [
+    "Evdekilerin neden beklediğini anlat; onları merakta bırakmayalım.",
+    "Onlara güvenli bir haber göndermenin yolunu bulacağım."
+  ],
+  [
+    "Limanda gördüklerini anlat; ayrıntılar önemli.",
+    "Bu bilgiyi kiminle paylaşacağımı dikkatle seçeceğim."
+  ],
+  [
+    "Mektubun neden geciktiğini anlat; zamanlaması önemli.",
+    "Doğruluğunu gecikmeden bağımsız olarak kontrol edeceğim."
+  ],
+  [
+    "İki tarafın da şartlarını anlat; ikisini de dinleyelim.",
+    "Önce ne istediklerini bilmeden aralarına girmem."
+  ],
+  [
+    "Eski bağlantının neden döndüğünü anlat; geçmişi unutmadım.",
+    "Yeniden güvenmeden önce ne değiştiğini öğrenmek istiyorum."
+  ],
+  [
+    "Hangi haberi doğruladığını söyle; gerisini beraber ayıklarız.",
+    "Ben tek bir söze güvenmeden önce kaynakları karşılaştıracağım."
+  ]
+];
   return replies[topic % replies.length][side];
 };
 
