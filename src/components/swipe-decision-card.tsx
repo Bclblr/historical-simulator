@@ -224,7 +224,7 @@ export function SwipeDecisionCard({
             compactHeight ? styles.questionCompact : styles.questionRegular,
           ]}
         >
-          “{conversation.line}”
+          {conversation.line}
         </AppText>
       </View>
 
