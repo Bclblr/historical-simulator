@@ -40,7 +40,7 @@ export default function ArchiveScreen() {
     return {
       scenario,
       events,
-      documents: getDiscoveredDocuments(snapshot, scenario.events, scenario.documents),
+      documents: getDiscoveredDocuments(snapshot, scenario.events, []),
       comparison: createTimelineComparison(snapshot, scenario.events),
       decisions: getDecisionHistory(snapshot),
       archive: createPlayerArchive(snapshot, scenario.events, scenario.documents),
