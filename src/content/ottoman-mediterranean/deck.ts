@@ -340,10 +340,10 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
   }
 
   const historical: Record<string, { left?: string; right?: string }> = {
-    "med-history-port": { left: "med-history-network", right: "med-history-network" },
-    "med-history-sailor": { left: "med-history-network", right: "med-history-network" },
-    "med-history-trader": { left: "med-history-merchant-source", right: "med-history-network" },
-    "med-history-interpreter": { left: "med-history-network", right: "med-history-muhtedi" },
+    "med-history-port": { left: "med-history-1560-captain", right: "med-history-1560-captain" },
+    "med-history-sailor": { left: "med-history-1560-captain", right: "med-history-1560-captain" },
+    "med-history-trader": { left: "med-history-1560-captain", right: "med-history-1560-captain" },
+    "med-history-interpreter": { left: "med-history-1560-captain", right: "med-history-1560-captain" },
     "med-history-network": { left: "med-history-merchant-source", right: "med-history-intermediary" },
     "med-history-merchant-report": { left: "med-history-diplomacy", right: "med-history-ragusa" },
     "med-history-letter": { left: "med-history-diplomatic-letter", right: "med-history-counter" },
@@ -363,11 +363,11 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     "med-history-questioning": { left: "med-history-counter-check", right: "med-history-decision" },
     "med-history-counter-check": { left: "med-history-decision", right: "med-history-decision" },
     "med-history-decision": { left: "med-history-cerbe", right: "med-history-cerbe" },
-    "med-history-cerbe": { left: "med-history-after-cerbe", right: "med-history-after-cerbe" },
-    "med-history-after-cerbe": { left: "med-history-malta", right: "med-history-malta" },
-    "med-history-malta": { left: "med-history-inquiry", right: "med-history-inquiry" },
-    "med-history-inquiry": { left: "med-history-lepanto", right: "med-history-lepanto" },
-    "med-history-lepanto": { left: "med-history-final-network", right: "med-history-final-network" },
+    "med-history-cerbe": { left: "med-history-1560-captive", right: "med-history-1560-captive" },
+    "med-history-after-cerbe": { left: "med-history-1561-ragusa", right: "med-history-1561-ragusa" },
+    "med-history-malta": { left: "med-history-1565-malta-news", right: "med-history-1565-malta-news" },
+    "med-history-inquiry": { left: "med-history-1567-venice", right: "med-history-1567-venice" },
+    "med-history-lepanto": { left: "med-history-1571-after-lepanto", right: "med-history-1571-after-lepanto" },
     "med-history-final-network": { left: "med-history-final-port", right: "med-history-final-port" },
     "med-history-final-port": { left: "med-epilogue-1", right: "med-epilogue-2" },
   };
