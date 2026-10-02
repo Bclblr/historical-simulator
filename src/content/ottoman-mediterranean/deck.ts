@@ -535,7 +535,7 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
   addDynamicFlags(snapshot);
 
   if (snapshot.decisionHistory.length === 0) {
-    const startId = 'med-story-1560-cerbe';
+    const startId = 'med-book-01';
     const start = ALL_MEDITERRANEAN_CARDS.find((item) => item.id === startId);
     if (start && matches(start, snapshot)) {
       const normalized = ensureVisibleConsequences(start);
