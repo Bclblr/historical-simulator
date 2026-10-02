@@ -307,13 +307,14 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
   if (scale) {
     const scene = scale[1];
     const place = Number(scale[2]);
+    const sceneCards = ALL_MEDITERRANEAN_CARDS.filter((item) =>
+      item.id.startsWith(`med-reigns-${scene}-`),
+    );
     if (left) {
-      return place < 25 ? `med-reigns-${scene}-${place + 1}` : null;
+      const nextPlace = place + 1;
+      return nextPlace <= sceneCards.length ? `med-reigns-${scene}-${nextPlace}` : null;
     }
 
-    // Right swipe moves the story to the next scene while keeping the
-    // geographical position. The scene order is taken from the generated
-    // deck itself, so new scenes automatically participate in the chain.
     const prefixes = Array.from(
       new Set(
         ALL_MEDITERRANEAN_CARDS
@@ -323,7 +324,9 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     );
     const index = prefixes.indexOf(scene);
     const nextScene = prefixes[index + 1];
-    return nextScene ? `med-reigns-${nextScene}-${place}` : null;
+    return nextScene
+      ? `med-reigns-${nextScene}-${Math.min(place, sceneCards.length)}`
+      : null;
   }
 
   const historical: Record<string, { left?: string; right?: string }> = {
