@@ -30,18 +30,18 @@ export class GameSessionService {
               }
             : input.campaign.campaignId === 'ottoman-mediterranean'
             ? {
-                money: 50,
-                safety: 55,
+                money: input.selection.roleId === 'med-trader' ? 55 : 50,
+                safety: input.selection.roleId === 'med-sailor' ? 48 : 55,
                 social: 50,
                 reputation: 50,
                 familyTies: 50,
-                merchantNetwork: 0,
-                sailorNetwork: 0,
-                intelligenceNetwork: 0,
-                portReputation: 0,
-                shipTrust: 0,
-                information: 0,
-                language: 0,
+                merchantNetwork: input.selection.roleId === 'med-trader' ? 4 : 0,
+                sailorNetwork: input.selection.roleId === 'med-sailor' ? 4 : 0,
+                intelligenceNetwork: input.selection.roleId === 'med-interpreter' ? 2 : 0,
+                portReputation: input.selection.roleId === 'med-port-worker' ? 3 : 0,
+                shipTrust: input.selection.roleId === 'med-sailor' ? 2 : 0,
+                information: input.selection.roleId === 'med-interpreter' ? 3 : 0,
+                language: input.selection.roleId === 'med-interpreter' ? 4 : 0,
                 debt: 0,
               }
             : {
