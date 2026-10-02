@@ -4,6 +4,7 @@ import { EXPANDED_MEDITERRANEAN_CARDS } from './expanded-cards';
 import { REIGNS_SCALE_CARDS } from './reigns-scale-cards';
 import { HISTORICAL_MEDITERRANEAN_CARDS } from './historical-spine';
 import { EXTRA_MEDITERRANEAN_CARDS } from './extra-cards';
+import { HISTORICAL_CONTEXT_CARDS } from './historical-context';
 
 export interface MediterraneanChoice {
   idSuffix: string;
@@ -274,7 +275,7 @@ const FALLBACKS: MediterraneanCardDefinition[] = [
     choice('leave','Şimdi işe dönmem gerekiyor mu?','Kendi hayatının peşinden git.',[change('money',2),change('familyTies',-1),days(100)])),
 ];
 
-const ALL_MEDITERRANEAN_CARDS = [...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS, ...EXTRA_MEDITERRANEAN_CARDS];
+const ALL_MEDITERRANEAN_CARDS = [...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS, ...EXTRA_MEDITERRANEAN_CARDS, ...HISTORICAL_CONTEXT_CARDS];
 
 export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
 
