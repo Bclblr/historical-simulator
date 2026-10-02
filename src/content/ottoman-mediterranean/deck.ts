@@ -1,6 +1,7 @@
 import type { DecisionEffect, GameSessionSnapshot } from '@/domain/game';
 import { createHistoricalEvent, type HistoricalEvent } from '@/domain/history';
 import { EXPANDED_MEDITERRANEAN_CARDS } from './expanded-cards';
+import { REIGNS_SCALE_CARDS } from './reigns-scale-cards';
 
 export interface MediterraneanChoice {
   idSuffix: string;
@@ -271,7 +272,7 @@ const FALLBACKS: MediterraneanCardDefinition[] = [
     choice('leave','İşime dönerim','Kendi hayatının peşinden git.',[change('money',2),change('familyTies',-1),days(100)])),
 ];
 
-const ALL_MEDITERRANEAN_CARDS = [...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS];
+const ALL_MEDITERRANEAN_CARDS = [...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS];
 
 export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
 
