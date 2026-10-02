@@ -54,7 +54,6 @@ function Meter({
     width: `${animatedValue.value}%`,
   }));
 
-  const previewValue = clamp(value + delta);
   const changing = delta !== 0;
   const fillColor = changing
     ? delta > 0
@@ -78,18 +77,7 @@ function Meter({
             { backgroundColor: fillColor },
           ]}
         />
-        {changing ? (
-          <View
-            pointerEvents="none"
-            style={[
-              styles.previewMarker,
-              {
-                left: `${previewValue}%`,
-                backgroundColor: fillColor,
-              },
-            ]}
-          />
-        ) : null}
+
       </View>
     </View>
   );
@@ -168,13 +156,5 @@ const styles = StyleSheet.create({
   fill: {
     height: '100%',
     borderRadius: 999,
-  },
-  previewMarker: {
-    position: 'absolute',
-    top: -2,
-    width: 2,
-    height: 13,
-    borderRadius: 2,
-    marginLeft: -1,
   },
 });
