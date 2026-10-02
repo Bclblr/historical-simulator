@@ -290,46 +290,84 @@ function evaluateOttomanMediterraneanEnding(
 ): CampaignEnding | null {
   const decisions = snapshot.decisionHistory.length;
   const flags = snapshot.state.flags;
-  // The Mediterranean campaign now has an explicit historical epilogue.
-  // Do not end the run merely because many cards were played: the player
-  // should be able to move through the late-sixteenth-century chronology.
-  if (!flags.mediterranean_ended && decisions < 80 && snapshot.state.currentDate < '1600-01-01') {
-    return null;
-  }
-
   const v = (key: string) => snapshot.state.variables[key] ?? 0;
+  const money = v('money');
+  const safety = v('safety');
+  const social = v('social');
+  const reputation = v('reputation');
   const intelligence = v('intelligenceNetwork');
   const sailor = v('sailorNetwork');
   const merchant = v('merchantNetwork');
   const family = v('familyTies');
-  const reputation = v('reputation');
-  const safety = v('safety');
+  const date = snapshot.state.currentDate;
 
-  if (flags.med_path_family || family >= 70 || flags.family_center || flags.settled_family) {
+  if (!flags.mediterranean_ended && decisions < 80 && date < '1600-01-01') {
+    return null;
+  }
+
+  // Critical bar states now have narrative consequences rather than only ending
+  // the run generically.
+  if (safety <= 5 && intelligence >= 12) {
     return ending(
-      'MEDITERRANEAN_REBUILT',
-      'Eve Dönen',
-      'Hareketli yılların ardından daha kalıcı bir hayat kurdun.',
-      'Yıllar boyunca limanlar, denizler ve farklı çevreler arasında yaşadın. Son dönemde aile bağlarını yeniden merkeze alarak daha yerleşik bir hayat kurdun.',
+      'MEDITERRANEAN_NETWORK',
+      'Ağın Bedeli',
+      'Bilgi ağını büyüttün, fakat güvenli hareket alanını tükettin.',
+      'Yıllar boyunca bilgi topladın ve bağlantılar kurdun. Son dönemde çevrendeki insanlar seni daha yakından izlemeye başladı. Ağın güçlü kaldı; ama artık her yeni bağlantının bir bedeli vardı.',
       'COUNTERFACTUAL_SIMULATION',
-      'Aile ve yeniden kurma yolu',
-      ['Aile', 'Güvenlik', 'Süreklilik'],
+      'Riskli istihbarat yolu',
+      ['İstihbarat', 'Gizlilik', 'Yüksek risk'],
     );
   }
 
-  if (flags.med_path_trade && merchant >= 10) {
+  if (money <= 5 && merchant >= 10) {
+    return ending(
+      'MEDITERRANEAN_TRADER',
+      'Borçların Gölgesinde Ticaret',
+      'Ticaret çevren büyüdü, fakat sermaye dengen aynı hızda büyümedi.',
+      'Limanlar arasında kurduğun bağlantılar sana sürekli yeni fırsatlar getirdi. Ancak borç ve nakit sıkıntısı, kurduğun ticari düzenin her zaman kırılgan kalmasına neden oldu.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Borçlu ticaret yolu',
+      ['Ticaret', 'Borç', 'Liman ağı'],
+    );
+  }
+
+  if (family >= 60 && social >= 55 && safety >= 45) {
+    return ending(
+      'MEDITERRANEAN_REBUILT',
+      'Kıyıda Kalan Bağlar',
+      'Hareketli yılların sonunda seni taşıyan çevre aile ve yakınların oldu.',
+      'Limanlar ve deniz yolları hayatının önemli bölümünü belirledi. Fakat son yıllarda aile ve yakın çevrenle kurduğun bağlar daha kalıcı bir hayatın temelini oluşturdu.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Aile ve yeniden kurma yolu',
+      ['Aile', 'Çevre', 'Süreklilik'],
+    );
+  }
+
+  if (merchant >= 10 && money >= 25 && sailor < 12) {
     return ending(
       'MEDITERRANEAN_TRADER',
       'Kıyıda Bir Hayat',
       'Liman bağlantılarını kalıcı bir ticaret düzenine çevirdin.',
-      'Yıllar içinde tanıdığın tüccarlar ve limanlar sayesinde deniz çevresindeki ilişkilerini daha düzenli bir geçime dönüştürdün.',
+      'Yıllar içinde tanıdığın tüccarlar ve limanlar sayesinde deniz çevresindeki ilişkilerini daha düzenli bir geçime dönüştürdün. Denizin hareketi sürerken sen kıyıda kalıcı bir yer edindin.',
       'COUNTERFACTUAL_SIMULATION',
       'Ticaret yolu',
       ['Ticaret', 'Liman', 'Süreklilik'],
     );
   }
 
-  if (flags.med_path_sea || (sailor >= 12 && !flags.settled_family)) {
+  if (intelligence >= 15 && reputation >= 55) {
+    return ending(
+      'MEDITERRANEAN_NETWORK',
+      'Ağın İçinde',
+      'Hayatın bilgi, bağlantılar ve güven üzerine kuruldu.',
+      'Farklı limanlardan gelen insanlarla kurduğun ilişkiler yıllar boyunca sürdü. Bilgi senin için yalnızca öğrenilecek bir şey değil, insanları birbirine bağlayan bir güç hâline geldi.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Bilgi ve ağ yolu',
+      ['İstihbarat', 'Bağlantılar', 'Güven'],
+    );
+  }
+
+  if (sailor >= 12 && safety >= 30 && !flags.settled_family) {
     return ending(
       'MEDITERRANEAN_SEAFARER',
       'Denizden Ayrılmayan',
@@ -341,84 +379,24 @@ function evaluateOttomanMediterraneanEnding(
     );
   }
 
-  if (flags.med_path_network || (flags.deep_intelligence && intelligence >= 15)) {
-    return ending(
-      'MEDITERRANEAN_NETWORK',
-      'Ağın İçinde',
-      'Hayatın bilgi, bağlantılar ve güven üzerine kuruldu.',
-      'Farklı limanlardan gelen insanlarla kurduğun ilişkiler yıllar boyunca sürdü. Büyük olayların merkezinde olmaktan çok, bilgi akışlarının arasında kendi yerini buldun.',
-      'COUNTERFACTUAL_SIMULATION',
-      'Bilgi ve ağ yolu',
-      ['İstihbarat', 'Bağlantılar', 'Gizlilik'],
-    );
-  }
-
-  if (flags.med_path_quiet) {
-    return ending(
-      'MEDITERRANEAN_QUIET_END',
-      'Sessiz Bir Son',
-      'Büyük sıçramalar yerine dengeli bir hayat seçtin.',
-      'Deniz, ticaret, aile ve bilgi çevrelerinin içinden geçerek sonunda daha sakin bir hayatı tercih ettin. Geride tek bir kimliğe sığmayan bir yaşam bıraktın.',
-      'COUNTERFACTUAL_SIMULATION',
-      'Dengeli hayat yolu',
-      ['Denge', 'Aile', 'Liman'],
-    );
-  }
-
-  if (flags.deep_intelligence && intelligence >= 15) {
-    return ending(
-      'MEDITERRANEAN_NETWORK',
-      'Ağın İçinde',
-      'Hayatın bilgi, bağlantılar ve güven üzerine kuruldu.',
-      'Limanlar ve farklı çevreler arasında kurduğun bağlantılar hayatının belirleyici unsuru oldu. Büyük olayların merkezinde olmak yerine bilgi akışlarının arasında yaşayan bir hayat kurdun.',
-      'COUNTERFACTUAL_SIMULATION',
-      'Bilgi ve ağ yolu',
-      ['İstihbarat', 'Bağlantılar', 'Gizlilik'],
-    );
-  }
-
-  if (flags.shore_life && merchant >= 10) {
-    return ending(
-      'MEDITERRANEAN_TRADER',
-      'Kıyıda Bir Hayat',
-      'Denizden karaya uzanan ticari bir düzen kurdun.',
-      'Yıllar içinde liman bağlantılarını ticarete çevirdin ve sürekli denize çıkmak yerine kıyıda daha düzenli bir hayat kurdun.',
-      'COUNTERFACTUAL_SIMULATION',
-      'Ticaret yolu',
-      ['Ticaret', 'Liman', 'Süreklilik'],
-    );
-  }
-
-  if (sailor >= 12 && !flags.settled_family) {
-    return ending(
-      'MEDITERRANEAN_SEAFARER',
-      'Denizden Ayrılmayan',
-      'Hayatının büyük kısmı deniz çevresinde geçti.',
-      'Tayfa, kaptanlar ve limanlar arasındaki ilişkiler hayatının ana eksenini oluşturdu. Karadaki bağların değişse de deniz çevresini bırakmadın.',
-      'COUNTERFACTUAL_SIMULATION',
-      'Deniz yolu',
-      ['Denizcilik', 'Tayfa', 'Hareket'],
-    );
-  }
-
-  if (family >= 70 || flags.family_center || flags.settled_family) {
+  if (flags.shore_life || flags.settled_family || flags.family_center) {
     return ending(
       'MEDITERRANEAN_REBUILT',
       'Eve Dönen',
       'Hareketli yılların ardından daha kalıcı bir hayat kurdun.',
-      'Deniz ve liman dünyasının sunduğu farklı yolların ardından aile bağlarını yeniden merkezine aldın. Hayatının son dönemini daha istikrarlı bir çevrede geçirdin.',
+      'Deniz, ticaret ve farklı çevreler arasında geçen yıllardan sonra karadaki hayatı seçtin. Geride yalnızca kazançları değil, kurduğun bağları da bıraktın.',
       'COUNTERFACTUAL_SIMULATION',
-      'Aile ve yeniden kurma yolu',
+      'Aile ve kıyı yolu',
       ['Aile', 'Güvenlik', 'Yeni düzen'],
     );
   }
 
-  if (reputation >= 70 || safety >= 75) {
+  if (reputation >= 70 && social >= 60) {
     return ending(
       'MEDITERRANEAN_SHORE_LIFE',
       'Limanın Tanıdığı Biri',
-      'Uzun yıllar boyunca çevrende tanınan ve güvenilen biri oldun.',
-      'Büyük bir makam ya da servetten çok, liman çevresindeki ilişkilerin ve yıllar içinde oluşan itibarın sana kalıcı bir yer sağladı.',
+      'Yıllar içinde çevrende kalıcı bir güven kazandın.',
+      'Büyük bir makamdan çok, insanlarla kurduğun ilişkiler seni ayakta tuttu. Liman değişti, insanlar değişti; fakat adın güvenilir bağlantılar arasında kaldı.',
       'COUNTERFACTUAL_SIMULATION',
       'Liman yolu',
       ['İtibar', 'Çevre', 'Süreklilik'],
