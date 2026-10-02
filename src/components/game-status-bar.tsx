@@ -93,10 +93,10 @@ export function GameStatusBar({ snapshot, previewEffects = [] }: GameStatusBarPr
   // the same four visible Reigns meters. The important fix is that the
   // Ottoman cards actually modify these exact variables.
   const items = ([
-    ['PARA', 'money', v.money ?? 50],
-    ['GÜVENLİK', 'safety', v.safety ?? 55],
-    ['ÇEVRE', 'social', v.social ?? 50],
-    ['İTİBAR', 'reputation', v.reputation ?? 50],
+    ['HAZİNE', 'money', v.money ?? 50],
+    ['SELAMET', 'safety', v.safety ?? 55],
+    ['AĞ', 'social', v.social ?? 50],
+    ['NÜFUZ', 'reputation', v.reputation ?? 50],
   ] as const);
 
   return (
