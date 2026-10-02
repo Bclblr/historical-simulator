@@ -293,6 +293,16 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
       : scene < 18 ? `med-arc-${scene + 1}-${place}` : `med-arc-1-${place}`;
   }
 
+  const context = current.id.match(/^med-context-(\\d+)-(\\d+)$/);
+  if (context) {
+    const chapter = Number(context[1]);
+    const variant = Number(context[2]);
+    if (left) {
+      return variant < 6 ? `med-context-${chapter}-${variant + 1}` : null;
+    }
+    return chapter < 20 ? `med-context-${chapter + 1}-1` : null;
+  }
+
   const scale = current.id.match(/^med-reigns-([^-]+)-(\\d+)$/);
   if (scale) {
     const scene = scale[1];
