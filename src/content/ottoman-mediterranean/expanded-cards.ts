@@ -1,4 +1,4 @@
-import type { MediterraneanCardDefinition, MediterraneanChoice } from './deck-types';
+import type { MediterraneanCardDefinition, MediterraneanChoice } from './deck';
 
 const change = (key: string, delta: number) => ({ type: 'CHANGE_VARIABLE', key, delta } as const);
 const flag = (key: string) => ({ type: 'SET_FLAG', key, value: true } as const);
