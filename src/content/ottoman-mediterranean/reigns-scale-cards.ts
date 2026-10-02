@@ -22,7 +22,7 @@ const choice = (idSuffix: string, label: string, description: string, effects: a
 const scenes: Scene[] = [
   {id:'agent',speaker:'Bir aracı',role:'Haber taşıyıcısı',line:'Bu haberi limandaki bir aracıdan aldım; adam kaynağını gizlemek istiyor.',category:'INTELLIGENCE',a:'information',b:'intelligenceNetwork',flag:'agent_network'},
   {id:'merchant',speaker:'Bir tüccar',role:'Tüccar',line:'Bu fiyatın bir gecede değişmesi boşuna değil; limanda bunun arkasında bir hareket olduğunu konuşuyorlar.',category:'TRADE',a:'money',b:'merchantNetwork',flag:'merchant_route'},
-  {id:'venetian',speaker:'Venedikli tüccar',role:'Yabancı tüccar',line:'Venedik\'ten geldim; burada dönen ticaret ve haber trafiğini yakından gördüm.'ten geldim. Burada neler oluyor?',category:'TRADE',a:'merchantNetwork',b:'information',flag:'venetian_contact'},
+  {id:'venetian',speaker:'Venedikli tüccar',role:'Yabancı tüccar',line:'Venedik\\'ten geldim; burada dönen ticaret ve haber trafiğini yakından gördüm.',category:'TRADE',a:'merchantNetwork',b:'information',flag:'venetian_contact'},
   {id:'interpreter',speaker:'Bir tercüman',role:'Tercüman',line:'Bu sözün başka bir anlamı da var; tercüme ederken asıl niyeti kaçırmamamız gerekiyor.',category:'IDENTITY',a:'language',b:'information',flag:'interpreter_contact'},
   {id:'clerk',speaker:'Kayıt memuru',role:'Liman kâtibi',line:'Şu kayıtta bir boşluk var; birinin bazı satırları özellikle değiştirdiğini fark ettim.',category:'PORT',a:'information',b:'reputation',flag:'clerk_contact'},
   {id:'sailor',speaker:'Bir denizci',role:'Denizci',line:'Bu gemi kuzeye değil, başka bir hatta dönüyor; denizde bunu konuşan birkaç kişi daha var.',category:'SEA',a:'sailorNetwork',b:'information',flag:'sailor_contact'},
