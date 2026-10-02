@@ -47,7 +47,7 @@ export function DeskScreen({ state, activeFile = null, onOpenFile }: DeskScreenP
       <View style={[styles.contextRow, compact && styles.stack]}>
         <AppCard style={styles.contextCard}>
           <AppText variant="label" muted>DEVLET</AppText>
-          <AppText>{scenario?.countryId === 'germany' ? 'Almanya' : state.selection.countryId}</AppText>
+          <AppText>{state.selection.countryId}</AppText>
         </AppCard>
         <AppCard style={styles.contextCard}>
           <AppText variant="label" muted>KURUM</AppText>
