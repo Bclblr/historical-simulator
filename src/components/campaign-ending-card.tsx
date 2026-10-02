@@ -6,7 +6,7 @@ import { AppText } from './app-text';
 
 interface CampaignEndingCardProps {
   ending: CampaignEnding;
-  playerName: string;
+  playerName?: string;
   date: string;
   decisionCount: number;
   restarting?: boolean;
@@ -87,7 +87,7 @@ export function CampaignEndingCard({
         </AppText>
 
         <AppText variant="caption" muted style={styles.meta}>
-          {playerName} · {date} · {decisionCount} karar
+          {[playerName, date, `${decisionCount} karar`].filter(Boolean).join(' · ')}
         </AppText>
 
         <AppButton
