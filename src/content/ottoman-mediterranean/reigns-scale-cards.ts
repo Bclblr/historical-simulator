@@ -147,13 +147,13 @@ export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap(
       left: choice(
         'cautious',
         question[0],
-        'Önce neyi öğrenmen gerektiğine odaklan.',
+        'Söyleneni dikkatle dinleyip karar vereceğim.',
         [change(scene.a, positive), change('safety', 1), days(35 + ((si + pi) % 5) * 15)],
       ),
       right: choice(
         'engage',
         question[1],
-        'Soruyu doğrudan karşıla; daha fazla bağlantı kur.',
+        'Konuşmayı sürdüreceğim; ama söylediklerini doğrulayacağım.',
         [change(scene.b, positive + 1), change('safety', -risk), change('reputation', (si % 3) - 1), flag(`${scene.flag}_${pi + 1}`), days(45 + ((si * 2 + pi) % 6) * 15)],
       ),
     };
