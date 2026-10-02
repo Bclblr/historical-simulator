@@ -276,8 +276,49 @@ const ALL_MEDITERRANEAN_CARDS = [...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANE
 
 export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
 
+function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string): string | null {
+  const left = optionId.endsWith(current.left.idSuffix);
+  const right = optionId.endsWith(current.right.idSuffix);
+  if (!left && !right) return null;
+
+  const arc = current.id.match(/^med-arc-(\\d+)-(\\d+)$/);
+  if (arc) {
+    const scene = Number(arc[1]);
+    const place = Number(arc[2]);
+    return left
+      ? place < 10 ? `med-arc-${scene}-${place + 1}` : `med-arc-${Math.min(scene + 1, 18)}-1`
+      : scene < 18 ? `med-arc-${scene + 1}-${place}` : `med-arc-1-${place}`;
+  }
+
+  const scale = current.id.match(/^med-reigns-[^-]+-(\\d+)$/);
+  if (scale) {
+    const place = Number(scale[1]);
+    const prefix = current.id.replace(/-\\d+$/, '');
+    return place < 25 ? `${prefix}-${place + 1}` : null;
+  }
+
+  return null;
+}
+
 export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot): ActiveMediterraneanCard {
   const decided = new Set(snapshot.decisionHistory.map((item) => item.eventId));
+  const previous = snapshot.decisionHistory
+    .slice()
+    .sort((a, b) => b.sequence - a.sequence)[0];
+  const previousCard = previous
+    ? ALL_MEDITERRANEAN_CARDS.find((item) => item.id === previous.eventId)
+    : undefined;
+
+  if (previous && previousCard) {
+    const linkedId = getLinkedCardId(previousCard, previous.optionId);
+    const linked = linkedId
+      ? ALL_MEDITERRANEAN_CARDS.find(
+          (item) => item.id === linkedId && !decided.has(item.id) && matches(item, snapshot),
+        )
+      : undefined;
+    if (linked) return { card: linked, event: toEvent(linked, snapshot) };
+  }
+
   const eligible = ALL_MEDITERRANEAN_CARDS
     .filter((card) => !decided.has(card.id))
     .filter((card) => matches(card, snapshot))
