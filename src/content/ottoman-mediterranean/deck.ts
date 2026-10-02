@@ -1,5 +1,6 @@
 import type { DecisionEffect, GameSessionSnapshot } from '@/domain/game';
 import { createHistoricalEvent, type HistoricalEvent } from '@/domain/history';
+import { EXPANDED_MEDITERRANEAN_CARDS } from './expanded-cards';
 
 export interface MediterraneanChoice {
   idSuffix: string;
@@ -231,7 +232,7 @@ function score(card: MediterraneanCardDefinition, snapshot: GameSessionSnapshot)
   const recent = snapshot.decisionHistory.slice(-5).map((item) => item.eventId);
   const sameCategory = snapshot.decisionHistory
     .slice(-4)
-    .map((item) => MEDITERRANEAN_CARDS.find((cardItem) => cardItem.id === item.eventId))
+    .map((item) => ALL_MEDITERRANEAN_CARDS.find((cardItem) => cardItem.id === item.eventId))
     .some((item) => item?.category === card.category);
   const sameSpeaker = snapshot.decisionHistory
     .slice(-4)
@@ -270,9 +271,13 @@ const FALLBACKS: MediterraneanCardDefinition[] = [
     choice('leave','İşime dönerim','Kendi hayatının peşinden git.',[change('money',2),change('familyTies',-1),days(100)])),
 ];
 
+const ALL_MEDITERRANEAN_CARDS = [...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS];
+
+export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
+
 export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot): ActiveMediterraneanCard {
   const decided = new Set(snapshot.decisionHistory.map((item) => item.eventId));
-  const eligible = MEDITERRANEAN_CARDS
+  const eligible = ALL_MEDITERRANEAN_CARDS
     .filter((card) => !decided.has(card.id))
     .filter((card) => matches(card, snapshot))
     .sort((a, b) => score(a, snapshot) - score(b, snapshot));
