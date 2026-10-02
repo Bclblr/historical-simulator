@@ -1,4 +1,3 @@
-import { GERMANY_1933_SCENARIO } from '@/content/germany-1933';
 import { OTTOMAN_MEDITERRANEAN_SCENARIO } from '@/content/ottoman-mediterranean';
 import {
   createCountry,
@@ -18,32 +17,6 @@ export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
     scenarioId: 'ottoman-mediterranean',
     era: OTTOMAN_MEDITERRANEAN_SCENARIO.era,
     countries: OTTOMAN_MEDITERRANEAN_SCENARIO.countries,
-  },
-  {
-    scenarioId: 'germany-1921',
-    era: createEra({
-      id: 'germany-1921',
-      name: 'Nazi Almanyası · 1933–1945',
-      shortName: '1933–1945',
-      description:
-        '1933–1945 Almanya’sında yaşayan kurgusal bir kişinin gündelik hayatına odaklanan, kararlarla dallanan yaşam simülasyonu.',
-      startDate: '1933-01-30',
-      endDate: '1945-05-08',
-      sortOrder: 10,
-      status: 'PUBLISHED',
-    }),
-    countries: [
-      createCountry({
-        id: 'germany',
-        eraId: 'germany-1921',
-        name: 'Almanya',
-        shortName: 'Almanya',
-        description:
-          'Tarihsel gelişmelerin arka planda ilerlediği; iş, para, güvenlik, çevre ve itibar kararlarının oyuncunun kişisel hikâyesini değiştirdiği yaşam simülasyonu.',
-        sortOrder: 10,
-        status: 'PUBLISHED',
-      }),
-    ],
   },
 ];
 
@@ -71,25 +44,6 @@ export function getScenarioForSelection(
     return OTTOMAN_MEDITERRANEAN_SCENARIO;
   }
 
-  if (GERMANY_1933_SCENARIO.countryId !== countryId) return null;
-
-  if (eraId === GERMANY_1933_SCENARIO.eraId) {
-    return GERMANY_1933_SCENARIO;
-  }
-
-  if (eraId === 'germany-1921') {
-    return {
-      ...GERMANY_1933_SCENARIO,
-      id: 'germany-1921',
-      eraId: 'germany-1921',
-      startDate: '1933-01-30',
-      endDate: '1945-05-08',
-      events: GERMANY_1933_SCENARIO.events.map((event) => ({
-        ...event,
-        eraId: 'germany-1921',
-      })),
-    };
-  }
 
   return null;
 }
