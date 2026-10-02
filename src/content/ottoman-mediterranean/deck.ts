@@ -69,6 +69,9 @@ const C = (id: string, speaker: string, role: string, line: string, category: Me
 });
 
 const MEDITERRANEAN_CARDS: MediterraneanCardDefinition[] = [
+  C('med-opening','Liman kahvesindeki yabancı','Haber taşıyan bir yabancı','Yabancı: Sana bir haber getirdim. Bazı insanlar bunu duymamı istemiyor. Limandaki bir hareketin ne olduğunu öğrenmek ister misin?','INTELLIGENCE',
+    choice('follow-rumor','Önce kaynağını öğrenirim','Haberin peşine düş. Bilgi kazanırken dikkat çekersin.',[change('information',4),change('reputation',1),change('safety',-2),flag('first_rumor'),days(15)]),
+    choice('follow-route','İzini sürerim','Liman çevresine yaklaş ve haberin izini sür. Risk alırsın ama yeni bağlantılar kurarsın.',[change('sailorNetwork',3),change('money',1),change('safety',-3),change('reputation',2),flag('first_route'),days(20)])),
   C('med-port-first-work','Niko','Liman işçisi','Ambar sahibi: Her sabah burada olursan sana düzenli iş veririm. Denize çıkmak yerine karada kalırsın.','PORT',
     choice('stay-casual','Günübirlik çalışmamı mı öneriyorsun?','Özgürlüğünü koru ama gelirin düzensiz kalsın.',[change('money',2),change('portReputation',2),days(90)]),
     choice('take-warehouse','Bu işe girmemi mi öneriyorsun?','Daha düzenli gelir karşılığında limana bağlan.',[change('money',4),change('safety',2),flag('warehouse_worker'),days(120)])),
@@ -420,13 +423,7 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
   const decided = new Set(snapshot.decisionHistory.map((item) => item.eventId));
 
   if (snapshot.decisionHistory.length === 0) {
-    const starts: Record<string, string> = {
-      'med-port-worker': 'med-history-port',
-      'med-sailor': 'med-history-sailor',
-      'med-trader': 'med-history-trader',
-      'med-interpreter': 'med-history-interpreter',
-    };
-    const startId = starts[snapshot.state.selection.roleId] ?? 'med-port-first-work';
+    const startId = 'med-opening';
     const start = ALL_MEDITERRANEAN_CARDS.find((item) => item.id === startId);
     if (start && matches(start, snapshot)) {
       return { card: start, event: toEvent(start, snapshot) };
