@@ -102,11 +102,21 @@ export default function GameScreen() {
           return;
         }
 
-        if (!params.era || !params.country || !params.institution || !params.role) {
+        const directMediterranean = !params.era && !params.country;
+        const era = directMediterranean ? OTTOMAN_MEDITERRANEAN_SCENARIO.eraId : params.era;
+        const country = directMediterranean ? OTTOMAN_MEDITERRANEAN_SCENARIO.countryId : params.country;
+        const institution = directMediterranean
+          ? OTTOMAN_MEDITERRANEAN_SCENARIO.institutions[0]?.id
+          : params.institution;
+        const role = directMediterranean
+          ? OTTOMAN_MEDITERRANEAN_SCENARIO.roles[0]?.id
+          : params.role;
+
+        if (!era || !country || !institution || !role) {
           throw new Error('Oyun oturumu başlatmak için seçim bilgileri eksik.');
         }
 
-        const scenario = getScenarioForSelection(params.era, params.country);
+        const scenario = getScenarioForSelection(era, country);
         if (!scenario) {
           throw new Error('Seçilen dönem ve devlet için yayımlanmış senaryo bulunamadı.');
         }
@@ -115,14 +125,14 @@ export default function GameScreen() {
           sessionId: `session-${Date.now()}`,
           startDate: params.era === 'germany-1921' ? '1933-01-30' : scenario.startDate,
           selection: {
-            eraId: params.era,
-            countryId: params.country,
-            institutionId: params.institution,
-            roleId: params.role,
+            eraId: era,
+            countryId: country,
+            institutionId: institution,
+            roleId: role,
           },
           campaign: params.era === OTTOMAN_MEDITERRANEAN_SCENARIO.eraId
             ? {
-                playerName: params.playerName?.trim() || 'Oyuncu',
+                playerName: 'Oyuncu',
                 campaignId: 'ottoman-mediterranean',
                 startedAt: OTTOMAN_MEDITERRANEAN_SCENARIO.startDate,
                 leadershipActive: true,
@@ -411,7 +421,7 @@ export default function GameScreen() {
 
   return (
     <Screen style={styles.screen}>
-      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'ottoman-mediterranean' ? 'Akdeniz’in Gölgesinde · Bir Hayat' : snapshot?.campaign?.campaignId === 'germany-life' ? 'Nazi Almanyası · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
+      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'ottoman-mediterranean' ? 'Akdeniz’in Gölgesinde' : snapshot?.campaign?.campaignId === 'germany-life' ? 'Nazi Almanyası · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
