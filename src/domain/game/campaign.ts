@@ -22,11 +22,17 @@ export type CampaignEndingKind =
   | 'LIFE_NEW_START'
   | 'LIFE_COMMUNITY'
   | 'LIFE_PUBLIC_FIGURE'
-  | 'LIFE_QUIET_END';
+  | 'LIFE_QUIET_END'
+  | 'MEDITERRANEAN_SHORE_LIFE'
+  | 'MEDITERRANEAN_SEAFARER'
+  | 'MEDITERRANEAN_NETWORK'
+  | 'MEDITERRANEAN_TRADER'
+  | 'MEDITERRANEAN_REBUILT'
+  | 'MEDITERRANEAN_QUIET_END';
 
 export interface CampaignProfile {
   playerName: string;
-  campaignId: 'germany-1921' | 'germany-life';
+  campaignId: 'germany-1921' | 'germany-life' | 'ottoman-mediterranean';
   startedAt: string;
   leadershipActive: boolean;
   endingId?: CampaignEndingKind;
@@ -276,6 +282,102 @@ function evaluateGermanyLifeEnding(
     'Dengeli yaşam yolu',
     ['Denge', 'Gündelik hayat', 'Süreklilik'],
   );
+}
+
+
+function evaluateOttomanMediterraneanEnding(
+  snapshot: GameSessionSnapshot,
+): CampaignEnding | null {
+  const decisions = snapshot.decisionHistory.length;
+  if (decisions < 30 && snapshot.state.currentDate < '1700-01-01') return null;
+
+  const v = (key: string) => snapshot.state.variables[key] ?? 0;
+  const flags = snapshot.state.flags;
+  const intelligence = v('intelligenceNetwork');
+  const sailor = v('sailorNetwork');
+  const merchant = v('merchantNetwork');
+  const family = v('familyTies');
+  const reputation = v('reputation');
+  const safety = v('safety');
+
+  if (flags.deep_intelligence && intelligence >= 15) {
+    return ending(
+      'MEDITERRANEAN_NETWORK',
+      'Ağın İçinde',
+      'Hayatın bilgi, bağlantılar ve güven üzerine kuruldu.',
+      'Limanlar ve farklı çevreler arasında kurduğun bağlantılar hayatının belirleyici unsuru oldu. Büyük olayların merkezinde olmak yerine bilgi akışlarının arasında yaşayan bir hayat kurdun.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Bilgi ve ağ yolu',
+      ['İstihbarat', 'Bağlantılar', 'Gizlilik'],
+    );
+  }
+
+  if (flags.shore_life && merchant >= 10) {
+    return ending(
+      'MEDITERRANEAN_TRADER',
+      'Kıyıda Bir Hayat',
+      'Denizden karaya uzanan ticari bir düzen kurdun.',
+      'Yıllar içinde liman bağlantılarını ticarete çevirdin ve sürekli denize çıkmak yerine kıyıda daha düzenli bir hayat kurdun.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Ticaret yolu',
+      ['Ticaret', 'Liman', 'Süreklilik'],
+    );
+  }
+
+  if (sailor >= 12 && !flags.settled_family) {
+    return ending(
+      'MEDITERRANEAN_SEAFARER',
+      'Denizden Ayrılmayan',
+      'Hayatının büyük kısmı deniz çevresinde geçti.',
+      'Tayfa, kaptanlar ve limanlar arasındaki ilişkiler hayatının ana eksenini oluşturdu. Karadaki bağların değişse de deniz çevresini bırakmadın.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Deniz yolu',
+      ['Denizcilik', 'Tayfa', 'Hareket'],
+    );
+  }
+
+  if (family >= 70 || flags.family_center || flags.settled_family) {
+    return ending(
+      'MEDITERRANEAN_REBUILT',
+      'Eve Dönen',
+      'Hareketli yılların ardından daha kalıcı bir hayat kurdun.',
+      'Deniz ve liman dünyasının sunduğu farklı yolların ardından aile bağlarını yeniden merkezine aldın. Hayatının son dönemini daha istikrarlı bir çevrede geçirdin.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Aile ve yeniden kurma yolu',
+      ['Aile', 'Güvenlik', 'Yeni düzen'],
+    );
+  }
+
+  if (reputation >= 70 || safety >= 75) {
+    return ending(
+      'MEDITERRANEAN_SHORE_LIFE',
+      'Limanın Tanıdığı Biri',
+      'Uzun yıllar boyunca çevrende tanınan ve güvenilen biri oldun.',
+      'Büyük bir makam ya da servetten çok, liman çevresindeki ilişkilerin ve yıllar içinde oluşan itibarın sana kalıcı bir yer sağladı.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Liman yolu',
+      ['İtibar', 'Çevre', 'Süreklilik'],
+    );
+  }
+
+  return ending(
+    'MEDITERRANEAN_QUIET_END',
+    'Sessiz Bir Son',
+    'Hayatın tek bir çevreye sığmadı.',
+    'Ticaret, deniz, aile ve bilgi ağları arasında farklı dönemlerden geçtin. Sonunda tek bir kimliğe indirgenemeyen, kendi seçimlerinin şekillendirdiği bir hayat bıraktın.',
+    'COUNTERFACTUAL_SIMULATION',
+    'Dengeli hayat yolu',
+    ['Deniz', 'Liman', 'Aile', 'Bilgi'],
+  );
+}
+
+export function evaluateCampaignEnding(
+  snapshot: GameSessionSnapshot,
+): CampaignEnding | null {
+  if (snapshot.campaign?.campaignId === 'ottoman-mediterranean') {
+    return evaluateOttomanMediterraneanEnding(snapshot);
+  }
+  return evaluateGermanyCampaignEnding(snapshot);
 }
 
 export function evaluateGermanyCampaignEnding(
