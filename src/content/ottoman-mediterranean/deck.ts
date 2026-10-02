@@ -313,44 +313,63 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     return nextScene ? `med-reigns-${nextScene}-${place}` : null;
   }
 
-  const authored: Record<string, string> = {
-    "med-port-first-work": "med-port-rumor",
-    "med-port-rumor": "med-merchant-contact",
-    "med-merchant-contact": "med-hidden-letter",
-    "med-hidden-letter": "med-contact-reward",
-    "med-contact-reward": "med-counter-watch",
-    "med-counter-watch": "med-counterintelligence",
-    "med-counterintelligence": "med-informant-choice",
-    "med-informant-choice": "med-network-test",
-    "med-network-test": "med-counterattack",
-    "med-counterattack": "med-final-network",
-    "med-final-network": "med-final-port",
-    "med-final-port": "med-final-family",
-    "med-family-letter": "med-family-absence",
-    "med-family-absence": "med-family-marriage",
-    "med-family-marriage": "med-old-friend",
-    "med-old-friend": "med-final-family",
-    "med-port-sailor": "med-ship-discipline",
-    "med-ship-discipline": "med-ship-supplies",
-    "med-ship-supplies": "med-ship-illness",
-    "med-ship-illness": "med-corsair-offer",
-    "med-corsair-offer": "med-captain-trust",
-    "med-captain-trust": "med-capture",
-    "med-capture": "med-ransom",
-    "med-ransom": "med-new-identity",
-    "med-new-identity": "med-language-gain",
-    "med-language-gain": "med-retirement-trade",
-    "med-retirement-trade": "med-old-friend",
-    "med-trader-credit": "med-debt-call",
-    "med-debt-call": "med-information-trader",
-    "med-information-trader": "med-coded-note",
-    "med-coded-note": "med-counterintelligence",
+  const authored: Record<string, { left?: string; right?: string }> = {
+    "med-port-first-work": { left: "med-port-rumor", right: "med-port-sailor" },
+    "med-port-rumor": { left: "med-merchant-contact", right: "med-strange-question" },
+    "med-merchant-contact": { left: "med-trader-credit", right: "med-hidden-letter" },
+    "med-strange-question": { left: "med-hidden-letter", right: "med-port-authority" },
+    "med-hidden-letter": { left: "med-contact-reward", right: "med-counter-watch" },
+    "med-contact-reward": { left: "med-trader-credit", right: "med-information-trader" },
+    "med-trader-credit": { left: "med-debt-call", right: "med-information-trader" },
+    "med-debt-call": { left: "med-retirement-trade", right: "med-information-trader" },
+    "med-information-trader": { left: "med-coded-note", right: "med-port-authority" },
+    "med-coded-note": { left: "med-counterintelligence", right: "med-informant-choice" },
+    "med-counter-watch": { left: "med-counterintelligence", right: "med-counterattack" },
+    "med-counterintelligence": { left: "med-informant-choice", right: "med-network-test" },
+    "med-informant-choice": { left: "med-network-test", right: "med-final-network" },
+    "med-network-test": { left: "med-counterattack", right: "med-final-network" },
+    "med-counterattack": { left: "med-final-network", right: "med-final-port" },
+    "med-final-network": { left: "med-final-port", right: "med-final-family" },
+    "med-final-port": { left: "med-final-family", right: "med-final-family" },
+
+    "med-family-letter": { left: "med-family-absence", right: "med-family-marriage" },
+    "med-family-absence": { left: "med-family-marriage", right: "med-old-friend" },
+    "med-family-marriage": { left: "med-old-friend", right: "med-final-family" },
+    "med-old-friend": { left: "med-final-family", right: "med-final-port" },
+
+    "med-port-sailor": { left: "med-ship-discipline", right: "med-ship-supplies" },
+    "med-ship-discipline": { left: "med-ship-supplies", right: "med-ship-illness" },
+    "med-ship-supplies": { left: "med-ship-illness", right: "med-corsair-offer" },
+    "med-ship-illness": { left: "med-corsair-offer", right: "med-capture" },
+    "med-corsair-offer": { left: "med-captain-trust", right: "med-capture" },
+    "med-captain-trust": { left: "med-capture", right: "med-family-absence" },
+    "med-capture": { left: "med-ransom", right: "med-new-identity" },
+    "med-ransom": { left: "med-new-identity", right: "med-language-gain" },
+    "med-new-identity": { left: "med-language-gain", right: "med-old-friend" },
+    "med-language-gain": { left: "med-retirement-trade", right: "med-informant-choice" },
+    "med-retirement-trade": { left: "med-old-friend", right: "med-final-port" },
   };
-  return authored[current.id] ?? null;
+  const branch = authored[current.id];
+  return branch?.[left ? 'left' : right ? 'right' : 'left'] ?? null;
 }
 
 export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot): ActiveMediterraneanCard {
   const decided = new Set(snapshot.decisionHistory.map((item) => item.eventId));
+
+  if (snapshot.decisionHistory.length === 0) {
+    const starts: Record<string, string> = {
+      'med-port-worker': 'med-port-first-work',
+      'med-sailor': 'med-port-sailor',
+      'med-trader': 'med-merchant-contact',
+      'med-interpreter': 'med-strange-question',
+    };
+    const startId = starts[snapshot.state.selection.roleId] ?? 'med-port-first-work';
+    const start = ALL_MEDITERRANEAN_CARDS.find((item) => item.id === startId);
+    if (start && matches(start, snapshot)) {
+      return { card: start, event: toEvent(start, snapshot) };
+    }
+  }
+
   const previous = snapshot.decisionHistory
     .slice()
     .sort((a, b) => b.sequence - a.sequence)[0];
