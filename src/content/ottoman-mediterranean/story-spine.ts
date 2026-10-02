@@ -1,0 +1,68 @@
+import type { DecisionEffect } from '@/domain/game';
+import type { MediterraneanCardDefinition, MediterraneanChoice } from './deck';
+
+const change = (key: string, delta: number): DecisionEffect => ({ type: 'CHANGE_VARIABLE', key, delta });
+const flag = (key: string, value = true): DecisionEffect => ({ type: 'SET_FLAG', key, value });
+const days = (value: number): DecisionEffect => ({ type: 'ADVANCE_DAYS', days: value });
+const c = (idSuffix: string, label: string, description: string, effects: DecisionEffect[]): MediterraneanChoice => ({ idSuffix, label, description, effects });
+const S = (id: string, speaker: string, role: string, line: string, category: MediterraneanCardDefinition['category'], left: MediterraneanChoice, right: MediterraneanChoice, extra: Partial<MediterraneanCardDefinition> = {}): MediterraneanCardDefinition => ({ id, speaker, role, line, category, left, right, weight: 50, ...extra });
+
+/** Original chronological narrative spine: the player's life moves through the major Mediterranean turning points. */
+export const MEDITERRANEAN_STORY_SPINE: MediterraneanCardDefinition[] = [
+  S('med-story-1560-cerbe','Salih','Liman habercisi','Cerbe tarafındaki haberler limana ulaştı. Gemiler, esirler ve ganimet hakkında herkes farklı konuşuyor. Sen bu kalabalıkta ilk kez gerçekten bir şey öğrenebileceğini fark ediyorsun.','SEA',
+    c('listen-sailors','Denizcileri dinlerim','Limanın denizcilerinden farklı anlatıları topla.',[change('information',4),change('sailorNetwork',2),flag('story_1560_sailor'),days(30)]),
+    c('follow-cargo','Gemilerin getirdiğine bakarım','Haberin mal ve insan hareketleriyle nasıl birleştiğini araştır.',[change('merchantNetwork',3),change('information',3),flag('story_1560_trade'),days(30)]),
+    {minDate:'1560-01-01',maxDate:'1560-12-31'}),
+  S('med-story-1560-first-job','Mehmet','Liman görevlisi','Cerbe haberinden sonra limanda gözler arttı. Sana küçük bir iş teklif ediyorlar: gelen gemileri, yüklerini ve kimlerin indiğini not etmek. Bu iş göründüğünden daha fazla şey öğretebilir.','PORT',
+    c('take-watch','Gelenleri takip ederim','Limanın hareketlerini düzenli biçimde öğren.',[change('information',4),change('intelligenceNetwork',2),flag('story_port_watch'),days(45)]),
+    c('work-cargo','Yük işine girerim','İnsanları ve malları yakından tanıyacağın daha sıradan bir yol seç.',[change('money',3),change('merchantNetwork',3),flag('story_port_work'),days(45)]),
+    {minDate:'1560-01-01',maxDate:'1561-12-31'}),
+  S('med-story-1561-route','Yusuf','Haber taşıyan tanıdık','Bir geminin rotasını herkes bilmek istiyor. Yusuf sana açıkça söylemiyor ama asıl sorunun geminin nereye gittiği değil, kimden haber taşıdığı olduğunu ima ediyor.','INTELLIGENCE',
+    c('ask-source','Kimden haber taşıyor?','Rotanın arkasındaki kişileri anlamaya çalış.',[change('intelligenceNetwork',5),change('information',3),flag('story_spy_network'),change('safety',-2),days(50)]),
+    c('ask-route','Rotasını öğrenelim','Önce limanlar arasındaki hareketi takip et.',[change('sailorNetwork',3),change('information',4),flag('story_route_network'),days(50)]),
+    {minDate:'1561-01-01',maxDate:'1564-12-31'}),
+  S('med-story-1563-crossroads','Hassan','Tüccar','Ticaret yapan herkes haber de taşır. Hassan sana başka limanlardaki fiyatlardan söz ederken hangi gemilerin hangi saatlerde geldiğini de anlatıyor. İki dünyanın birbirinden ayrı olmadığını anlıyorsun.','TRADE',
+    c('use-trade','Ticareti iz sürmek için kullanırım','Tüccarların hareketlerinden haber toplamaya başla.',[change('merchantNetwork',4),change('intelligenceNetwork',3),flag('story_trade_intelligence'),days(70)]),
+    c('stay-clean','Ben sadece ticaret yaparım','Kendini daha görünür bir ticaret hayatına bağla.',[change('money',4),change('safety',2),flag('story_clean_trade'),days(70)]),
+    {minDate:'1563-01-01',maxDate:'1564-12-31'}),
+  S('med-story-1565-malta','Salih','Haberci','Malta kuşatması başladı. Limandaki herkes aynı soruyu soruyor: Kim ne biliyor? Senin küçük haber ağın artık ilk kez büyük bir Akdeniz krizinin içine değiyor.','INTELLIGENCE',
+    c('collect-news','Haberleri toplamaya devam ederim','Farklı limanlardan gelen bilgileri karşılaştır.',[change('information',6),change('intelligenceNetwork',4),flag('story_malta_network'),days(90)]),
+    c('avoid-crisis','Bu işten uzak dururum','Büyük çatışmanın dışında kalıp güvenliğini koru.',[change('safety',5),change('social',-1),flag('story_malta_distance'),days(90)]),
+    {minDate:'1565-01-01',maxDate:'1566-12-31'}),
+  S('med-story-1566-after-malta','Giovanni','Yabancı denizci','Malta haberleri bitmiş değil. Şimdi herkes denizdeki dengelerin nasıl değişeceğini konuşuyor. Giovanni sana başka dillerde duyduğu haberleri aktarmayı teklif ediyor.','IDENTITY',
+    c('learn-languages','Dilleri öğrenirim','Farklı limanlarda insanları ve haberleri daha iyi anlamaya başla.',[change('language',5),change('information',3),flag('story_multilingual'),days(120)]),
+    c('stay-local','Kendi çevremle yetinirim','Yerel bağlantılarını derinleştir.',[change('social',3),change('portReputation',3),days(120)]),
+    {minDate:'1566-01-01',maxDate:'1569-12-31'}),
+  S('med-story-1570-cyprus','Yusuf','Eski bağlantı','Kıbrıs seferi için hazırlıklar konuşuluyor. Limandaki haberler artık yalnızca ticaretle ilgili değil. Yusuf senden bir şey istiyor: hangi gemilerin hareket ettiğini ve kimlerin bunu konuştuğunu öğren.','INTELLIGENCE',
+    c('watch-ships','Gemi hareketlerini izlerim','Liman gözlemciliğini daha ciddi bir istihbarat ağına dönüştür.',[change('intelligenceNetwork',6),change('information',5),change('safety',-3),flag('story_cyprus_watch'),days(100)]),
+    c('stay-ashore','Ben limanda kalırım','Büyük seferin dışında kalıp ticaret ve aile bağlarını koru.',[change('money',3),change('familyTies',2),change('safety',2),flag('story_cyprus_shore'),days(100)]),
+    {minDate:'1570-01-01',maxDate:'1571-09-30'}),
+  S('med-story-1571-lepanto','Rafael','Denizci','İnebahtı haberi geldi. Limandaki konuşmalar bir gecede değişti. Sen yıllardır takip ettiğin deniz hareketlerinin artık bambaşka bir döneme girdiğini görüyorsun.','SEA',
+    c('return-to-sea','Denizde kalırım','Deniz çevreni koru ve yeni dönemin içinde kal.',[change('sailorNetwork',5),change('information',4),change('safety',-3),flag('story_lepanto_sea'),days(120)]),
+    c('shore-after-lepanto','Karaya çekilirim','Güvenliği ve kıyıdaki bağlantıları öne çıkar.',[change('safety',5),change('portReputation',3),change('sailorNetwork',-2),flag('story_lepanto_shore'),days(120)]),
+    {minDate:'1571-10-01',maxDate:'1572-12-31'}),
+  S('med-story-1573-old-message','Yusuf','Eski bağlantı','İnebahtıdan önce taşıdığın küçük bir haberin şimdi yeniden karşına çıkıyor. Yusuf gülümsüyor: O zaman önemsiz sandığın şeyin izini hâlâ sürenler var.','INTELLIGENCE',
+    c('close-trail','İzini kapatırım','Eski bağlantıyı sessizce bitirmeye çalış.',[change('safety',4),change('intelligenceNetwork',-2),flag('story_closed_trail'),days(150)]),
+    c('follow-trail','Kim hâlâ bunun peşinde?','Eski kararının sonucunu araştır.',[change('information',5),change('intelligenceNetwork',4),change('safety',-3),flag('story_old_trail'),days(150)]),
+    {minDate:'1573-01-01',maxDate:'1579-12-31'}),
+  S('med-story-1580-corsair','Kaptan Selim','Kaptan','Yıllardır limanlardan topladığın haberler seni artık yalnızca bir yolcu yapmıyor. Selim sana daha kazançlı ve daha tehlikeli bir deniz çevresinin kapısını açıyor.','SEA',
+    c('join-corsair-world','Bu çevreye girerim','Korsanlık dünyasının deniz ve insan ağının içine gir.',[change('sailorNetwork',6),change('money',5),change('safety',-5),flag('story_corsair_path'),days(180)]),
+    c('remain-merchant','Ticaret tarafında kalırım','Deniz bağlantılarını korurken daha düzenli bir hayat seç.',[change('merchantNetwork',5),change('money',4),change('safety',2),flag('story_merchant_path'),days(180)]),
+    {minDate:'1580-01-01',maxDate:'1589-12-31'}),
+  S('med-story-1585-double-life','Mehmet','Liman görevlisi','Artık seni tanıyan çok kişi var. Bir yanda tüccarlar, diğer yanda denizciler. Mehmet doğrudan soruyor: Limanda görünen yüzünle gerçek çevren aynı mı?','IDENTITY',
+    c('protect-network','Herkese her şeyi anlatmam','Ticaret ve deniz çevren arasında mesafe bırak.',[change('intelligenceNetwork',4),change('safety',-2),flag('story_double_life'),days(180)]),
+    c('live-openly','Ben saklanmıyorum','Daha görünür bir liman hayatını seç.',[change('reputation',4),change('portReputation',4),change('safety',1),days(180)]),
+    {minDate:'1585-01-01',maxDate:'1589-12-31'}),
+  S('med-story-1590-family','Meryem','Aileden biri','Yıllardır limanlar arasında gidip geliyorsun. Evden gelen mektup kısa: Artık bu hayatın nereye varacağını düşünmenin zamanı geldi.','FAMILY',
+    c('return-family','Ailemin yanında bir düzen kurarım','Deniz ve istihbarat hayatından bir adım geri çekil.',[change('familyTies',6),change('safety',4),flag('story_family_path'),days(240)]),
+    c('stay-roaming','Bu hayatı henüz bırakamam','Hareketli hayatını ve deniz bağlantılarını sürdür.',[change('sailorNetwork',4),change('familyTies',-3),flag('story_roaming_path'),days(240)]),
+    {minDate:'1590-01-01',maxDate:'1594-12-31'}),
+  S('med-story-1595-last-network','Yusuf','Eski bağlantı','İlk günkü söylentiyi hatırlıyor musun? Yıllar sonra aynı ağın son halkası önüne geldi. Artık kararın yalnızca para veya güvenlik meselesi değil; nasıl hatırlanacağınla ilgili.','INTELLIGENCE',
+    c('leave-network','Ağı kapatırım','Geçmiş bağlantılarını geride bırak ve daha sakin bir hayat seç.',[change('safety',6),change('intelligenceNetwork',-5),flag('story_final_withdrawal'),days(240)]),
+    c('remain-network','Sonuna kadar içindeyim','Yıllardır kurduğun ağı koru ve sonuçlarını üstlen.',[change('intelligenceNetwork',6),change('reputation',4),change('safety',-5),flag('story_final_network'),days(240)]),
+    {minDate:'1595-01-01',maxDate:'1599-12-31'}),
+  S('med-story-1600-epilogue','Salih','Eski liman tanıdığı','Kırk yıla yaklaşan bu hayatın ardından liman yine gürültülü. Bir zamanlar peşinden koştuğun haberler, tanıdığın insanlar ve denizler artık geride kaldı. Salih sana son kez soruyor: Bu hayattan geriye ne kaldı?','PORT',
+    c('remember-network','İnsanlar ve bağlantılar kaldı','Hayatını kurduğun ağın mirasını kabul et.',[change('social',5),flag('story_ending_network'),days(30)]),
+    c('remember-shore','Kıyıda kurduğum hayat kaldı','Aile, güvenlik ve kıyı hayatını öne çıkar.',[change('familyTies',5),change('safety',4),flag('story_ending_shore'),days(30)]),
+    {minDate:'1600-01-01',maxDate:'1600-12-31',weight:100}),
+];
