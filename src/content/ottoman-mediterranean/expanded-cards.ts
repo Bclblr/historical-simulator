@@ -55,76 +55,76 @@ const dialogues = [
 ];
 const decisionPairs: Array<[string, string]> = [
   [
-    "Mektubu alırım",
-    "Mektubu geri veririm"
+    "Mektubu kim gönderdi?",
+    "Bunu neden bana getirdin?"
   ],
   [
-    "Konuşurum",
-    "Mesafemi korurum"
+    "Tüccar benden ne istiyor?",
+    "Ona neden güveneyim?"
   ],
   [
-    "Nedenini araştırırım",
-    "Fırsatı değerlendiririm"
+    "Fiyat neden değişti?",
+    "Bundan ne kazanacağım?"
   ],
   [
-    "Doğrularım",
-    "Ayrıntıyı saklarım"
+    "Bunu kim doğrulayabilir?",
+    "Bunu neden anlatayım?"
   ],
   [
-    "Yardım ederim",
-    "Karışmam"
+    "Benden tam olarak ne istiyorsun?",
+    "Bu benim işim mi?"
   ],
   [
-    "Araştırırım",
-    "Beklerim"
+    "Bu gecikmenin sebebi ne?",
+    "Ne kadar beklemeliyiz?"
   ],
   [
-    "Kaydı ararım",
-    "Uzak dururum"
+    "Kayıt neden kayboldu?",
+    "Bunun benimle ilgisi ne?"
   ],
   [
-    "Dinlerim",
-    "Vakit ayırmam"
+    "Sonra ne oldu?",
+    "Bunu neden dinleyeyim?"
   ],
   [
-    "Tanışırım",
-    "Mesafemi korurum"
+    "Beni kimlerle tanıştıracaksın?",
+    "Ona neden güveneyim?"
   ],
   [
-    "Eksikleri tamamlarız",
-    "Seferi erteleriz"
+    "Neler eksik?",
+    "Neden şimdi çıkalım?"
   ],
   [
-    "İlk haberi araştırırım",
-    "Söylentiyi bırakırım"
+    "İlk haberi kim verdi?",
+    "Buna neden inanayım?"
   ],
   [
-    "Öderim",
-    "Yeni iş isterim"
+    "Borcu kapatmak için ne öneriyorsun?",
+    "Yeni işin şartları ne?"
   ],
   [
-    "Açıkça anlatırım",
-    "Az konuşurum"
+    "Benden ne öğrenmek istiyorsunuz?",
+    "Bunu neden anlatayım?"
   ],
   [
-    "Yeni bir haberci bulurum",
-    "Beklerim"
+    "Yeni habercinin güvenilir olduğunu nasıl bileceğiz?",
+    "Ne kadar beklemeliyiz?"
   ],
   [
-    "Araştırırım",
-    "Karışmam"
+    "Bu gecikmenin sebebi ne?",
+    "Bu benim işim mi?"
   ],
   [
-    "Eve dönerim",
-    "Biraz daha beklerim"
+    "Evdekiler neden beni bekliyor?",
+    "Daha ne kadar kalmalıyım?"
   ],
   [
-    "Geri çekilirim",
-    "İşime devam ederim"
+    "Neden geri çekileyim?",
+    "Beni kim izliyor?"
   ],
   [
-    "Erzakı tamamlarız",
-    "Tasarruf ederiz"
+    "Ne kadar erzak gerekiyor?",
+    "Bu kadar erzak neden gerekli?"
   ]
 ];
 
