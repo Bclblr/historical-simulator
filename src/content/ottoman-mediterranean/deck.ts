@@ -492,3 +492,17 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
   const normalized = ensureVisibleConsequences(card);
   return { card: normalized, event: toEvent(normalized, snapshot) };
 }
+
+export function validateMediterraneanContent(): string[] {
+  const ids = new Set(ALL_MEDITERRANEAN_CARDS.map((item) => item.id));
+  const errors: string[] = [];
+  for (const card of ALL_MEDITERRANEAN_CARDS) {
+    if (card.maxDate && card.minDate && card.minDate > card.maxDate) {
+      errors.push(card.id + ': invalid date range');
+    }
+    if (!card.left.effects.length || !card.right.effects.length) {
+      errors.push(card.id + ': choice without effects');
+    }
+  }
+  return errors;
+}
