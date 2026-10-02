@@ -47,6 +47,34 @@ const scenes: Scene[] = [
   {id:'broker_woman',speaker:'Bir aracı kadın',role:'Haber aracısı',line:'Bu haberi sessizce ulaştırabilirim.',category:'INTELLIGENCE',a:'intelligenceNetwork',b:'social',flag:'quiet_network'},
 ];
 
+
+const decisionPairs: Array<[string, string]> = [
+  ['Kaynağını söylerim', 'Kimden geldiğini saklarım'],
+  ['Fiyatı araştırırım', 'Fırsatı değerlendiririm'],
+  ['Ne olduğunu sorarım', 'Önce onu dinlerim'],
+  ['Sözü tekrarlarım', 'Önce doğrularım'],
+  ['Kayda bakarım', 'Karışmam'],
+  ['Güzergâhı sorarım', 'Güvenip geçerim'],
+  ['Evime dönerim', 'Yola devam ederim'],
+  ['Tanıştırmasını isterim', 'Mesafemi korurum'],
+  ['Eve dönerim', 'Biraz daha kalırım'],
+  ['Daha dikkatli olurum', 'İşime devam ederim'],
+  ['Söylentiyi araştırırım', 'Kulak asmam'],
+  ['Borcu öderim', 'Yeni iş isterim'],
+  ['Eksikleri tamamlarım', 'Seferi ertelerim'],
+  ['Haberi götürürüm', 'Önce kime gittiğini sorarım'],
+  ['Ne bildiğimi anlatırım', 'Bildiklerimi saklarım'],
+  ['Tanıştırmasını isterim', 'Tek başıma ilerlerim'],
+  ['Yakın limanı seçerim', 'Uzak limana giderim'],
+  ['Mektubu incelerim', 'Mektubu geri veririm'],
+  ['Eve dönerim', 'Beklemelerini isterim'],
+  ['Eski dostları ararım', 'Yeni çevre kurarım'],
+  ['Gelenleri sorarım', 'Kapıyı kapalı tutarım'],
+  ['Güveni önceleyip beklerim', 'Parayı önceleyip ilerlerim'],
+  ['Hazırlanırım', 'Yolculuğu ertelerim'],
+  ['Anlatmasını isterim', 'Kendi gözlerime güvenirim'],
+];
+
 const places = [
   ['Galata','Galata'],['İstanbul','payitaht'],['Venedik','Venedik'],['Ragusa','Ragusa'],
   ['Cezayir','Cezayir'],['Tunus','Tunus'],['Trablusgarp','Trablusgarp'],['Cerbe','Cerbe'],
@@ -79,13 +107,13 @@ export const REIGNS_SCALE_CARDS: MediterraneanCardDefinition[] = scenes.flatMap(
       left: choice(
         'cautious',
         ['Beklerim','Mesafemi korurum','Önce araştırırım','Karışmam'][si % 4],
-        'Daha temkinli ilerle; güvenliği ve mevcut bağları koru.',
+        'Bu soruya temkinli bir cevap ver; güvenliği ve mevcut bağları koru.',
         [change(scene.a, positive), change('safety', 1), days(35 + ((si + pi) % 5) * 15)],
       ),
       right: choice(
         'engage',
         ['İşe girerim','Bağlantıyı kullanırım','Haberin peşine düşerim','Aracılık ederim'][pi % 4],
-        'Ağın içine daha fazla gir; daha değerli bağlantı karşılığında risk üstlen.',
+        'Soruyu doğrudan karşıla; bağlantıyı güçlendirirken daha fazla risk üstlen.',
         [change(scene.b, positive + 1), change('safety', -risk), change('reputation', (si % 3) - 1), flag(`${scene.flag}_${pi + 1}`), days(45 + ((si * 2 + pi) % 6) * 15)],
       ),
     };
