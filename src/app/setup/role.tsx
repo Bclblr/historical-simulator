@@ -22,7 +22,7 @@ export default function RoleScreen() {
   const isLifeCampaign = era === 'germany-1921' || era === 'mediterranean-1550';
 
   return (
-    <Screen>
+    <Screen scroll>
       <Stack.Screen options={{ title: isLifeCampaign ? 'Karakter' : 'Rol Seçimi' }} />
       <SectionHeader
         eyebrow="4 / 4"
