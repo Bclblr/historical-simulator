@@ -329,6 +329,16 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
       : null;
   }
 
+  const extra = current.id.match(/^med-extra-(\\d+)-(\\d+)$/);
+  if (extra) {
+    const topic = Number(extra[1]);
+    const variant = Number(extra[2]);
+    if (left) {
+      return variant < 10 ? `med-extra-${topic}-${variant + 1}` : null;
+    }
+    return topic < 30 ? `med-extra-${topic + 1}-1` : null;
+  }
+
   const historical: Record<string, { left?: string; right?: string }> = {
     "med-history-port": { left: "med-history-network", right: "med-history-network" },
     "med-history-sailor": { left: "med-history-network", right: "med-history-network" },
