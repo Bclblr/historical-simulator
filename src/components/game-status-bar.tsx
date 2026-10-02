@@ -1,4 +1,11 @@
 import { StyleSheet, View } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { useEffect } from 'react';
 import type { DecisionEffect, GameSessionSnapshot } from '@/domain/game';
 import { useAppTheme } from '@/theme';
 import { AppText } from './app-text';
@@ -15,16 +22,88 @@ function clamp(value: number): number {
 function previewDelta(effects: DecisionEffect[], key: string): number {
   return effects.reduce((total, effect) => {
     if (effect.type === 'CHANGE_VARIABLE' && effect.key === key) {
-      const scaled = Math.sign(effect.delta) * Math.max(3, Math.round(Math.abs(effect.delta) * 2.5));
-      return total + scaled;
+      return total + Math.sign(effect.delta) * Math.max(3, Math.round(Math.abs(effect.delta) * 2.5));
     }
     return total;
   }, 0);
 }
 
+function Meter({
+  label,
+  value,
+  delta,
+  accent,
+  track,
+}: {
+  label: string;
+  value: number;
+  delta: number;
+  accent: string;
+  track: string;
+}) {
+  const animatedValue = useSharedValue(clamp(value));
+
+  useEffect(() => {
+    animatedValue.value = withTiming(clamp(value), {
+      duration: 380,
+      easing: Easing.out(Easing.cubic),
+    });
+  }, [animatedValue, value]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: `${animatedValue.value}%`,
+  }));
+
+  const previewValue = clamp(value + delta);
+  const changing = delta !== 0;
+  const fillColor = changing
+    ? delta > 0
+      ? '#2EAD62'
+      : '#D94B4B'
+    : accent;
+
+  return (
+    <View style={styles.item}>
+      <View style={styles.meterHeader}>
+        <AppText variant="caption" style={styles.label}>
+          {label}
+        </AppText>
+        <AppText variant="caption" style={styles.value}>
+          {Math.round(changing ? previewValue : value)}
+          {changing ? (delta > 0 ? ' ↑' : ' ↓') : ''}
+        </AppText>
+      </View>
+      <View style={[styles.track, { backgroundColor: track }]}>
+        <Animated.View
+          style={[
+            styles.fill,
+            animatedStyle,
+            { backgroundColor: fillColor },
+          ]}
+        />
+        {changing ? (
+          <View
+            pointerEvents="none"
+            style={[
+              styles.previewMarker,
+              {
+                left: `${previewValue}%`,
+                backgroundColor: fillColor,
+              },
+            ]}
+          />
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
 export function GameStatusBar({ snapshot, previewEffects = [] }: GameStatusBarProps) {
   const theme = useAppTheme();
   const v = snapshot.state.variables;
+
+  // Reigns-style: the four core meters stay visible, move smoothly after
+  // every decision, and preview the next balance while the card is dragged.
   const lifeMode = snapshot.campaign?.campaignId === 'germany-life';
   const items = lifeMode
     ? ([
@@ -42,34 +121,16 @@ export function GameStatusBar({ snapshot, previewEffects = [] }: GameStatusBarPr
 
   return (
     <View style={styles.root}>
-      {items.map(([label, key, rawValue]) => {
-        const value = clamp(rawValue);
-        const delta = previewDelta(previewEffects, key);
-        const previewValue = clamp(value + delta);
-        const changing = delta !== 0;
-        const fillColor = changing
-          ? delta > 0 ? '#2EAD62' : '#D94B4B'
-          : theme.colors.accent;
-
-        return (
-          <View key={label} style={styles.item}>
-            <AppText variant="caption" style={{ color: theme.colors.text, textAlign: 'center' }}>
-              {label}{changing ? (delta > 0 ? ' ↑' : ' ↓') : ''}
-            </AppText>
-            <View style={[styles.track, { backgroundColor: theme.colors.border }]}>
-              <View
-                style={[
-                  styles.fill,
-                  {
-                    width: `${changing ? previewValue : value}%`,
-                    backgroundColor: fillColor,
-                  },
-                ]}
-              />
-            </View>
-          </View>
-        );
-      })}
+      {items.map(([label, key, rawValue]) => (
+        <Meter
+          key={label}
+          label={label}
+          value={clamp(rawValue)}
+          delta={previewDelta(previewEffects, key)}
+          accent={theme.colors.accent}
+          track={theme.colors.border}
+        />
+      ))}
     </View>
   );
 }
@@ -81,18 +142,47 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     gap: 10,
-    paddingTop: 2,
-    paddingBottom: 2,
+    paddingTop: 6,
+    paddingBottom: 6,
+    paddingHorizontal: 8,
   },
-  item: { flex: 1, gap: 4 },
+  item: {
+    flex: 1,
+    gap: 4,
+  },
+  meterHeader: {
+    minHeight: 17,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 2,
+  },
+  label: {
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  value: {
+    fontSize: 11,
+    lineHeight: 14,
+    fontVariant: ['tabular-nums'],
+  },
   track: {
+    position: 'relative',
     width: '100%',
-    height: 8,
+    height: 9,
     borderRadius: 999,
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   fill: {
     height: '100%',
     borderRadius: 999,
+  },
+  previewMarker: {
+    position: 'absolute',
+    top: -2,
+    width: 2,
+    height: 13,
+    borderRadius: 2,
+    marginLeft: -1,
   },
 });
