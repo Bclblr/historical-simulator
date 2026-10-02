@@ -11,6 +11,8 @@ const makeChoice = (idSuffix: string, label: string, description: string, effect
   effects,
 });
 
+const asReply=(side:0|1)=>side===0?'Önce bunu açıkça anlat.':'Bunu doğrulamadan ilerlemeyeceğim.';
+
 const scenes = [
   ['şifreli bir mektup', 'Mektubu sana ulaştıran aracı, içeriğini bilmediğini söylüyor.', 'information', 'intelligenceNetwork'],
   ['bir Venedik tüccarının haberi', 'Tüccar, limana gelen gemiler hakkında senden fikir istiyor.', 'merchantNetwork', 'information'],
@@ -197,14 +199,14 @@ export const EXPANDED_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[] = scene
         weight: 4 + ((sceneIndex + placeIndex) % 7),
         left: makeChoice(
           'hold-back',
-          decisionPairs[sceneIndex][0],
-          'Soruyu temkinli cevapla; daha düşük riskle ilerle.',
+          asReply(0),
+          'Sakin konuşup önce bilgiyi sınayacağım.',
           leftEffects,
         ),
         right: makeChoice(
           'step-in',
-          decisionPairs[sceneIndex][1],
-          'Sorunun içine gir; daha fazla bağlantı kazan ama görünürlüğün artsın.',
+          asReply(1),
+          'Konuşmayı sürdüreceğim ama söylediklerini doğrulayacağım.',
           rightEffects,
         ),
       };
