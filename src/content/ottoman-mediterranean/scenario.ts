@@ -11,6 +11,7 @@ export interface OttomanMediterraneanScenario {
   countries: Country[];
   institutions: Institution[];
   roles: HistoricalRole[];
+  events: never[];
 }
 
 export const OTTOMAN_MEDITERRANEAN_ERA = createEra({
@@ -101,6 +102,7 @@ export const OTTOMAN_MEDITERRANEAN_SCENARIO: OttomanMediterraneanScenario = {
   countries: [OTTOMAN_MEDITERRANEAN_COUNTRY],
   institutions: [OTTOMAN_MEDITERRANEAN_INSTITUTION],
   roles: OTTOMAN_MEDITERRANEAN_ROLES,
+  events: [],
 };
 
 export function createOttomanMediterraneanInitialState(
