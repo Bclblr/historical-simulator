@@ -18,6 +18,7 @@ export default function RoleScreen() {
   const roles = getPublishedRolesForInstitution(era, country, institution);
   const theme = useAppTheme();
   const [playerName, setPlayerName] = useState('');
+  const [selectedRole, setSelectedRole] = useState(roles[0]?.id ?? '');
   const isLifeCampaign = era === 'germany-1921' || era === 'mediterranean-1550';
 
   return (
@@ -34,6 +35,18 @@ export default function RoleScreen() {
       />
       {isLifeCampaign ? (
         <View style={styles.list}>
+          <AppText variant="label" muted>BAŞLANGIÇ YOLU</AppText>
+          {roles.map((role) => (
+            <AppCard
+              key={role.id}
+              interactive
+              onPress={() => setSelectedRole(role.id)}
+              style={selectedRole === role.id ? { borderColor: theme.colors.primary, borderWidth: 2 } : undefined}
+            >
+              <AppText variant="heading">{role.name}</AppText>
+              <AppText muted style={styles.text}>{role.description}</AppText>
+            </AppCard>
+          ))}
           <AppCard>
             <AppText variant="label" muted>KARAKTER ADI</AppText>
             <TextInput
@@ -45,14 +58,14 @@ export default function RoleScreen() {
               style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
             />
             <AppButton
-              disabled={!playerName.trim()}
+              disabled={!playerName.trim() || !selectedRole}
               onPress={() => router.push({
                 pathname: '/game',
                 params: {
                   era,
                   country,
                   institution,
-                  role: roles[0].id,
+                  role: selectedRole,
                   playerName: playerName.trim(),
                 },
               })}
