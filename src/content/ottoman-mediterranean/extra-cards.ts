@@ -5,6 +5,8 @@ const change=(key:string,delta:number)=>({type:'CHANGE_VARIABLE',key,delta} as c
 const days=(n:number)=>({type:'ADVANCE_DAYS',days:n} as const);
 const flag=(key:string)=>({type:'SET_FLAG',key,value:true} as const);
 
+const asReply=(text:string, side:0|1)=>side===0?`Önce bunu açıklamanı istiyorum.`:`Bunu doğrulamadan ilerlemeyeceğim.`;
+
 const topics=[
 ['Bir kâtip','Yazıcı','Bu işaretin ne anlama geldiğini sen de biliyor musun?','INTELLIGENCE','information','language'],
 ['Bir tüccar','Tüccar','Bu fiyat değişikliğinin sebebini duydun mu?','TRADE','money','merchantNetwork'],
@@ -128,9 +130,9 @@ const questionSets: Record<MediterraneanCardDefinition['category'], Array<[strin
 const placeHints = ['Galata','İstanbul','Ragusa','Venedik','Cezayir','Tunus','Cerbe','Malta','Kıbrıs','İskenderiye'];
 
 export const EXTRA_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[]=topics.flatMap(([speaker,role,line,category,a,b],i)=>Array.from({length:10},(_,j)=>({
- id:`med-extra-${i+1}-${j+1}`,speaker,role,line:`${line} ${placeHints[(i+j)%placeHints.length]}. ${questionSets[category as MediterraneanCardDefinition['category']][j][0]}`,category:category as MediterraneanCardDefinition['category'],weight:4+(j%6),
- left:c('hold',questionSets[category as MediterraneanCardDefinition['category']][j][0],'Bilgiyi sınayarak ilerle.',[change(a,2+(j%3)),days(40+(j%4)*20)]),
- right:c('answer',questionSets[category as MediterraneanCardDefinition['category']][j][1],'Konuşmayı sürdür ve yeni bir bağlantı kur.',[change(b,3+(j%4)),change('safety',-1),flag(`extra_${i+1}_${j+1}`),days(50+(j%5)*20)]),
+ id:`med-extra-${i+1}-${j+1}`,speaker,role,line:`${line} ${placeHints[(i+j)%placeHints.length]}.`,category:category as MediterraneanCardDefinition['category'],weight:4+(j%6),
+ left:c('hold',asReply('',0),'Bilgiyi sınayarak ilerle.',[change(a,2+(j%3)),days(40+(j%4)*20)]),
+ right:c('answer',asReply('',1),'Konuşmayı sürdür ve yeni bir bağlantı kur.',[change(b,3+(j%4)),change('safety',-1),flag(`extra_${i+1}_${j+1}`),days(50+(j%5)*20)]),
 })));
 
 export const EXTRA_MEDITERRANEAN_CARD_COUNT=EXTRA_MEDITERRANEAN_CARDS.length;
