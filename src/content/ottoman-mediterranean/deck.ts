@@ -313,7 +313,40 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     return nextScene ? `med-reigns-${nextScene}-${place}` : null;
   }
 
-  return null;
+  const authored: Record<string, string> = {
+    "med-port-first-work": "med-port-rumor",
+    "med-port-rumor": "med-merchant-contact",
+    "med-merchant-contact": "med-hidden-letter",
+    "med-hidden-letter": "med-contact-reward",
+    "med-contact-reward": "med-counter-watch",
+    "med-counter-watch": "med-counterintelligence",
+    "med-counterintelligence": "med-informant-choice",
+    "med-informant-choice": "med-network-test",
+    "med-network-test": "med-counterattack",
+    "med-counterattack": "med-final-network",
+    "med-final-network": "med-final-port",
+    "med-final-port": "med-final-family",
+    "med-family-letter": "med-family-absence",
+    "med-family-absence": "med-family-marriage",
+    "med-family-marriage": "med-old-friend",
+    "med-old-friend": "med-final-family",
+    "med-port-sailor": "med-ship-discipline",
+    "med-ship-discipline": "med-ship-supplies",
+    "med-ship-supplies": "med-ship-illness",
+    "med-ship-illness": "med-corsair-offer",
+    "med-corsair-offer": "med-captain-trust",
+    "med-captain-trust": "med-capture",
+    "med-capture": "med-ransom",
+    "med-ransom": "med-new-identity",
+    "med-new-identity": "med-language-gain",
+    "med-language-gain": "med-retirement-trade",
+    "med-retirement-trade": "med-old-friend",
+    "med-trader-credit": "med-debt-call",
+    "med-debt-call": "med-information-trader",
+    "med-information-trader": "med-coded-note",
+    "med-coded-note": "med-counterintelligence",
+  };
+  return authored[current.id] ?? null;
 }
 
 export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot): ActiveMediterraneanCard {
