@@ -369,7 +369,7 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     "med-history-inquiry": { left: "med-history-lepanto", right: "med-history-lepanto" },
     "med-history-lepanto": { left: "med-history-final-network", right: "med-history-final-network" },
     "med-history-final-network": { left: "med-history-final-port", right: "med-history-final-port" },
-    "med-history-final-port": { left: "med-final-family", right: "med-final-family" },
+    "med-history-final-port": { left: "med-epilogue-1", right: "med-epilogue-2" },
   };
 
   const authored: Record<string, { left?: string; right?: string }> = {
