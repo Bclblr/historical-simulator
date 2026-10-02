@@ -289,16 +289,81 @@ function evaluateOttomanMediterraneanEnding(
   snapshot: GameSessionSnapshot,
 ): CampaignEnding | null {
   const decisions = snapshot.decisionHistory.length;
-  if (decisions < 30 && snapshot.state.currentDate < '1700-01-01') return null;
+  const flags = snapshot.state.flags;
+  // The Mediterranean campaign now has an explicit historical epilogue.
+  // Do not end the run merely because many cards were played: the player
+  // should be able to move through the late-sixteenth-century chronology.
+  if (!flags.mediterranean_ended && decisions < 80 && snapshot.state.currentDate < '1600-01-01') {
+    return null;
+  }
 
   const v = (key: string) => snapshot.state.variables[key] ?? 0;
-  const flags = snapshot.state.flags;
   const intelligence = v('intelligenceNetwork');
   const sailor = v('sailorNetwork');
   const merchant = v('merchantNetwork');
   const family = v('familyTies');
   const reputation = v('reputation');
   const safety = v('safety');
+
+  if (flags.med_path_family || family >= 70 || flags.family_center || flags.settled_family) {
+    return ending(
+      'MEDITERRANEAN_REBUILT',
+      'Eve Dönen',
+      'Hareketli yılların ardından daha kalıcı bir hayat kurdun.',
+      'Yıllar boyunca limanlar, denizler ve farklı çevreler arasında yaşadın. Son dönemde aile bağlarını yeniden merkeze alarak daha yerleşik bir hayat kurdun.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Aile ve yeniden kurma yolu',
+      ['Aile', 'Güvenlik', 'Süreklilik'],
+    );
+  }
+
+  if (flags.med_path_trade && merchant >= 10) {
+    return ending(
+      'MEDITERRANEAN_TRADER',
+      'Kıyıda Bir Hayat',
+      'Liman bağlantılarını kalıcı bir ticaret düzenine çevirdin.',
+      'Yıllar içinde tanıdığın tüccarlar ve limanlar sayesinde deniz çevresindeki ilişkilerini daha düzenli bir geçime dönüştürdün.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Ticaret yolu',
+      ['Ticaret', 'Liman', 'Süreklilik'],
+    );
+  }
+
+  if (flags.med_path_sea || (sailor >= 12 && !flags.settled_family)) {
+    return ending(
+      'MEDITERRANEAN_SEAFARER',
+      'Denizden Ayrılmayan',
+      'Hayatının büyük kısmı deniz çevresinde geçti.',
+      'Tayfa, kaptanlar ve limanlar arasındaki ilişkiler hayatının ana eksenini oluşturdu. Yıllar geçse de deniz çevresini bırakmadın.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Deniz yolu',
+      ['Denizcilik', 'Tayfa', 'Hareket'],
+    );
+  }
+
+  if (flags.med_path_network || (flags.deep_intelligence && intelligence >= 15)) {
+    return ending(
+      'MEDITERRANEAN_NETWORK',
+      'Ağın İçinde',
+      'Hayatın bilgi, bağlantılar ve güven üzerine kuruldu.',
+      'Farklı limanlardan gelen insanlarla kurduğun ilişkiler yıllar boyunca sürdü. Büyük olayların merkezinde olmaktan çok, bilgi akışlarının arasında kendi yerini buldun.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Bilgi ve ağ yolu',
+      ['İstihbarat', 'Bağlantılar', 'Gizlilik'],
+    );
+  }
+
+  if (flags.med_path_quiet) {
+    return ending(
+      'MEDITERRANEAN_QUIET_END',
+      'Sessiz Bir Son',
+      'Büyük sıçramalar yerine dengeli bir hayat seçtin.',
+      'Deniz, ticaret, aile ve bilgi çevrelerinin içinden geçerek sonunda daha sakin bir hayatı tercih ettin. Geride tek bir kimliğe sığmayan bir yaşam bıraktın.',
+      'COUNTERFACTUAL_SIMULATION',
+      'Dengeli hayat yolu',
+      ['Denge', 'Aile', 'Liman'],
+    );
+  }
 
   if (flags.deep_intelligence && intelligence >= 15) {
     return ending(
