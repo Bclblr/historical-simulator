@@ -21,7 +21,7 @@ import { getGermanyCampaignBranchEvents, getGermanyCampaignExcludedEventIds, get
 import { getActiveGermanyLifeCard, type LifeChoice } from '@/content/germany-life/deck';
 import { getActiveOttomanMediterraneanCard } from '@/content/ottoman-mediterranean';
 import { useGameSessionService } from '@/services';
-import { OTTOMAN_MEDITERRANEAN_SCENARIO } from '@/content/ottoman-mediterranean';
+import { OTTOMAN_MEDITERRANEAN_SCENARIO, getMediterraneanDelayedConsequence } from '@/content/ottoman-mediterranean';
 
 function createSimulationOptions(
   eventId: string,
@@ -132,7 +132,6 @@ export default function GameScreen() {
           },
           campaign: params.era === OTTOMAN_MEDITERRANEAN_SCENARIO.eraId
             ? {
-                playerName: 'Oyuncu',
                 campaignId: 'ottoman-mediterranean',
                 startedAt: OTTOMAN_MEDITERRANEAN_SCENARIO.startDate,
                 leadershipActive: true,
@@ -259,10 +258,23 @@ export default function GameScreen() {
           decidedAt: snapshot.state.currentDate,
         });
         const affectedState = applyDecisionEffects(snapshot.state, selectedChoice.effects);
+        const delayed = getMediterraneanDelayedConsequence(
+          activeContent.event.id,
+          selectedChoice.idSuffix,
+        );
+        const scheduledEffects = delayed
+          ? scheduleDecisionEffect(snapshot.scheduledEffects, affectedState, {
+              id: `med-${history.length}-${delayed.idSuffix}`,
+              delayDays: delayed.delayDays,
+              effects: delayed.effects,
+            })
+          : snapshot.scheduledEffects;
+        const processed = processDueDecisionEffects(affectedState, scheduledEffects);
         const next: GameSessionSnapshot = {
           ...snapshot,
-          state: affectedState,
+          state: processed.state,
           decisionHistory: history,
+          scheduledEffects: processed.pending,
         };
         setSnapshot(next);
         optimisticSnapshotApplied = true;
@@ -396,7 +408,6 @@ export default function GameScreen() {
         campaign:
           snapshot.state.selection.eraId === OTTOMAN_MEDITERRANEAN_SCENARIO.eraId
             ? {
-                playerName: snapshot.campaign?.playerName ?? 'Oyuncu',
                 campaignId: 'ottoman-mediterranean',
                 startedAt: OTTOMAN_MEDITERRANEAN_SCENARIO.startDate,
                 leadershipActive: true,
@@ -439,7 +450,7 @@ export default function GameScreen() {
           {ending ? (
             <CampaignEndingCard
               ending={ending}
-              playerName={snapshot.campaign?.playerName ?? 'Oyuncu'}
+              playerName={snapshot.campaign?.campaignId === 'ottoman-mediterranean' ? undefined : (snapshot.campaign?.playerName ?? 'Oyuncu')}
               date={snapshot.state.currentDate}
               decisionCount={snapshot.decisionHistory.length}
               restarting={saving}
