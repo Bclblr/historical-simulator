@@ -88,7 +88,7 @@ const sceneReplies: Array<[string,string]> = [
   ]
 ];
 const replyForScene = (index:number, side:0|1) => sceneReplies[index % sceneReplies.length][side];
-const replyForScene = (index:number, side:0|1) => sceneReplies[index % sceneReplies.length][side];
+
 
 const scenes = [
   ['şifreli bir mektup', 'Mektubu sana ulaştıran aracı, içeriğini bilmediğini söylüyor.', 'information', 'intelligenceNetwork'],
