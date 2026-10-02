@@ -14,25 +14,80 @@ const makeChoice = (idSuffix: string, label: string, description: string, effect
 const asReply=(side:0|1)=>side===0?'Bunu biraz daha aç; seni dinliyorum.':'Seni anlıyorum ama önce içimin rahat etmesini istiyorum.';
 
 const sceneReplies: Array<[string,string]> = [
-['Mektubu kimin gönderdiğini söyle.', 'Mektubu doğrulamadan taşıyamam.'],
-['Venedikli tüccarın benden ne istediğini anlat.', 'Onunla görüşmeden önce bağlantısını bilmek istiyorum.'],
-['Fiyatın neden değiştiğini açıkla.', 'Bu değişikliğin arkasındaki kişileri öğrenmek istiyorum.'],
-['Denizcinin hangi limandan geldiğini söyle.', 'Haberini başka bir denizciden de doğrulayacağım.'],
-['Aracının kim adına konuştuğunu söyle.', 'Beni bu işe sokmadan önce şartları açıkla.'],
-['Yükün neden beklediğini anlat.', 'Önce liman görevlilerinden doğrulayacağım.'],
-['Kayıdın nasıl kaybolduğunu anlat.', 'Bu işin arkasında kimin olduğunu araştıracağım.'],
-['Esaretten dönen adamın yaşadıklarını anlatmasına izin ver.', 'Önce anlattıklarını başka birinden doğrulayacağım.'],
-['Beni tanıştıracağın çevrenin kimlerden oluştuğunu anlat.', 'Bu insanlara güvenmeden önce bağlantılarını öğrenmek istiyorum.'],
-['Sefer için neyin eksik olduğunu söyle.', 'Yola çıkmadan önce hazırlıkları tamamlayacağım.'],
-['Üç haberin kaynaklarını tek tek söyle.', 'Hiçbirini doğrulamadan kabul etmeyeceğim.'],
-['Eski borcun hesabını açıkça çıkar.', 'Yeni bir anlaşmaya girmeden önce şartları göreceğim.'],
-['Benden ne öğrenmek istediklerini söyle.', 'Görüştüğüm kişileri açıklamayacağım.'],
-['Yeni aracının kimlerle bağlantılı olduğunu anlat.', 'Onu kullanmadan önce güvenilirliğini sınayacağım.'],
-['Yükün kime ait olduğunu ve neden gizlendiğini söyle.', 'Bu işin ticaret mi başka bir şey mi olduğunu önce anlayacağım.'],
-['Evdekilerin neden çağırdığını anlat.', 'Dönmeden önce onların durumunu öğrenmek istiyorum.'],
-['Adımın neden sık geçtiğini açıkla.', 'Bir süre daha görünür olmadan hareket edeceğim.'],
-['Yolun neden uzadığını ve erzağın ne durumda olduğunu söyle.', 'Tayfanın durumunu görmeden karar vermeyeceğim.']
+  [
+    "Mektubu kimin gönderdiğini bana anlat; seni zor durumda bırakmak istemem.",
+    "Bunu doğrulamadan taşıyamam; kusura bakma, önce içim rahat etsin."
+  ],
+  [
+    "Tüccarın senden ne istediğini anlat; belki birlikte bir yol buluruz.",
+    "Ona hemen güvenemem; önce senin neden ona güvendiğini bilmek isterim."
+  ],
+  [
+    "Fiyatın neden değiştiğini anlat; hesabı beraber çıkaralım.",
+    "Bundan kimin kazandığını anlamadan karar vermeyeyim."
+  ],
+  [
+    "Bu haberi kim doğrulayabilir, birlikte düşünelim.",
+    "Bunu başkasından da dinlemek istiyorum; yanlış anlaşılmasın."
+  ],
+  [
+    "Benden ne istediklerini açıkça anlat; ona göre konuşalım.",
+    "Bu işin bana ait olup olmadığını anlamadan söz vermeyeyim."
+  ],
+  [
+    "Gecikmenin sebebini birlikte bulalım.",
+    "Ne kadar bekleyeceğimizi bilmeden tayfayı oyalamayalım."
+  ],
+  [
+    "Kayıdın neden kaybolduğunu anlat; belki izi başka yerde buluruz.",
+    "Bunun benimle ilgisi varsa önce açıkça bilmek isterim."
+  ],
+  [
+    "Döndüğünde neler yaşadığını anlat; seni dinlerim.",
+    "Hazır değilsen anlatma; ama söylediklerini doğrulamadan da hareket etmeyeyim."
+  ],
+  [
+    "Beni kimlerle tanıştıracağını anlat; insanını bilmek isterim.",
+    "Bu insanlara güvenmek için biraz daha zamana ihtiyacım var."
+  ],
+  [
+    "Nelerin eksik olduğunu birlikte çıkaralım.",
+    "Tayfa hazır olmadan yola çıkmak istemiyorum."
+  ],
+  [
+    "İlk haberi kim verdiğini anlat; izini oradan sürelim.",
+    "Buna hemen inanmayalım; önce başka bir kaynaktan dinleyelim."
+  ],
+  [
+    "Borcu nasıl kapatabileceğimizi konuşalım; seni de zor durumda bırakmak istemem.",
+    "Yeni bir işe girmeden önce şartları açıkça görelim."
+  ],
+  [
+    "Benden ne öğrenmek istediklerini anlat; gerisini ben düşünürüm.",
+    "Bunu sana anlatamam; kimlerle görüştüğümü korumam gerekiyor."
+  ],
+  [
+    "Yeni habercinin kim olduğunu anlat; yüzünü bilmek isterim.",
+    "Güvenmeden önce geçmişini biraz araştıralım."
+  ],
+  [
+    "Gecikmenin sebebini bulalım; belki yük hâlâ kurtarılabilir.",
+    "Bu işe karışmadan önce ne kadar risk aldığımızı bilmek istiyorum."
+  ],
+  [
+    "Evdekilerin neden beklediğini anlat; onları daha fazla merakta bırakmayalım.",
+    "Daha ne kadar kalacağımı bilmiyorum ama onlara bir haber göndereceğim."
+  ],
+  [
+    "Neden geri çekilmem gerektiğini anlat; dostça uyarıyorsan dinlerim.",
+    "Beni kim izliyorsa önce onu anlamak istiyorum."
+  ],
+  [
+    "Ne kadar erzak gerektiğini birlikte hesaplayalım.",
+    "Bu kadar erzağın neden gerektiğini bilmeden masrafa girmeyelim."
+  ]
 ];
+const replyForScene = (index:number, side:0|1) => sceneReplies[index % sceneReplies.length][side];
 const replyForScene = (index:number, side:0|1) => sceneReplies[index % sceneReplies.length][side];
 
 const scenes = [
