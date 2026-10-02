@@ -11,7 +11,7 @@ const makeChoice = (idSuffix: string, label: string, description: string, effect
   effects,
 });
 
-const asReply=(side:0|1)=>side===0?'Önce bunu açıkça anlat.':'Bunu doğrulamadan ilerlemeyeceğim.';
+const asReply=(side:0|1)=>side===0?'Bunu biraz daha aç; seni dinliyorum.':'Seni anlıyorum ama önce içimin rahat etmesini istiyorum.';
 
 const sceneReplies: Array<[string,string]> = [
 ['Mektubu kimin gönderdiğini söyle.', 'Mektubu doğrulamadan taşıyamam.'],
@@ -58,97 +58,97 @@ const scenes = [
 
 
 const dialogues = [
-  "Bir mektup getirdim. Bunu sana vermemi isteyen kişi adını söylemedi.",
-  "Bir Venedik tüccarı seni soruyor. Onunla konuşmak ister misin?",
-  "Bu malın fiyatı bir gecede değişti. Sence neden?",
-  "Yabancı bir denizci bir haber anlattı. Doğru mu, biliyor musun?",
-  "Bir elçinin aracısı güvenilir bir haberci arıyor. Yardım eder misin?",
-  "Bu yük günlerdir gümrükte. Sence bekletelim mi, yoksa araştıralım mı?",
-  "Bir liman kaydı kaybolmuş. Sence yeniden arayalım mı?",
-  "Esaretten dönen biri seni görmek istiyor. Dinlemek ister misin?",
-  "Farklı çevrelerden insanları tanıyorum. Seni onlarla tanıştırmamı ister misin?",
-  "Yeni bir sefer hazırlanıyor. Eksikleri tamamlayalım mı?",
-  "Aynı olay hakkında üç farklı şey duyduk. Hangisinin peşinden gidelim?",
-  "Eski borcun hâlâ duruyor. Şimdi ne yapacaksın?",
-  "Kimlerle görüştüğünü soruyorlar. Ne kadarını anlatacaksın?",
-  "Eski haberci artık çalışmıyor. Yerine kimi bulalım?",
-  "Bir yük kayıtlara girmeden el değiştirmiş. Araştıralım mı?",
-  "Evdekiler senden haber bekliyor. Ne zaman döneceksin?",
-  "Adın kayıtlarda fazla görünmeye başladı. Biraz geri çekilelim mi?",
-  "Yol uzayacak. Erzakı şimdi mi tamamlayalım?"
+  "Bir mektup getirdim. Bana veren kişi adını söylemedi; belli ki adını gizlemek için sebebi var.",
+  "Venedikli tüccar seni soruyor. Limandaki gemilerden ve fiyatlardan söz etti; seni tanıdığı belli.",
+  "Bu malın fiyatı bir gecede değişti. Limandaki insanlar bunun arkasında başka bir hesap olduğunu düşünüyor.",
+  "Yabancı bir denizci başka bir limandan haber getirdi. Buradaki anlatılanlarla bazı yerleri uyuşuyor.",
+  "Bir elçinin aracısı güvenilir bir haberci arıyor. Seni önermemin nedeni, adını bilen insanların olması.",
+  "Bu yük günlerdir gümrükte bekliyor. Herkes başka bir sebep anlatıyor; ben de işin aslını anlamaya çalışıyorum.",
+  "Bir liman kaydı ortadan kaybolmuş. Bunu yapan kişi iz bırakmamaya çalışmış ama bir boşluk göze çarpıyor.",
+  "Esaretten dönen biri seni görmek istiyor. Uzun zamandır taşıdığı bazı şeyleri ilk kez anlatmaya hazır.",
+  "Farklı çevrelerden insanları tanıyorum. Seni onlarla tanıştırabilirim; ama bu çevrede herkes birbirine aynı ölçüde güvenmiyor.",
+  "Yeni bir sefer hazırlanıyor. Erzak, tayfa ve para hesabında birkaç eksik var; yola çıkmadan önce bunları görmek gerek.",
+  "Aynı olay hakkında üç farklı anlatı duyduk. Üçünün de içinde doğru bir parça olabilir.",
+  "Eski borcun hâlâ duruyor. Seni sıkıştırmak istemem; ama ikimizin de bu hesabı temizlemesi gerekiyor.",
+  "Kimlerle görüştüğünü öğrenmek isteyenler var. Bunu sana söylememin nedeni seni dostça uyarmak.",
+  "Eski haberci artık çalışmıyor. Yerine geçecek kişinin güvenilir olması gerekiyor.",
+  "Bir yük kayıtlara girmeden el değiştirmiş. Limanda bunu fark eden birkaç kişi var ama kimse açıkça konuşmuyor.",
+  "Evdekiler senden uzun zamandır haber bekliyor. Meryem özellikle sessizliğine içerliyor.",
+  "Adın kayıtlarda fazla görünmeye başladı. Henüz ciddi bir şey yok ama biraz daha dikkatli olmak iyi olur.",
+  "Yol uzayacak. Erzakı şimdi tamamlamazsak dönüşte tayfayı zor durumda bırakabiliriz."
 ];
 const decisionPairs: Array<[string, string]> = [
   [
-    "Mektubu kim gönderdi?",
-    "Bunu neden bana getirdin?"
+    "Mektubu kimin gönderdiğini bana anlat; seni zor durumda bırakmak istemem.",
+    "Bunu doğrulamadan taşıyamam; kusura bakma, önce içim rahat etsin."
   ],
   [
-    "Tüccar benden ne istiyor?",
-    "Ona neden güveneyim?"
+    "Tüccarın senden ne istediğini anlat; belki birlikte bir yol buluruz.",
+    "Ona hemen güvenemem; önce senin neden ona güvendiğini bilmek isterim."
   ],
   [
-    "Fiyat neden değişti?",
-    "Bundan ne kazanacağım?"
+    "Fiyatın neden değiştiğini anlat; hesabı beraber çıkaralım.",
+    "Bundan kimin kazandığını anlamadan karar vermeyeyim."
   ],
   [
-    "Bunu kim doğrulayabilir?",
-    "Bunu neden anlatayım?"
+    "Bu haberi kim doğrulayabilir, birlikte düşünelim.",
+    "Bunu başkasından da dinlemek istiyorum; yanlış anlaşılmasın."
   ],
   [
-    "Benden tam olarak ne istiyorsun?",
-    "Bu benim işim mi?"
+    "Benden ne istediklerini açıkça anlat; ona göre konuşalım.",
+    "Bu işin bana ait olup olmadığını anlamadan söz vermeyeyim."
   ],
   [
-    "Bu gecikmenin sebebi ne?",
-    "Ne kadar beklemeliyiz?"
+    "Gecikmenin sebebini birlikte bulalım.",
+    "Ne kadar bekleyeceğimizi bilmeden tayfayı oyalamayalım."
   ],
   [
-    "Kayıt neden kayboldu?",
-    "Bunun benimle ilgisi ne?"
+    "Kayıdın neden kaybolduğunu anlat; belki izi başka yerde buluruz.",
+    "Bunun benimle ilgisi varsa önce açıkça bilmek isterim."
   ],
   [
-    "Sonra ne oldu?",
-    "Bunu neden dinleyeyim?"
+    "Döndüğünde neler yaşadığını anlat; seni dinlerim.",
+    "Hazır değilsen anlatma; ama söylediklerini doğrulamadan da hareket etmeyeyim."
   ],
   [
-    "Beni kimlerle tanıştıracaksın?",
-    "Ona neden güveneyim?"
+    "Beni kimlerle tanıştıracağını anlat; insanını bilmek isterim.",
+    "Bu insanlara güvenmek için biraz daha zamana ihtiyacım var."
   ],
   [
-    "Neler eksik?",
-    "Neden şimdi çıkalım?"
+    "Nelerin eksik olduğunu birlikte çıkaralım.",
+    "Tayfa hazır olmadan yola çıkmak istemiyorum."
   ],
   [
-    "İlk haberi kim verdi?",
-    "Buna neden inanayım?"
+    "İlk haberi kim verdiğini anlat; izini oradan sürelim.",
+    "Buna hemen inanmayalım; önce başka bir kaynaktan dinleyelim."
   ],
   [
-    "Borcu kapatmak için ne öneriyorsun?",
-    "Yeni işin şartları ne?"
+    "Borcu nasıl kapatabileceğimizi konuşalım; seni de zor durumda bırakmak istemem.",
+    "Yeni bir işe girmeden önce şartları açıkça görelim."
   ],
   [
-    "Benden ne öğrenmek istiyorsunuz?",
-    "Bunu neden anlatayım?"
+    "Benden ne öğrenmek istediklerini anlat; gerisini ben düşünürüm.",
+    "Bunu sana anlatamam; kimlerle görüştüğümü korumam gerekiyor."
   ],
   [
-    "Yeni habercinin güvenilir olduğunu nasıl bileceğiz?",
-    "Ne kadar beklemeliyiz?"
+    "Yeni habercinin kim olduğunu anlat; yüzünü bilmek isterim.",
+    "Güvenmeden önce geçmişini biraz araştıralım."
   ],
   [
-    "Bu gecikmenin sebebi ne?",
-    "Bu benim işim mi?"
+    "Gecikmenin sebebini bulalım; belki yük hâlâ kurtarılabilir.",
+    "Bu işe karışmadan önce ne kadar risk aldığımızı bilmek istiyorum."
   ],
   [
-    "Evdekiler neden beni bekliyor?",
-    "Daha ne kadar kalmalıyım?"
+    "Evdekilerin neden beklediğini anlat; onları daha fazla merakta bırakmayalım.",
+    "Daha ne kadar kalacağımı bilmiyorum ama onlara bir haber göndereceğim."
   ],
   [
-    "Neden geri çekileyim?",
-    "Beni kim izliyor?"
+    "Neden geri çekilmem gerektiğini anlat; dostça uyarıyorsan dinlerim.",
+    "Beni kim izliyorsa önce onu anlamak istiyorum."
   ],
   [
-    "Ne kadar erzak gerekiyor?",
-    "Bu kadar erzak neden gerekli?"
+    "Ne kadar erzak gerektiğini birlikte hesaplayalım.",
+    "Bu kadar erzağın neden gerektiğini bilmeden masrafa girmeyelim."
   ]
 ];
 
