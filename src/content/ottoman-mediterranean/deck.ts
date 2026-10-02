@@ -27,6 +27,7 @@ export interface MediterraneanCardDefinition {
   requires?: Record<string, boolean>;
   weight?: number;
   category: 'PORT' | 'SEA' | 'INTELLIGENCE' | 'FAMILY' | 'CAPTIVITY' | 'TRADE' | 'IDENTITY';
+  source?: 'SULTANIN_CASUSLARI' | 'SULTANIN_KORSANLARI' | 'BOTH';
 }
 
 export interface ActiveMediterraneanCard {
@@ -413,7 +414,7 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
   }
 
   const storySpine: Record<string, string> = {
-    'med-story-1560-cerbe': 'med-story-1560-first-job',
+    'med-book-01': 'med-story-1560-first-job',
     'med-story-1560-first-job': 'med-story-1561-route',
     'med-story-1561-route': 'med-story-1563-crossroads',
     'med-story-1563-crossroads': 'med-story-1565-malta',
