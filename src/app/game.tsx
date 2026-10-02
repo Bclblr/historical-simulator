@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppCard, AppText, CampaignEndingCard, GameStatusBar, Screen, SwipeDecisionCard } from '@/components';
 import {
   applyDecisionEffects,
-  evaluateGermanyCampaignEnding,
+  evaluateCampaignEnding,
   createDecisionOption,
   getEligibleEvents,
   recordDecision,
@@ -19,7 +19,9 @@ import { getGermany1933DecisionContent, type ScenarioDecisionChoice } from '@/co
 import { getGermany1933DelayedConsequence } from '@/content/germany-1933/consequences';
 import { getGermanyCampaignBranchEvents, getGermanyCampaignExcludedEventIds, getGermanyCareerEvents } from '@/content/germany-campaign';
 import { getActiveGermanyLifeCard, type LifeChoice } from '@/content/germany-life/deck';
+import { getActiveOttomanMediterraneanCard } from '@/content/ottoman-mediterranean';
 import { useGameSessionService } from '@/services';
+import { OTTOMAN_MEDITERRANEAN_SCENARIO } from '@/content/ottoman-mediterranean';
 
 function createSimulationOptions(
   eventId: string,
@@ -118,7 +120,14 @@ export default function GameScreen() {
             institutionId: params.institution,
             roleId: params.role,
           },
-          campaign: params.era === 'germany-1921'
+          campaign: params.era === OTTOMAN_MEDITERRANEAN_SCENARIO.eraId
+            ? {
+                playerName: params.playerName?.trim() || 'Oyuncu',
+                campaignId: 'ottoman-mediterranean',
+                startedAt: OTTOMAN_MEDITERRANEAN_SCENARIO.startDate,
+                leadershipActive: true,
+              }
+            : params.era === 'germany-1921'
             ? {
                 playerName: params.playerName?.trim() || 'Oyuncu',
                 campaignId: 'germany-life',
@@ -144,6 +153,22 @@ export default function GameScreen() {
 
   const activeContent = useMemo(() => {
     if (!snapshot) return null;
+
+    if (snapshot.campaign?.campaignId === 'ottoman-mediterranean') {
+      const life = getActiveOttomanMediterraneanCard(snapshot);
+      return {
+        event: life.event,
+        decision: {
+          prompt: life.card.line,
+          speaker: life.card.speaker,
+          role: life.card.role,
+          left: life.card.left,
+          right: life.card.right,
+        },
+        options: createSimulationOptions(life.event.id, life.card.left, life.card.right),
+        lifeCard: life.card,
+      };
+    }
 
     if (snapshot.campaign?.campaignId === 'germany-life') {
       const life = getActiveGermanyLifeCard(snapshot);
@@ -202,7 +227,7 @@ export default function GameScreen() {
     : null;
   const role = scenario?.roles.find((item) => item.id === snapshot?.state.selection.roleId);
   const actorLabel = snapshot?.campaign?.playerName ?? role?.shortName ?? role?.name ?? 'Kamu görevlisi';
-  const ending = snapshot ? evaluateGermanyCampaignEnding(snapshot) : null;
+  const ending = snapshot ? evaluateCampaignEnding(snapshot) : null;
 
   async function choose(option: DecisionOption) {
     if (!snapshot || !activeContent || saving) return;
@@ -214,6 +239,27 @@ export default function GameScreen() {
     setError(null);
 
     try {
+      if (snapshot.campaign?.campaignId === 'ottoman-mediterranean') {
+        const selectedChoice =
+          option.swipeDirection === 'LEFT'
+            ? activeContent.decision.left
+            : activeContent.decision.right;
+        const history = recordDecision(snapshot.decisionHistory, {
+          option,
+          decidedAt: snapshot.state.currentDate,
+        });
+        const affectedState = applyDecisionEffects(snapshot.state, selectedChoice.effects);
+        const next: GameSessionSnapshot = {
+          ...snapshot,
+          state: affectedState,
+          decisionHistory: history,
+        };
+        setSnapshot(next);
+        optimisticSnapshotApplied = true;
+        await sessions.save(next);
+        return;
+      }
+
       if (snapshot.campaign?.campaignId === 'germany-life') {
         const selectedChoice =
           option.swipeDirection === 'LEFT'
@@ -338,7 +384,14 @@ export default function GameScreen() {
             : restartScenario.startDate,
         selection: snapshot.state.selection,
         campaign:
-          snapshot.state.selection.eraId === 'germany-1921'
+          snapshot.state.selection.eraId === OTTOMAN_MEDITERRANEAN_SCENARIO.eraId
+            ? {
+                playerName: snapshot.campaign?.playerName ?? 'Oyuncu',
+                campaignId: 'ottoman-mediterranean',
+                startedAt: OTTOMAN_MEDITERRANEAN_SCENARIO.startDate,
+                leadershipActive: true,
+              }
+            : snapshot.state.selection.eraId === 'germany-1921'
             ? {
                 playerName: snapshot.campaign?.playerName ?? 'Oyuncu',
                 campaignId: 'germany-life',
@@ -358,7 +411,7 @@ export default function GameScreen() {
 
   return (
     <Screen style={styles.screen}>
-      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'germany-life' ? 'Nazi Almanyası · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
+      <Stack.Screen options={{ title: snapshot?.campaign?.campaignId === 'ottoman-mediterranean' ? 'Akdeniz’in Gölgesinde · Bir Hayat' : snapshot?.campaign?.campaignId === 'germany-life' ? 'Nazi Almanyası · Bir Hayat' : snapshot?.campaign ? 'Almanya · Kesintisiz Kampanya' : '1933 · Almanya', headerShown: true, gestureEnabled: false }} />
       {error ? <AppCard><AppText>{error}</AppText></AppCard> : null}
       {snapshot ? (
         <View style={styles.game}>
@@ -390,7 +443,7 @@ export default function GameScreen() {
               rightOption={activeContent.options[1]}
               actorLabel={activeContent.decision.speaker || actorLabel}
               conversationOverride={
-                snapshot.campaign?.campaignId === 'germany-life'
+                snapshot.campaign?.campaignId === 'germany-life' || snapshot.campaign?.campaignId === 'ottoman-mediterranean'
                   ? {
                       speaker: activeContent.decision.speaker,
                       role: activeContent.lifeCard?.role,
