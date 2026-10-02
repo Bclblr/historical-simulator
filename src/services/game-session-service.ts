@@ -20,6 +20,14 @@ export class GameSessionService {
     const snapshot: GameSessionSnapshot = {
       state: createInitialGameState({
         ...input,
+        flags: input.campaign?.campaignId === 'ottoman-mediterranean'
+          ? {
+              sailor: input.selection.roleId === 'med-sailor',
+              merchant_contact: input.selection.roleId === 'med-trader',
+              warehouse_worker: input.selection.roleId === 'med-port-worker',
+              spoke_to_contact: input.selection.roleId === 'med-interpreter',
+            }
+          : undefined,
         variables: input.campaign
           ? input.campaign.campaignId === 'germany-life'
             ? {
