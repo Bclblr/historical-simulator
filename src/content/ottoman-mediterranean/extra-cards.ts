@@ -38,10 +38,25 @@ const topics=[
 ['Bir danışman','Danışman','Bazen en önemli karar, hangi haberi dikkate alacağını seçmektir.','INTELLIGENCE','information','reputation'],
 ];
 
+const variantQuestions = [
+  ['Bunu kimden duydun?', 'Bir kaynağı daha kontrol edelim mi?'],
+  ['Bu haber ne kadar yeni?', 'Bunu daha önce duymuş muydun?'],
+  ['Bunun başka bir açıklaması olabilir mi?', 'Sence neden böyle söylüyorlar?'],
+  ['Bu kişinin başka bağlantısı var mı?', 'Kimlerle görüştüğünü biliyor musun?'],
+  ['Bunu kayıtlarda bulabilir miyiz?', 'Eski kayıtlarla karşılaştırayım mı?'],
+  ['Bunun bana ne faydası var?', 'Bu işten ne kazanacağım?'],
+  ['Benden ne bekliyorsun?', 'Bunu neden bana anlatıyorsun?'],
+  ['Başka limanlarda da böyle mi?', 'Aynı haberi başka yerde duydun mu?'],
+  ['Şimdi ne yapacağız?', 'Bu bağlantının devamı ne?'],
+  ['Buna güvenmeli miyim?', 'Sen olsan neyi kontrol ederdin?'],
+];
+
+const placeHints = ['Galata','İstanbul','Ragusa','Venedik','Cezayir','Tunus','Cerbe','Malta','Kıbrıs','İskenderiye'];
+
 export const EXTRA_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[]=topics.flatMap(([speaker,role,line,category,a,b],i)=>Array.from({length:10},(_,j)=>({
- id:`med-extra-${i+1}-${j+1}`,speaker,role,line,category:category as MediterraneanCardDefinition['category'],weight:4+(j%6),
- left:c('hold','Önce bunu doğrulayalım.','Bilgiyi sınayarak ilerle.',[change(a,2+(j%3)),days(40+(j%4)*20)]),
- right:c('answer','Bunu biraz daha anlatsana.','Konuşmayı sürdür ve yeni bir bağlantı kur.',[change(b,3+(j%4)),change('safety',-1),flag(`extra_${i+1}_${j+1}`),days(50+(j%5)*20)]),
+ id:`med-extra-${i+1}-${j+1}`,speaker,role,line:`${line} ${placeHints[(i+j)%placeHints.length]}. ${variantQuestions[j][0]}`,category:category as MediterraneanCardDefinition['category'],weight:4+(j%6),
+ left:c('hold',variantQuestions[j][0],'Bilgiyi sınayarak ilerle.',[change(a,2+(j%3)),days(40+(j%4)*20)]),
+ right:c('answer',variantQuestions[j][1],'Konuşmayı sürdür ve yeni bir bağlantı kur.',[change(b,3+(j%4)),change('safety',-1),flag(`extra_${i+1}_${j+1}`),days(50+(j%5)*20)]),
 })));
 
 export const EXTRA_MEDITERRANEAN_CARD_COUNT=EXTRA_MEDITERRANEAN_CARDS.length;
