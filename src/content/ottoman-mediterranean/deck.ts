@@ -234,6 +234,37 @@ function matches(card: MediterraneanCardDefinition, snapshot: GameSessionSnapsho
   );
 }
 
+function ensureVisibleConsequences(card: MediterraneanCardDefinition): MediterraneanCardDefinition {
+  const visible = new Set(['money', 'safety', 'social', 'reputation']);
+  const fallbackKey: Record<MediterraneanCardDefinition['category'], string> = {
+    PORT: 'reputation',
+    SEA: 'safety',
+    INTELLIGENCE: 'reputation',
+    FAMILY: 'social',
+    CAPTIVITY: 'safety',
+    TRADE: 'money',
+    IDENTITY: 'social',
+  };
+
+  const addIfNeeded = (selected: MediterraneanChoice, side: 'left' | 'right') => {
+    const alreadyVisible = selected.effects.some(
+      (effect) => effect.type === 'CHANGE_VARIABLE' && visible.has(effect.key),
+    );
+    if (alreadyVisible) return selected;
+    const key = fallbackKey[card.category];
+    return {
+      ...selected,
+      effects: [...selected.effects, change(key, side === 'left' ? 1 : -1)],
+    };
+  };
+
+  return {
+    ...card,
+    left: addIfNeeded(card.left, 'left'),
+    right: addIfNeeded(card.right, 'right'),
+  };
+}
+
 function score(card: MediterraneanCardDefinition, snapshot: GameSessionSnapshot): number {
   const history = snapshot.decisionHistory.map((item) => item.optionId).join('|');
   const recent = snapshot.decisionHistory.slice(-5).map((item) => item.eventId);
@@ -426,7 +457,8 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
     const startId = 'med-opening';
     const start = ALL_MEDITERRANEAN_CARDS.find((item) => item.id === startId);
     if (start && matches(start, snapshot)) {
-      return { card: start, event: toEvent(start, snapshot) };
+      const normalized = ensureVisibleConsequences(start);
+      return { card: normalized, event: toEvent(normalized, snapshot) };
     }
   }
 
@@ -444,7 +476,10 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
           (item) => item.id === linkedId && !decided.has(item.id) && matches(item, snapshot),
         )
       : undefined;
-    if (linked) return { card: linked, event: toEvent(linked, snapshot) };
+    if (linked) {
+      const normalized = ensureVisibleConsequences(linked);
+      return { card: normalized, event: toEvent(normalized, snapshot) };
+    }
   }
 
   const eligible = ALL_MEDITERRANEAN_CARDS
@@ -453,5 +488,6 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
     .sort((a, b) => score(a, snapshot) - score(b, snapshot));
 
   const card = eligible[0] ?? FALLBACKS[snapshot.decisionHistory.length % FALLBACKS.length];
-  return { card, event: toEvent(card, snapshot) };
+  const normalized = ensureVisibleConsequences(card);
+  return { card: normalized, event: toEvent(normalized, snapshot) };
 }
