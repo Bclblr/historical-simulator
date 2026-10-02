@@ -6,6 +6,7 @@ import { HISTORICAL_MEDITERRANEAN_CARDS } from './historical-spine';
 import { EXTRA_MEDITERRANEAN_CARDS } from './extra-cards';
 import { HISTORICAL_CONTEXT_CARDS } from './historical-context';
 import { MEDITERRANEAN_MEMORY_CARDS } from './memory-cards';
+import { MEDITERRANEAN_STORY_SPINE } from './story-spine';
 
 export interface MediterraneanChoice {
   idSuffix: string;
@@ -346,7 +347,7 @@ const FALLBACKS: MediterraneanCardDefinition[] = [
     choice('leave','Şimdi işe dönmem gerekiyor mu?','Kendi hayatının peşinden git.',[change('money',2),change('familyTies',-1),days(100)])),
 ];
 
-export const ALL_MEDITERRANEAN_CARDS = [...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS, ...EXTRA_MEDITERRANEAN_CARDS, ...HISTORICAL_CONTEXT_CARDS, ...MEDITERRANEAN_MEMORY_CARDS, ...STATE_TRIGGER_CARDS];
+export const ALL_MEDITERRANEAN_CARDS = [...MEDITERRANEAN_STORY_SPINE, ...HISTORICAL_MEDITERRANEAN_CARDS, ...MEDITERRANEAN_CARDS, ...EXPANDED_MEDITERRANEAN_CARDS, ...REIGNS_SCALE_CARDS, ...EXTRA_MEDITERRANEAN_CARDS, ...HISTORICAL_CONTEXT_CARDS, ...MEDITERRANEAN_MEMORY_CARDS, ...STATE_TRIGGER_CARDS];
 
 export const MEDITERRANEAN_CARD_COUNT = ALL_MEDITERRANEAN_CARDS.length;
 
@@ -411,6 +412,24 @@ function getLinkedCardId(current: MediterraneanCardDefinition, optionId: string)
     return topic < 30 ? `med-extra-${topic + 1}-1` : null;
   }
 
+  const storySpine: Record<string, string> = {
+    'med-story-1560-cerbe': 'med-story-1560-first-job',
+    'med-story-1560-first-job': 'med-story-1561-route',
+    'med-story-1561-route': 'med-story-1563-crossroads',
+    'med-story-1563-crossroads': 'med-story-1565-malta',
+    'med-story-1565-malta': 'med-story-1566-after-malta',
+    'med-story-1566-after-malta': 'med-story-1570-cyprus',
+    'med-story-1570-cyprus': 'med-story-1571-lepanto',
+    'med-story-1571-lepanto': 'med-story-1573-old-message',
+    'med-story-1573-old-message': 'med-story-1580-corsair',
+    'med-story-1580-corsair': 'med-story-1585-double-life',
+    'med-story-1585-double-life': 'med-story-1590-family',
+    'med-story-1590-family': 'med-story-1595-last-network',
+    'med-story-1595-last-network': 'med-story-1600-epilogue',
+  };
+  const storyNext = storySpine[current.id];
+  if (storyNext) return storyNext;
+  
   const historical: Record<string, { left?: string; right?: string }> = {
     "med-history-port": { left: "med-history-1560-captain", right: "med-history-1560-captain" },
     "med-history-sailor": { left: "med-history-1560-captain", right: "med-history-1560-captain" },
@@ -492,7 +511,7 @@ export function getActiveOttomanMediterraneanCard(snapshot: GameSessionSnapshot)
   addDynamicFlags(snapshot);
 
   if (snapshot.decisionHistory.length === 0) {
-    const startId = 'med-opening';
+    const startId = 'med-story-1560-cerbe';
     const start = ALL_MEDITERRANEAN_CARDS.find((item) => item.id === startId);
     if (start && matches(start, snapshot)) {
       const normalized = ensureVisibleConsequences(start);
