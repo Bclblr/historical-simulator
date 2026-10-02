@@ -32,6 +32,102 @@ const scenes = [
   ['uzun bir deniz yolculuğu', 'Yolculuk uzadıkça tayfanın sabrı ve erzak hesabı önem kazanıyor.', 'sailorNetwork', 'safety'],
 ];
 
+
+const dialogues = [
+  "Bir mektup getirdim. Bunu sana vermemi isteyen kişi adını söylemedi.",
+  "Bir Venedik tüccarı seni soruyor. Onunla konuşmak ister misin?",
+  "Bu malın fiyatı bir gecede değişti. Sence neden?",
+  "Yabancı bir denizci bir haber anlattı. Doğru mu, biliyor musun?",
+  "Bir elçinin aracısı güvenilir bir haberci arıyor. Yardım eder misin?",
+  "Bu yük günlerdir gümrükte. Sence bekletelim mi, yoksa araştıralım mı?",
+  "Bir liman kaydı kaybolmuş. Sence yeniden arayalım mı?",
+  "Esaretten dönen biri seni görmek istiyor. Dinlemek ister misin?",
+  "Farklı çevrelerden insanları tanıyorum. Seni onlarla tanıştırmamı ister misin?",
+  "Yeni bir sefer hazırlanıyor. Eksikleri tamamlayalım mı?",
+  "Aynı olay hakkında üç farklı şey duyduk. Hangisinin peşinden gidelim?",
+  "Eski borcun hâlâ duruyor. Şimdi ne yapacaksın?",
+  "Kimlerle görüştüğünü soruyorlar. Ne kadarını anlatacaksın?",
+  "Eski haberci artık çalışmıyor. Yerine kimi bulalım?",
+  "Bir yük kayıtlara girmeden el değiştirmiş. Araştıralım mı?",
+  "Evdekiler senden haber bekliyor. Ne zaman döneceksin?",
+  "Adın kayıtlarda fazla görünmeye başladı. Biraz geri çekilelim mi?",
+  "Yol uzayacak. Erzakı şimdi mi tamamlayalım?"
+];
+const decisionPairs: Array<[string, string]> = [
+  [
+    "Mektubu alırım",
+    "Mektubu geri veririm"
+  ],
+  [
+    "Konuşurum",
+    "Mesafemi korurum"
+  ],
+  [
+    "Nedenini araştırırım",
+    "Fırsatı değerlendiririm"
+  ],
+  [
+    "Doğrularım",
+    "Ayrıntıyı saklarım"
+  ],
+  [
+    "Yardım ederim",
+    "Karışmam"
+  ],
+  [
+    "Araştırırım",
+    "Beklerim"
+  ],
+  [
+    "Kaydı ararım",
+    "Uzak dururum"
+  ],
+  [
+    "Dinlerim",
+    "Vakit ayırmam"
+  ],
+  [
+    "Tanışırım",
+    "Mesafemi korurum"
+  ],
+  [
+    "Eksikleri tamamlarız",
+    "Seferi erteleriz"
+  ],
+  [
+    "İlk haberi araştırırım",
+    "Söylentiyi bırakırım"
+  ],
+  [
+    "Öderim",
+    "Yeni iş isterim"
+  ],
+  [
+    "Açıkça anlatırım",
+    "Az konuşurum"
+  ],
+  [
+    "Yeni bir haberci bulurum",
+    "Beklerim"
+  ],
+  [
+    "Araştırırım",
+    "Karışmam"
+  ],
+  [
+    "Eve dönerim",
+    "Biraz daha beklerim"
+  ],
+  [
+    "Geri çekilirim",
+    "İşime devam ederim"
+  ],
+  [
+    "Erzakı tamamlarız",
+    "Tasarruf ederiz"
+  ]
+];
+
 const places = [
   ['Galata', 'Galata’daki hareketlilik'],
   ['İstanbul', 'Payitahttan gelen haberler'],
@@ -75,7 +171,7 @@ export const EXPANDED_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[] = scene
         id,
         speaker: place,
         role: 'Aracı / tanık',
-        line: 'Bir mektup getirdim. İçinde ne olduğunu bilmiyorum.',
+        line: dialogues[sceneIndex],
         category: (['INTELLIGENCE', 'TRADE', 'PORT', 'SEA', 'IDENTITY', 'FAMILY'] as const)[
           (sceneIndex + placeIndex) % 6
         ],
@@ -84,14 +180,14 @@ export const EXPANDED_MEDITERRANEAN_CARDS: MediterraneanCardDefinition[] = scene
         weight: 4 + ((sceneIndex + placeIndex) % 7),
         left: makeChoice(
           'hold-back',
-          'Mesafemi korurum',
-          'Bilgiyi ve bağlantıyı sınırlı tut; daha düşük riskle ilerle.',
+          decisionPairs[sceneIndex][0],
+          'Soruyu temkinli cevapla; daha düşük riskle ilerle.',
           leftEffects,
         ),
         right: makeChoice(
           'step-in',
-          'İşin içine girerim',
-          'Ağın içine daha fazla gir; daha değerli bağlantılar kazan ama görünürlüğün artsın.',
+          decisionPairs[sceneIndex][1],
+          'Sorunun içine gir; daha fazla bağlantı kazan ama görünürlüğün artsın.',
           rightEffects,
         ),
       };
