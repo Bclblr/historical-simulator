@@ -28,6 +28,22 @@ export class GameSessionService {
                 social: 50,
                 reputation: 50,
               }
+            : input.campaign.campaignId === 'ottoman-mediterranean'
+            ? {
+                money: 50,
+                safety: 55,
+                social: 50,
+                reputation: 50,
+                familyTies: 50,
+                merchantNetwork: 0,
+                sailorNetwork: 0,
+                intelligenceNetwork: 0,
+                portReputation: 0,
+                shipTrust: 0,
+                information: 0,
+                language: 0,
+                debt: 0,
+              }
             : {
                 publicSupport: 55,
                 institutionalInfluence: 55,
