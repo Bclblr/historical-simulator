@@ -1,4 +1,5 @@
 import { GERMANY_1933_SCENARIO } from '@/content/germany-1933';
+import { OTTOMAN_MEDITERRANEAN_SCENARIO } from '@/content/ottoman-mediterranean';
 import {
   createCountry,
   createEra,
@@ -13,6 +14,11 @@ export interface ScenarioCatalogEntry {
 }
 
 export const SCENARIO_CATALOG: ScenarioCatalogEntry[] = [
+  {
+    scenarioId: 'ottoman-mediterranean',
+    era: OTTOMAN_MEDITERRANEAN_SCENARIO.era,
+    countries: OTTOMAN_MEDITERRANEAN_SCENARIO.countries,
+  },
   {
     scenarioId: 'germany-1921',
     era: createEra({
@@ -58,6 +64,13 @@ export function getScenarioForSelection(
   eraId: string,
   countryId: string,
 ) {
+  if (
+    OTTOMAN_MEDITERRANEAN_SCENARIO.countryId === countryId &&
+    eraId === OTTOMAN_MEDITERRANEAN_SCENARIO.eraId
+  ) {
+    return OTTOMAN_MEDITERRANEAN_SCENARIO;
+  }
+
   if (GERMANY_1933_SCENARIO.countryId !== countryId) return null;
 
   if (eraId === GERMANY_1933_SCENARIO.eraId) {
